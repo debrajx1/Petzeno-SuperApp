@@ -1,0 +1,126 @@
+.header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.iconBtnMobile {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-text-main);
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-sm) var(--spacing-ld);
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.searchBar:focus-within {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 123, 84, 0.1);
+}
+
+.searchIcon {
+  color: var(--color-text-muted);
+  margin-left: var(--spacing-sm);
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  padding: var(--spacing-sm) var(--spacing-md);
+  width: 100%;
+  outline: none;
+  font-family: var(--font-body);
+  color: var(--color-text-main);
+}
+
+.searchInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.iconBtn {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+  padding: var(--spacing-sm);
+}
+
+.iconBtn:hover {
+  color: var(--color-primary);
+}
+
+.badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: var(--color-danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-bg-card);
+}
+
+.profileBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-main);
+}
+
+.profileRole {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 768px) {
+  .iconBtnMobile {
+    display: block;
+  }
+  .searchBar {
+    display: none;
+  }
+}

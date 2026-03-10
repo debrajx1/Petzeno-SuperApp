@@ -1,0 +1,269 @@
+.shelterContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.pageTitle {
+  font-size: 2rem;
+  color: var(--color-text-main);
+  margin-bottom: var(--spacing-xs);
+}
+
+.pageSubtext {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+}
+
+.primaryAction {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-weight: 500;
+  transition: background-color var(--transition-fast);
+}
+
+.primaryAction:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.tabsContainer {
+  display: flex;
+  gap: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tabBtn {
+  background: none;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  font-size: 1rem;
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition-fast), border-bottom-color var(--transition-fast);
+}
+
+.tabBtn:hover {
+  color: var(--color-primary);
+}
+
+.tabBtn.activeTab {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs) var(--spacing-md);
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--color-border);
+}
+
+.searchIcon {
+  color: var(--color-text-muted);
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  padding: var(--spacing-sm) var(--spacing-md);
+  width: 100%;
+  outline: none;
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+}
+
+.filterGroup {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  color: var(--color-text-main);
+  font-weight: 500;
+  transition: background-color var(--transition-fast);
+}
+
+.filterBtn:hover {
+  background-color: var(--color-bg-subtle);
+}
+
+.petsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.petCard {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.petCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.petImagePlaceholder {
+  height: 180px;
+  background: linear-gradient(135deg, var(--color-bg-subtle), var(--color-border));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.emoji {
+  font-size: 5rem;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+}
+
+.statusBadge {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: var(--color-bg-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.statusBadge.available {
+  color: var(--color-success);
+}
+
+.statusBadge.pendingadoption {
+  color: var(--color-warning);
+}
+
+.statusBadge.adopted {
+  color: var(--color-text-muted);
+}
+
+.petInfo {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.petHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.petName {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.petType {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  background-color: var(--color-bg-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+}
+
+.petDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.petDetails p {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: auto;
+  padding-top: var(--spacing-md);
+}
+
+.secondaryBtn, .primaryBtn {
+  flex: 1;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.secondaryBtn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+}
+
+.secondaryBtn:hover {
+  background-color: var(--color-bg-subtle);
+}
+
+.primaryBtn {
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  color: #fff;
+}
+
+.primaryBtn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.placeholderContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  border-radius: var(--radius-lg);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
