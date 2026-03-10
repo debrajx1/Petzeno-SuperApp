@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Send, Bot, User, Sparkles } from 'lucide-react-native';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../lib/firebase';
 
 const INITIAL_MESSAGES = [
   {
@@ -16,7 +18,7 @@ export default function AIHealthChatScreen() {
   const [isTyping, setIsTyping] = useState(false);
   const scrollViewRef = useRef();
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputText.trim()) return;
 
     const userMessage = {
@@ -29,25 +31,28 @@ export default function AIHealthChatScreen() {
     setInputText('');
     setIsTyping(true);
 
-    // Mock AI response logic
-    setTimeout(() => {
-      let aiResponseText = "I'm not fully connected to the Gemini API yet, but based on typical veterinary advice, I recommend observing those symptoms closely. Would you like me to help you book an appointment with Dr. Smith?";
+    try {
+      // Direct integration with the deployed Firebase Cloud Function wrapping the Gemini API
+      const aiHelper = httpsCallable(functions, 'askPetHealthAssistant');
+      const result = await aiHelper({ question: userMessage.text });
       
-      const lowerInput = userMessage.text.toLowerCase();
-      if (lowerInput.includes('vomit') || lowerInput.includes('throw up')) {
-        aiResponseText = "Vomiting can happen for many minor reasons, but if Max is vomiting repeatedly, is lethargic, or has a tender abdomen, it could be serious. I strongly suggest booking an appointment or using the SOS feature if he seems distressed.";
-      } else if (lowerInput.includes('food') || lowerInput.includes('diet')) {
-        aiResponseText = "For a 3-year-old Golden Retriever like Max, a balanced diet rich in protein is key. If you're changing his food, remember to transition slowly over 5-7 days to avoid stomach upset.";
-      }
-
       const aiMessage = {
         id: (Date.now() + 1).toString(),
-        text: aiResponseText,
+        text: result.data.answer,
         sender: 'ai',
       };
       setMessages(prev => [...prev, aiMessage]);
+    } catch(err) {
+      console.error("Chat Function Error:", err);
+      const aiMessage = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm having trouble connecting to my cloud servers right now. Please try again later.",
+        sender: 'ai',
+      };
+      setMessages(prev => [...prev, aiMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   return (

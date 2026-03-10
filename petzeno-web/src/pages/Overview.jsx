@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Users, Activity, Heart, Calendar } from 'lucide-react';
+import { collection, onSnapshot, query, limit } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import styles from './Overview.module.css';
 
 const data = [
@@ -29,6 +31,25 @@ const StatCard = ({ title, value, change, icon: Icon, trend }) => (
 );
 
 export default function Overview() {
+  const [activePets, setActivePets] = useState("12,489");
+
+  // Simulated live connection to Firestore Database
+  useEffect(() => {
+    try {
+      const q = query(collection(db, 'pets'), limit(10));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        if (!snapshot.empty) {
+            setActivePets(snapshot.size.toString());
+        }
+      }, (error) => {
+        console.warn("Firebase config is mock/placeholder. Connect your vital keys to enable live sync.");
+      });
+      return () => unsubscribe();
+    } catch(err) {
+      console.warn("Firestore listener init failed:", err);
+    }
+  }, []);
+
   return (
     <div className={styles.overviewContainer}>
       <header className={styles.pageHeader}>
@@ -37,7 +58,7 @@ export default function Overview() {
       </header>
 
       <div className={styles.statsGrid}>
-        <StatCard title="Active Pets" value="12,489" change="+14.5%" icon={Heart} trend="up" />
+        <StatCard title="Active Pets" value={activePets} change="+14.5%" icon={Heart} trend="up" />
         <StatCard title="Vet Appointments" value="842" change="+5.2%" icon={Calendar} trend="up" />
         <StatCard title="Successful Adoptions" value="156" change="-2.1%" icon={Users} trend="down" />
         <StatCard title="Health Alerts" value="23" change="-12.5%" icon={Activity} trend="down" />
