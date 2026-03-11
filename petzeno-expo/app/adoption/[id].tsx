@@ -10,7 +10,7 @@ import {
   Alert,
   Linking,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useCommunity } from "@/context/CommunityContext";
@@ -33,20 +33,39 @@ export default function AdoptionDetailScreen() {
     );
   }
 
-  const handleAdopt = () => {
-    Alert.alert(
-      `Adopt ${pet.name}`,
-      `Contact ${pet.shelterName} to proceed with the adoption.\n\nAdoption Fee: ${pet.adoptionFee === 0 ? "Free" : `₹${pet.adoptionFee}`}`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Contact Shelter",
-          onPress: () => Linking.openURL(`tel:${pet.shelterContact}`),
-        },
-      ]
-    );
-    if (Platform.OS !== "web") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  const handleAdopt = async () => {
+    try {
+      const applicationData = {
+        listingId: pet.id,
+        shelterId: '65f1234567890abcdef99999', // Mock Shelter ObjectId
+        userId: 'dev_user_123',
+        userName: 'Rahul',
+        userEmail: 'rahul@example.com',
+        userPhone: '9876543210',
+        petName: pet.name,
+        message: `I would like to adopt ${pet.name}. Please let me know the process.`
+      };
+
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/adoptions/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(applicationData)
+      });
+
+      if (!response.ok) throw new Error('Application failed');
+
+      if (Platform.OS !== "web") {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+
+      Alert.alert(
+        "Application Sent! ❤️",
+        `Your application for ${pet.name} has been sent to ${pet.shelterName}. They will review it and contact you soon.`,
+        [{ text: "OK", onPress: () => router.back() }]
+      );
+    } catch (err) {
+      console.error('Adoption error:', err);
+      Alert.alert("Error", "Could not send application. Please try again.");
     }
   };
 

@@ -244,55 +244,130 @@ function generateId(prefix: string): string {
   return `${prefix}_${Date.now()}${Math.random().toString(36).substr(2, 9)}`;
 }
 
+import { getApiUrl } from "@/lib/query-client";
+
 export function CommunityProvider({ children }: { children: ReactNode }) {
-  const [posts, setPosts] = useState<Post[]>(DEMO_POSTS);
-  const [adoptionPets] = useState<AdoptionPet[]>(DEMO_ADOPTION_PETS);
-  const [lostFoundPets, setLostFoundPets] = useState<LostFoundPet[]>(DEMO_LOST_FOUND);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [adoptionPets, setAdoptionPets] = useState<AdoptionPet[]>([]);
+  const [lostFoundPets, setLostFoundPets] = useState<LostFoundPet[]>([]);
+  const apiUrl = getApiUrl();
 
-  const addPost = (postData: Omit<Post, "id" | "timestamp" | "likes" | "comments">) => {
-    const newPost: Post = {
-      ...postData,
-      id: generateId("post"),
-      timestamp: new Date().toISOString(),
-      likes: [],
-      comments: [],
-    };
-    setPosts((prev) => [newPost, ...prev]);
+  useEffect(() => {
+    refreshData();
+  }, []);
+
+  const refreshData = async () => {
+    try {
+      const postsRes = await fetch(`${apiUrl}/api/community`);
+      const rawPosts = await postsRes.json();
+      // Map backend to frontend schema
+      const mappedPosts = rawPosts.map((p: any) => ({
+        id: p._id,
+        userId: p.authorId,
+        userName: p.author,
+        userAvatar: p.authorAvatar || "🐾",
+        petName: p.petName || "Pet",
+        content: p.text,
+        image: p.image,
+        likes: p.likes || [],
+        comments: p.comments || [],
+        timestamp: p.createdAt
+      }));
+      setPosts(mappedPosts);
+
+      const adoptRes = await fetch(`${apiUrl}/api/listings?type=adoption`);
+      const rawAdopt = await adoptRes.json();
+      const mappedAdopt = rawAdopt.map((p: any) => ({
+        id: p._id,
+        name: p.name,
+        species: p.species || "dog",
+        breed: p.breed || "Mix",
+        age: p.age || "Unknown",
+        gender: "male", // default or add to backend
+        description: p.description,
+        shelterName: "Petzeno Shelter",
+        location: p.location || "Local",
+        status: p.status === "Available" ? "available" : "adopted",
+        image: p.imageUrl || "🐶",
+        vaccinated: true,
+        adoptionFee: 0
+      }));
+      setAdoptionPets(mappedAdopt);
+
+      const lfRes = await fetch(`${apiUrl}/api/listings?type=lost-found`);
+      const rawLF = await lfRes.json();
+      const mappedLF = rawLF.map((p: any) => ({
+        id: p._id,
+        type: p.status === "Found" ? "found" : "lost",
+        petName: p.name,
+        species: p.species,
+        breed: p.breed,
+        description: p.description,
+        location: p.location,
+        status: "active",
+        image: p.imageUrl || "🐾",
+        contactPhone: p.contactPhone || "999-999-9999",
+        userId: "user_web"
+      }));
+      setLostFoundPets(mappedLF);
+    } catch (err) {
+      console.error("Community fetch failed:", err);
+    }
   };
 
-  const toggleLike = (postId: string, userId: string) => {
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              likes: p.likes.includes(userId)
-                ? p.likes.filter((id) => id !== userId)
-                : [...p.likes, userId],
-            }
-          : p
-      )
-    );
+  const addPost = async (postData: Omit<Post, "id" | "timestamp" | "likes" | "comments">) => {
+    try {
+      await fetch(`${apiUrl}/api/community`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          authorId: postData.userId,
+          author: postData.userName,
+          authorAvatar: postData.userAvatar,
+          petName: postData.petName,
+          text: postData.content,
+        })
+      });
+      refreshData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const addComment = (postId: string, comment: Omit<Comment, "id" | "timestamp">) => {
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              comments: [
-                ...p.comments,
-                { ...comment, id: generateId("cmt"), timestamp: new Date().toISOString() },
-              ],
-            }
-          : p
-      )
-    );
+  const toggleLike = async (postId: string, userId: string) => {
+    // Simple local toggle for immediate feedback
+    setPosts(prev => prev.map(p => p.id === postId ? {
+      ...p,
+      likes: p.likes.includes(userId) ? p.likes.filter(id => id !== userId) : [...p.likes, userId]
+    } : p));
+    // In real app, send PATCH to backend
   };
 
-  const addLostFound = (pet: Omit<LostFoundPet, "id">) => {
-    setLostFoundPets((prev) => [{ ...pet, id: generateId("lf") }, ...prev]);
+  const addComment = async (postId: string, comment: Omit<Comment, "id" | "timestamp">) => {
+    // Similarly implement backend call
+    refreshData();
+  };
+
+  const addLostFound = async (pet: Omit<LostFoundPet, "id">) => {
+    try {
+      await fetch(`${apiUrl}/api/listings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'lost-found',
+          name: pet.petName,
+          species: pet.species,
+          breed: pet.breed,
+          location: pet.location,
+          description: pet.description,
+          contactPhone: pet.contactPhone,
+          status: pet.type === 'lost' ? 'Lost' : 'Found'
+        })
+      });
+      refreshData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const updateLostFoundStatus = (id: string, status: "active" | "resolved") => {

@@ -247,22 +247,48 @@ export function PetProvider({ children }: { children: ReactNode }) {
 
   const loadData = async () => {
     try {
-      const [petsData, aptsData, notifsData] = await Promise.all([
+      const [petsData, notifsData] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEYS.pets),
-        AsyncStorage.getItem(STORAGE_KEYS.appointments),
         AsyncStorage.getItem(STORAGE_KEYS.notifications),
       ]);
       setPets(petsData ? JSON.parse(petsData) : DEMO_PETS);
-      setAppointments(aptsData ? JSON.parse(aptsData) : DEMO_APPOINTMENTS);
       setNotifications(notifsData ? JSON.parse(notifsData) : DEMO_NOTIFICATIONS);
+      
+      // Fetch Real-time Appointments from Backend
+      fetchAppointments();
     } catch {
       setPets(DEMO_PETS);
-      setAppointments(DEMO_APPOINTMENTS);
       setNotifications(DEMO_NOTIFICATIONS);
     } finally {
       setLoaded(true);
     }
   };
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/appointments?userId=dev_user_123`);
+      if (response.ok) {
+        const data = await response.json();
+        // Transform backend _id to id and ensure status consistency
+        const transformed = data.map((a: any) => ({
+          ...a,
+          id: a._id,
+        }));
+        setAppointments(transformed);
+      }
+    } catch (err) {
+      console.log('Failed to fetch appointments');
+      setAppointments(DEMO_APPOINTMENTS);
+    }
+  };
+
+  // Poll for status updates
+  useEffect(() => {
+    if (loaded) {
+      const interval = setInterval(fetchAppointments, 15000);
+      return () => clearInterval(interval);
+    }
+  }, [loaded]);
 
   const addPet = (petData: Omit<Pet, "id" | "createdAt" | "vaccinations" | "medicalHistory">) => {
     const newPet: Pet = {
@@ -309,9 +335,22 @@ export function PetProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const addAppointment = (appointment: Omit<Appointment, "id">) => {
-    const newAppt: Appointment = { ...appointment, id: generateId("apt") };
-    setAppointments((prev) => [...prev, newAppt]);
+  const addAppointment = async (appointment: Omit<Appointment, "id">) => {
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/appointments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...appointment, userId: 'dev_user_123' })
+      });
+      if (response.ok) {
+        fetchAppointments();
+      }
+    } catch (err) {
+      console.error('Failed to add appointment:', err);
+      // Fallback to local
+      const newAppt: Appointment = { ...appointment, id: generateId("apt") };
+      setAppointments((prev) => [...prev, newAppt]);
+    }
   };
 
   const updateAppointment = (id: string, updates: Partial<Appointment>) => {

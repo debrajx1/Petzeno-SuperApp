@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Send, Bot, User, Sparkles } from 'lucide-react-native';
+import { getApiUrl } from '@/lib/query-client';
 
 
 
@@ -32,8 +33,9 @@ export default function AIHealthChatScreen() {
     setIsTyping(true);
 
     try {
-      // Use the Custom Express API deployed locally
-      const response = await fetch('http://10.0.2.2:5000/api/chat', {
+      // Use the Custom Express API dynamically
+      const baseUrl = getApiUrl();
+      const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: [...messages, userMessage] })

@@ -39,7 +39,7 @@ type CartContextType = {
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  placeOrder: (deliveryAddress: string) => Order;
+  placeOrder: (deliveryAddress: string) => Promise<Order>;
   cartTotal: number;
   cartCount: number;
 };
@@ -284,23 +284,77 @@ export function CartProvider({ children }: { children: ReactNode }) {
     AsyncStorage.removeItem("petcare_cart");
   };
 
-  const placeOrder = (deliveryAddress: string): Order => {
-    const order: Order = {
-      id: generateId("ord"),
-      items: [...cartItems],
-      total: cartTotal,
-      status: "processing",
-      orderDate: new Date().toISOString(),
-      deliveryAddress,
+  const placeOrder = async (deliveryAddress: string): Promise<Order> => {
+    const orderData = {
+      userId: 'dev_user_123',
+      items: cartItems.map(item => ({
+        sku: item.product.id,
+        name: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity
+      })),
+      totalAmount: cartTotal,
+      businessId: '65f1234567890abcdef67890', // Mock Store ObjectId
+      shippingAddress: deliveryAddress,
+      paymentStatus: 'paid' // Mocking payment success
     };
-    setOrders((prev) => {
-      const updated = [order, ...prev];
-      saveOrders(updated);
-      return updated;
-    });
-    clearCart();
-    return order;
+
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) throw new Error('Order placement failed');
+      const savedOrder = await response.json();
+
+      const order: Order = {
+        id: savedOrder._id,
+        items: [...cartItems],
+        total: cartTotal,
+        status: "processing",
+        orderDate: new Date().toISOString(),
+        deliveryAddress,
+      };
+
+      setOrders((prev) => {
+        const updated = [order, ...prev];
+        saveOrders(updated);
+        return updated;
+      });
+      clearCart();
+      return order;
+    } catch (err) {
+      console.error('Order error:', err);
+      throw err;
+    }
   };
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/orders?userId=dev_user_123`);
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data.map((o: any) => ({
+          id: o._id,
+          items: o.items,
+          total: o.totalAmount,
+          status: o.status,
+          orderDate: o.createdAt,
+          deliveryAddress: o.shippingAddress
+        })));
+      }
+    } catch (err) {
+      console.log('Failed to fetch orders from server');
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders(); // Initial fetch
+    const interval = setInterval(fetchOrders, 20000);
+    return () => clearInterval(interval);
+  }, []);
 
   const cartTotal = cartItems.reduce(
     (sum, item) => sum + item.product.price * item.quantity,

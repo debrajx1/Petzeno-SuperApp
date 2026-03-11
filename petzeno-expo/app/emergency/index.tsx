@@ -97,6 +97,24 @@ export default function EmergencyScreen() {
       await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
     }
     setAlertSent(true);
+
+    // REAL-TIME SOS: Inform the backend
+    try {
+      await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/sos/report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: 'mobile_user_001',
+          userName: 'Debraj User',
+          location: { address: locationText },
+          severity: 'critical',
+          petDetails: { name: 'Buddy', species: 'Dog' }
+        })
+      });
+    } catch (err) {
+      console.warn('SOS sync failed, but local alert is active.');
+    }
+
     addNotification({
       type: "emergency",
       title: "SOS Alert Sent",

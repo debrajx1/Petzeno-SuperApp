@@ -80,23 +80,40 @@ export default function BookAppointmentScreen() {
     try {
       const date = days[selectedDay];
       const dateStr = date.toISOString().split("T")[0];
-      addAppointment({
+      
+      const appointmentData = {
+        userId: 'dev_user_123',
         petId: selectedPetId,
         petName: selectedPet?.name || "",
-        vetName: params.vetName || "Dr. Available",
-        clinicName: params.clinicName || "Veterinary Clinic",
+        businessId: '65f1234567890abcdef12345',
+        businessName: params.clinicName || "Global Vet Clinic",
+        clinicName: params.clinicName || "Global Vet Clinic",
         clinicAddress: params.clinicAddress || "",
+        vetName: params.vetName || "Dr. Available",
         date: dateStr,
         time: selectedTime,
         type: selectedType,
-        status: "upcoming",
+        status: "upcoming" as const,
         notes,
+      };
+
+      // REAL-TIME SYNC: Post to Backend
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/appointments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(appointmentData)
       });
+
+      if (!response.ok) throw new Error('Booking failed');
+
+      addAppointment(appointmentData);
+      
       addNotification({
         type: "appointment",
         title: "Appointment Booked",
         message: `${selectedPet?.name}'s ${selectedType} appointment confirmed for ${date.toLocaleDateString("en-IN", { day: "numeric", month: "short" })} at ${selectedTime}`,
       });
+
       if (Platform.OS !== "web") {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
