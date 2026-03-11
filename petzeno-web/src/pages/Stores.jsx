@@ -26,16 +26,43 @@ const StatCard = ({ title, value, icon: Icon, colorClass }) => (
 
 export default function Stores() {
   const [activeTab, setActiveTab] = useState('Inventory');
-  const [inventory, setInventory] = useState([]);
+  const [inventory, setInventory] = useState(INVENTORY_DATA);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching inventory from DB
-    setTimeout(() => {
-      setInventory(INVENTORY_DATA);
-      setLoading(false);
-    }, 600);
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/orders');
+        if (response.ok) {
+          const data = await response.json();
+          setOrders(data);
+        }
+      } catch (err) {
+        console.log('Error fetching orders');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
+    const interval = setInterval(fetchOrders, 10000); // Poll every 10s
+    return () => clearInterval(interval);
   }, []);
+
+  const handleProcessOrder = async (id, status) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        setOrders(prev => prev.map(o => o._id === id ? { ...o, status } : o));
+      }
+    } catch (err) {
+      console.log('Order update failed');
+    }
+  };
 
   return (
     <div className={styles.storeContainer}>
@@ -124,12 +151,60 @@ export default function Stores() {
           </>
         )}
 
-        {activeTab !== 'Inventory' && (
+        {activeTab === 'Orders' && (
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Address</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.length === 0 ? (
+                  <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>No orders found.</td></tr>
+                ) : orders.map(order => (
+                  <tr key={order._id}>
+                    <td className={styles.sku}>ORD-{order._id.slice(-6).toUpperCase()}</td>
+                    <td className={styles.itemName}>
+                      {order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
+                    </td>
+                    <td className={styles.price}>₹{order.totalAmount}</td>
+                    <td>{order.shippingAddress}</td>
+                    <td>
+                      <span className={`${styles.statusBadge} ${styles[order.status.toLowerCase()]}`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td>
+                      {order.status === 'pending' ? (
+                        <button 
+                          className={styles.primaryAction} 
+                          style={{ padding: '6px 12px', fontSize: '12px' }}
+                          onClick={() => handleProcessOrder(order._id, 'processing')}
+                        >
+                          Ship Now
+                        </button>
+                      ) : (
+                        <button className={styles.textLink} disabled>{order.status}</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {activeTab !== 'Inventory' && activeTab !== 'Orders' && (
           <div className={styles.placeholderContent}>
             <p>{activeTab} module is currently under development.</p>
           </div>
         )}
-      </div>
     </div>
   );
 }

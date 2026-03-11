@@ -1,0 +1,152 @@
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--color-text-muted);
+}
+
+.requestGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  padding: 2rem;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.roleBadge {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.time {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.businessName {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.applicantInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--color-text-main);
+}
+
+.messageBox {
+  background: rgba(0, 0, 0, 0.03);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+}
+
+.messageBox p {
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.approveBtn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.approveBtn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+.rejectBtn {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+  padding: 0.75rem;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.rejectBtn:hover {
+  background: #fef2f2;
+}
+
+.actionNote {
+  background: #f0fdf4;
+  color: #166534;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #bbfcbd;
+}
+
+.loading, .emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 5rem;
+  color: var(--color-text-muted);
+}

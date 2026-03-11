@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Users, Activity, Heart, Calendar } from 'lucide-react';
+import { Users, Activity, Heart, Calendar, AlertCircle, MapPin, Clock } from 'lucide-react';
 import styles from './Overview.module.css';
 
 const data = [
@@ -28,26 +28,93 @@ const StatCard = ({ title, value, change, icon: Icon, trend }) => (
   </div>
 );
 
-export default function Overview() {
-  const [activePets, setActivePets] = useState("12,489");
 
-  // In a real app, this would fetch from the new Express backend API
+export default function Overview() {
+  const user = JSON.parse(localStorage.getItem('petzeno_user') || '{}');
+  const [stats, setStats] = useState({
+    pets: '0',
+    appointments: '0',
+    adoptions: '0',
+    healthAlerts: '0'
+  });
+  const [sosAlerts, setSosAlerts] = useState([]);
+
+  const getRoleSubtext = () => {
+    switch(user.role) {
+      case 'vet': return `Managing health records and clinic schedules for ${user.businessName || 'your clinic'}.`;
+      case 'shelter': return `Tracking adoptions and pet capacity for ${user.businessName || 'your shelter'}.`;
+      case 'store': return `Monitoring inventory and orders for ${user.businessName || 'your store'}.`;
+      case 'admin': return "Platform-wide management and ecosystem monitoring.";
+      default: return "Welcome to the Petzeno ecosystem.";
+    }
+  };
+
   useEffect(() => {
-    // setActivePets(fetchedData);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const businessId = user._id; // Logged in provider's ID
+        
+        // Fetch Dashboard Stats from Backend
+        const [petRes, aptRes, orderRes, appRes, sosRes] = await Promise.all([
+          fetch('http://localhost:5000/api/listings?type=adoption'),
+          fetch(`http://localhost:5000/api/appointments${user.role !== 'admin' ? `?businessId=${businessId}` : ''}`),
+          fetch(`http://localhost:5000/api/orders${user.role !== 'admin' ? `?businessId=${businessId}` : ''}`),
+          fetch(`http://localhost:5000/api/adoptions/applications${user.role !== 'admin' ? `?shelterId=${businessId}` : ''}`),
+          fetch('http://localhost:5000/api/sos/active')
+        ]);
+
+        const pets = await petRes.json();
+        const apts = await aptRes.json();
+        const orders = await orderRes.json();
+        const apps = await appRes.json();
+        const sos = await sosRes.json();
+        
+        setStats({
+          pets: pets.length.toString(),
+          appointments: apts.length.toString(),
+          adoptions: apps.filter(a => a.status === 'approved').length.toString(),
+          healthAlerts: sos.length.toString()
+        });
+
+        setSosAlerts(sos);
+
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 10000); 
+    return () => clearInterval(interval);
+  }, [user._id, user.role]);
+
+  const handleSosRespond = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/sos/respond/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ responderId: user._id })
+      });
+      if (res.ok) {
+        setSosAlerts(prev => prev.map(a => a._id === id ? { ...a, status: 'responding' } : a));
+      }
+    } catch (err) {
+      console.error('SOS response failed:', err);
+    }
+  };
 
   return (
     <div className={styles.overviewContainer}>
       <header className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>Dashboard Overview</h1>
-        <p className={styles.pageSubtext}>Here's what's happening in the Petzeno ecosystem today.</p>
+        <h1 className={styles.pageTitle}>Welcome back, {user.name?.split(' ')[0] || 'Partner'}!</h1>
+        <p className={styles.pageSubtext}>{getRoleSubtext()}</p>
       </header>
 
       <div className={styles.statsGrid}>
-        <StatCard title="Active Pets" value={activePets} change="+14.5%" icon={Heart} trend="up" />
-        <StatCard title="Vet Appointments" value="842" change="+5.2%" icon={Calendar} trend="up" />
-        <StatCard title="Successful Adoptions" value="156" change="-2.1%" icon={Users} trend="down" />
-        <StatCard title="Health Alerts" value="23" change="-12.5%" icon={Activity} trend="down" />
+        <StatCard title="Active Pets" value={stats.pets} change="+14.5%" icon={Heart} trend="up" />
+        <StatCard title="Vet Appointments" value={stats.appointments} change="+5.2%" icon={Calendar} trend="up" />
+        <StatCard title="Successful Adoptions" value={stats.adoptions} change="-2.1%" icon={Users} trend="down" />
+        <StatCard title="Health Alerts" value={stats.healthAlerts} change="-12.5%" icon={Activity} trend="down" />
       </div>
 
       <div className={styles.mainContent}>
@@ -87,6 +154,38 @@ export default function Overview() {
         </div>
 
         <div className={`${styles.insightsSection} glass-effect`}>
+          <div className={styles.sosHeader}>
+            <h2 className={styles.sectionTitle} style={{ color: 'var(--color-danger)' }}>🔴 Live SOS Monitor</h2>
+            <span className={styles.liveBadge}>LIVE</span>
+          </div>
+          
+          <div className={styles.sosList}>
+            {sosAlerts.length === 0 ? (
+              <p className={styles.emptySos}>No active emergency alerts at the moment.</p>
+            ) : sosAlerts.map(alert => (
+              <div key={alert._id} className={styles.sosItem}>
+                <div className={styles.sosMain}>
+                  <div className={styles.sosIcon}><AlertCircle size={20} /></div>
+                  <div className={styles.sosInfo}>
+                    <p className={styles.sosUser}>{alert.userName} <span className={styles.sosPet}>({alert.petDetails?.name || 'Pet'})</span></p>
+                    <p className={styles.sosLocation}><MapPin size={12} /> {alert.location?.address}</p>
+                  </div>
+                </div>
+                <div className={styles.sosFooter}>
+                   <span className={styles.sosTime}><Clock size={12} /> {new Date(alert.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                   <button 
+                     className={styles.respondBtn}
+                     onClick={() => handleSosRespond(alert._id)}
+                   >
+                     Respond Now
+                   </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <hr className={styles.divider} />
+
           <h2 className={styles.sectionTitle}>✨ AI Insights</h2>
           <div className={styles.insightList}>
             <div className={styles.insightItem}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, MoreVertical, Calendar, Clock, Plus, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Filter, Plus, Users, Calendar, Clock, MapPin, CheckCircle, MoreVertical } from 'lucide-react';
 import { getMockData } from '../lib/mockDb';
 import { format } from 'date-fns';
 import styles from './Clinics.module.css';
@@ -18,14 +18,49 @@ export default function Clinics() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // In a real app this would fetch "appointments", for mock DB we'll just use the static list for clinics tab
-    // since the mock DB currently only holds clinics, shelters, and stores metadata.
-    // Let's pretend we fetched this:
-    setTimeout(() => {
-      setAppointments(appointmentsData);
-      setLoading(false);
-    }, 600);
+    const fetchAppointments = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/appointments');
+        if (response.ok) {
+          const data = await response.json();
+          // Transform backend data to match table format
+          const transformed = data.map(apt => ({
+            id: apt._id,
+            petName: apt.petName,
+            species: 'Dog', // Defaulting to Dog for now as per schema
+            owner: 'Mobile User',
+            date: new Date(`${apt.date}T${apt.time}:00`),
+            reason: apt.notes || apt.type,
+            status: apt.status.charAt(0).toUpperCase() + apt.status.slice(1), // Capitalize
+            doc: 'Dr. Jane Smith'
+          }));
+          if (transformed.length > 0) setAppointments(transformed);
+        }
+      } catch (err) {
+        console.log('Using local appointment data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAppointments();
+    const interval = setInterval(fetchAppointments, 10000); // Polling for real-time
+    return () => clearInterval(interval);
   }, []);
+
+  const handleStatusUpdate = async (id, newStatus) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/appointments/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        setAppointments(prev => prev.map(a => a.id === id ? { ...a, status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1) } : a));
+      }
+    } catch (err) {
+      console.error('Update failed:', err);
+    }
+  };
 
   return (
     <div className={styles.clinicsContainer}>
@@ -101,13 +136,24 @@ export default function Clinics() {
                       <td>{apt.doc}</td>
                       <td>
                         <span className={`${styles.statusBadge} ${styles[apt.status.toLowerCase()]}`}>
-                          {apt.status === 'Confirmed' && <CheckCircle size={12} />}
+                          {(apt.status === 'Confirmed' || apt.status === 'Upcoming') && <CheckCircle size={12} />}
                           {apt.status === 'Pending' && <Clock size={12} />}
                           {apt.status}
                         </span>
                       </td>
                       <td>
-                        <button className={styles.iconAction}><MoreVertical size={18} /></button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          {apt.status === 'Upcoming' && (
+                            <button 
+                              className={styles.secondaryBtn}
+                              style={{ padding: '4px 8px', fontSize: '12px' }}
+                              onClick={() => handleStatusUpdate(apt.id, 'confirmed')}
+                            >
+                              Confirm
+                            </button>
+                          )}
+                          <button className={styles.iconAction}><MoreVertical size={18} /></button>
+                        </div>
                       </td>
                     </tr>
                   ))}

@@ -5,20 +5,29 @@ import Clinics from './pages/Clinics';
 import Shelters from './pages/Shelters';
 import Stores from './pages/Stores';
 import Community from './pages/Community';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import AdminRequests from './pages/AdminRequests';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="/overview" replace />} />
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
+        
+        {/* Dashboard Routes - Protected (Simulated Verified Access) */}
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="/dashboard/overview" replace />} />
           <Route path="overview" element={<Overview />} />
           <Route path="clinics" element={<Clinics />} />
           <Route path="shelters" element={<Shelters />} />
           <Route path="stores" element={<Stores />} />
           <Route path="community" element={<Community />} />
-          <Route path="*" element={<Overview />} />
+          <Route path="admin-requests" element={<AdminRequests />} />
         </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

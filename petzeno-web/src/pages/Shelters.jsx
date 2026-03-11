@@ -1,29 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Heart, MapPin, Bone, Phone } from 'lucide-react';
-import { getMockData } from '../lib/mockDb';
+import { Search, Filter, Plus, Heart, MapPin, Bone, Phone } from 'lucide-react';
+import { getListings } from '../lib/mockDb';
 import styles from './Shelters.module.css';
-
-const MOCK_PETS = [
-  { id: 1, name: 'Bella', type: 'Dog', breed: 'Golden Retriever', age: '2 yrs', location: 'City Center Shelter', status: 'Available', image: '🐶' },
-  { id: 2, name: 'Luna', type: 'Cat', breed: 'Siamese', age: '1 yr', location: 'Northside Rescue', status: 'Pending Adoption', image: '🐱' },
-  { id: 3, name: 'Charlie', type: 'Dog', breed: 'Beagle Mix', age: '4 mos', location: 'City Center Shelter', status: 'Available', image: '🐕' },
-  { id: 4, name: 'Milo', type: 'Cat', breed: 'Domestic Shorthair', age: '3 yrs', location: 'Eastway Animal Haven', status: 'Adopted', image: '🐈' },
-  { id: 5, name: 'Max', type: 'Dog', breed: 'German Shepherd', age: '5 yrs', location: 'City Center Shelter', status: 'Available', image: '🐕‍🦺' },
-  { id: 6, name: 'Daisy', type: 'Rabbit', breed: 'Holland Lop', age: '1 yr', location: 'Small Pet Rescue', status: 'Available', image: '🐰' },
-];
 
 export default function Shelters() {
   const [activeTab, setActiveTab] = useState('Available Pets');
   const [pets, setPets] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching shelter pets from DB
-    setTimeout(() => {
-      setPets(MOCK_PETS);
-      setLoading(false);
-    }, 600);
+    const fetchData = async () => {
+      try {
+        // Fetch Pets
+        const petRes = await fetch('http://localhost:5000/api/listings?type=adoption');
+        if (petRes.ok) setPets(await petRes.json());
+
+        // Fetch Applications
+        const appRes = await fetch('http://localhost:5000/api/adoptions/applications');
+        if (appRes.ok) setApplications(await appRes.json());
+
+      } catch (err) {
+        console.error('Error fetching shelter data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+    const interval = setInterval(fetchData, 10000);
+    return () => clearInterval(interval);
   }, []);
+
+  const handleReviewApp = async (id, status) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/adoptions/applications/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        setApplications(prev => prev.map(a => a._id === id ? { ...a, status } : a));
+      }
+    } catch (err) {
+      console.error('App review failed:', err);
+    }
+  };
 
   return (
     <div className={styles.shelterContainer}>
@@ -72,9 +93,9 @@ export default function Shelters() {
           {loading ? (
             <div style={{ padding: '2rem', textAlign: 'center', width: '100%' }}>Loading pets...</div>
           ) : pets.map(pet => (
-            <div key={pet.id} className={`${styles.petCard} glass-effect`}>
+            <div key={pet._id || pet.id} className={`${styles.petCard} glass-effect`}>
               <div className={styles.petImagePlaceholder}>
-                <span className={styles.emoji}>{pet.image}</span>
+                <span className={styles.emoji}>{pet.imageUrl || pet.image}</span>
                 <span className={`${styles.statusBadge} ${styles[pet.status.replace(/\s+/g, '').toLowerCase()]}`}>
                   {pet.status}
                 </span>
@@ -100,7 +121,56 @@ export default function Shelters() {
         </div>
       )}
 
-      {activeTab !== 'Available Pets' && (
+      {activeTab === 'Applications' && (
+        <div className={styles.tableWrapper} style={{ backgroundColor: 'transparent', padding: 0 }}>
+          <table className={styles.table} style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--color-border)' }}>
+                <th style={{ padding: '12px' }}>Applicant</th>
+                <th style={{ padding: '12px' }}>Pet Name</th>
+                <th style={{ padding: '12px' }}>Contact</th>
+                <th style={{ padding: '12px' }}>Status</th>
+                <th style={{ padding: '12px' }}>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications.length === 0 ? (
+                <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>No applications received yet.</td></tr>
+              ) : applications.map(app => (
+                <tr key={app._id} style={{ borderBottom: '1px solid var(--color-border)' }}>
+                  <td style={{ padding: '12px' }}>
+                    <div style={{ fontWeight: '600' }}>{app.userName}</div>
+                    <div style={{ fontSize: '12px', opacity: 0.7 }}>{app.userEmail}</div>
+                  </td>
+                  <td style={{ padding: '12px' }}>{app.petName}</td>
+                  <td style={{ padding: '12px' }}>{app.userPhone}</td>
+                  <td style={{ padding: '12px' }}>
+                    <span className={`${styles.statusBadge} ${styles[app.status.toLowerCase()]}`}>
+                      {app.status}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px' }}>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      {app.status === 'pending' && (
+                        <button 
+                          className={styles.secondaryBtn}
+                          style={{ padding: '4px 8px', fontSize: '11px' }}
+                          onClick={() => handleReviewApp(app._id, 'approved')}
+                        >
+                          Approve
+                        </button>
+                      )}
+                      <button className={styles.textLink}>Review</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {activeTab !== 'Available Pets' && activeTab !== 'Applications' && (
         <div className={`${styles.placeholderContent} glass-effect`}>
           <p>{activeTab} module is currently under development.</p>
         </div>
