@@ -205,6 +205,7 @@ export default function Stores() {
             <p>{activeTab} module is currently under development.</p>
           </div>
         )}
+      </div>
     </div>
   );
 }
