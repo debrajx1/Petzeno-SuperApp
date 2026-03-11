@@ -97,7 +97,7 @@ export default function HomeScreen() {
             Good morning 👋
           </Text>
           <Text style={[styles.headerTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
-            PetZeno
+            PetZeno <Text style={{ fontSize: 14, color: '#AF52DE', fontFamily: 'Inter_700Bold' }}>✨ v2.0 Live (OTA)</Text>
           </Text>
         </View>
         <TouchableOpacity

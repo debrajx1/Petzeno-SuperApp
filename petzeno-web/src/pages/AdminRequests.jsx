@@ -14,7 +14,7 @@ export default function AdminRequests() {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/auth/admin/requests');
+      const response = await fetch('https://petzeno-backend.onrender.com/api/auth/admin/requests');
       const data = await response.json();
       setRequests(data);
     } catch (err) {
@@ -27,7 +27,7 @@ export default function AdminRequests() {
   const handleApprove = async (id) => {
     setActionStatus({ id, msg: 'Approving...' });
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/admin/approve/${id}`, {
+      const response = await fetch(`https://petzeno-backend.onrender.com/api/auth/admin/approve/${id}`, {
         method: 'POST'
       });
       const result = await response.json();

@@ -17,7 +17,7 @@ export default function AIHealthChatScreen() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const scrollViewRef = useRef();
+  const scrollViewRef = useRef<any>(null);
 
   const handleSend = async () => {
     if (!inputText.trim()) return;

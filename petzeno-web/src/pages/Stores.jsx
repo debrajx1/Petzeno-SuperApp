@@ -33,7 +33,7 @@ export default function Stores() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/orders');
+        const response = await fetch('https://petzeno-backend.onrender.com/api/orders');
         if (response.ok) {
           const data = await response.json();
           setOrders(data);
@@ -51,7 +51,7 @@ export default function Stores() {
 
   const handleProcessOrder = async (id, status) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/${id}`, {
+      const res = await fetch(`https://petzeno-backend.onrender.com/api/orders/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })

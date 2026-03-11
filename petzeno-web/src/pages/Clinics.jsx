@@ -20,7 +20,7 @@ export default function Clinics() {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/appointments');
+        const response = await fetch('https://petzeno-backend.onrender.com/api/appointments');
         if (response.ok) {
           const data = await response.json();
           // Transform backend data to match table format
@@ -49,7 +49,7 @@ export default function Clinics() {
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/appointments/${id}`, {
+      const res = await fetch(`https://petzeno-backend.onrender.com/api/appointments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })

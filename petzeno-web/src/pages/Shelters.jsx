@@ -13,11 +13,11 @@ export default function Shelters() {
     const fetchData = async () => {
       try {
         // Fetch Pets
-        const petRes = await fetch('http://localhost:5000/api/listings?type=adoption');
+        const petRes = await fetch('https://petzeno-backend.onrender.com/api/listings?type=adoption');
         if (petRes.ok) setPets(await petRes.json());
 
         // Fetch Applications
-        const appRes = await fetch('http://localhost:5000/api/adoptions/applications');
+        const appRes = await fetch('https://petzeno-backend.onrender.com/api/adoptions/applications');
         if (appRes.ok) setApplications(await appRes.json());
 
       } catch (err) {
@@ -33,7 +33,7 @@ export default function Shelters() {
 
   const handleReviewApp = async (id, status) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/adoptions/applications/${id}`, {
+      const res = await fetch(`https://petzeno-backend.onrender.com/api/adoptions/applications/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })

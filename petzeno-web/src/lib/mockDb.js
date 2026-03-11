@@ -1,7 +1,7 @@
 // A mock implementation of Firestore to run the app without 
 // This was a mock database layer for the hackathon
 // Now it's a proxy that fetches data from our real Node.js Express Backend
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://petzeno-backend.onrender.com/api';
 
 export async function getMockData(collectionName) {
   try {

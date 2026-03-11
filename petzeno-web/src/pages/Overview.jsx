@@ -56,11 +56,11 @@ export default function Overview() {
         
         // Fetch Dashboard Stats from Backend
         const [petRes, aptRes, orderRes, appRes, sosRes] = await Promise.all([
-          fetch('http://localhost:5000/api/listings?type=adoption'),
-          fetch(`http://localhost:5000/api/appointments${user.role !== 'admin' ? `?businessId=${businessId}` : ''}`),
-          fetch(`http://localhost:5000/api/orders${user.role !== 'admin' ? `?businessId=${businessId}` : ''}`),
-          fetch(`http://localhost:5000/api/adoptions/applications${user.role !== 'admin' ? `?shelterId=${businessId}` : ''}`),
-          fetch('http://localhost:5000/api/sos/active')
+          fetch('https://petzeno-backend.onrender.com/api/listings?type=adoption'),
+          fetch(`https://petzeno-backend.onrender.com/api/appointments${user.role !== 'admin' ? `?businessId=${businessId}` : ''}`),
+          fetch(`https://petzeno-backend.onrender.com/api/orders${user.role !== 'admin' ? `?businessId=${businessId}` : ''}`),
+          fetch(`https://petzeno-backend.onrender.com/api/adoptions/applications${user.role !== 'admin' ? `?shelterId=${businessId}` : ''}`),
+          fetch('https://petzeno-backend.onrender.com/api/sos/active')
         ]);
 
         const pets = await petRes.json();
@@ -90,7 +90,7 @@ export default function Overview() {
 
   const handleSosRespond = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/sos/respond/${id}`, {
+      const res = await fetch(`https://petzeno-backend.onrender.com/api/sos/respond/${id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ responderId: user._id })
