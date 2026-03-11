@@ -16,6 +16,7 @@ import { queryClient } from "@/lib/query-client";
 import { PetProvider } from "@/context/PetContext";
 import { CartProvider } from "@/context/CartContext";
 import { CommunityProvider } from "@/context/CommunityContext";
+import { useAutoUpdate } from "@/hooks/useAutoUpdate";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -43,6 +44,9 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  // Initialize OTA checking hook
+  useAutoUpdate();
+
   const [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
     Inter_500Medium,

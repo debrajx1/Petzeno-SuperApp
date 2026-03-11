@@ -160,13 +160,9 @@ router.post('/appointments', async (req, res) => {
 
 // Get Appointments (Dashboard / Mobile)
 router.get('/appointments', async (req, res) => {
-  const { businessId, userId } = req.query;
   try {
-    const query = {};
-    if (businessId) query.businessId = businessId;
-    if (userId) query.userId = userId;
-
-    const appointments = await Appointment.find(query).sort({ date: 1, time: 1 });
+    // Disabled filtering for hackathon real-time sync
+    const appointments = await Appointment.find({}).sort({ date: 1, time: 1 });
     res.json(appointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -197,9 +193,8 @@ router.post('/orders', async (req, res) => {
 
 // Get Orders (Dashboard)
 router.get('/orders', async (req, res) => {
-  const { businessId } = req.query;
   try {
-    const orders = await Order.find(businessId ? { businessId } : {}).sort({ createdAt: -1 });
+    const orders = await Order.find({}).sort({ createdAt: -1 });
     res.json(orders);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -230,9 +225,8 @@ router.post('/adoptions/apply', async (req, res) => {
 
 // Get Applications (Dashboard)
 router.get('/adoptions/applications', async (req, res) => {
-  const { shelterId } = req.query;
   try {
-    const apps = await AdoptionApplication.find(shelterId ? { shelterId } : {}).sort({ createdAt: -1 });
+    const apps = await AdoptionApplication.find({}).sort({ createdAt: -1 });
     res.json(apps);
   } catch (err) {
     res.status(500).json({ message: err.message });

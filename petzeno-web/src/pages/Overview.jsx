@@ -38,6 +38,19 @@ export default function Overview() {
     healthAlerts: '0'
   });
   const [sosAlerts, setSosAlerts] = useState([]);
+  const [greeting, setGreeting] = useState('Good morning');
+
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) setGreeting("Good morning");
+      else if (hour < 17) setGreeting("Good afternoon");
+      else setGreeting("Good evening");
+    };
+    updateGreeting();
+    const interval = setInterval(updateGreeting, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const getRoleSubtext = () => {
     switch(user.role) {
@@ -106,7 +119,7 @@ export default function Overview() {
   return (
     <div className={styles.overviewContainer}>
       <header className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>Welcome back, {user.name?.split(' ')[0] || 'Partner'}!</h1>
+        <h1 className={styles.pageTitle}>{greeting}, {user.name?.split(' ')[0] || 'Partner'}!</h1>
         <p className={styles.pageSubtext}>{getRoleSubtext()}</p>
       </header>
 

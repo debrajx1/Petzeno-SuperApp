@@ -21,9 +21,7 @@
       "package": "com.petzeno.app",
       "adaptiveIcon": {
         "backgroundColor": "#1E9E7E",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/android-icon-foreground.png"
       },
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
@@ -33,7 +31,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
       [

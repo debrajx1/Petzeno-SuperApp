@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -57,6 +57,21 @@ function getSpeciesIcon(species: string) {
 }
 
 export default function HomeScreen() {
+  const [greeting, setGreeting] = useState("Good morning");
+
+  useEffect(() => {
+    const updateGreeting = () => {
+      const hour = new Date().getHours();
+      if (hour < 12) setGreeting("Good morning");
+      else if (hour < 17) setGreeting("Good afternoon");
+      else setGreeting("Good evening");
+    };
+    updateGreeting();
+    // Re-check every minute so the greeting dynamically changes if left open
+    const interval = setInterval(updateGreeting, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const insets = useSafeAreaInsets();
@@ -94,7 +109,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View>
           <Text style={[styles.greeting, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
-            Good morning 👋
+            {greeting} 👋
           </Text>
           <Text style={[styles.headerTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
             PetZeno <Text style={{ fontSize: 14, color: '#AF52DE', fontFamily: 'Inter_700Bold' }}>✨ v2.0 Live (OTA)</Text>
