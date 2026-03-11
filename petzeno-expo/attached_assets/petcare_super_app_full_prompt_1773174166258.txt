@@ -1,0 +1,206 @@
+PETCARE SUPER APP – COMPLETE MOBILE APP REPLIT PROMPT (SECTIONS 1–13)
+
+This document combines all mobile app requirements including
+authentication, pet management, vet booking, maps, payments, community
+features, and the pet store marketplace.
+
+  --------------------------------------------------
+  1. AUTHENTICATION SCREENS
+  --------------------------------------------------
+  Features: - Google Sign In - Email + Password -
+  Logout
+
+  Use Firebase Authentication.
+
+  User Roles: pet_owner vet shelter admin
+  --------------------------------------------------
+
+2. HOME DASHBOARD
+
+Displays quick overview.
+
+Components: Pet summary card
+
+Example: Pet Name: Bruno Breed: Labrador Next Vaccine: 14 June
+
+Widgets: - upcoming vaccinations - upcoming vet appointment - emergency
+SOS - quick add pet
+
+  --------------------------------------------------
+  3. PET PROFILE SCREEN
+  --------------------------------------------------
+  Allows owners to manage pets.
+
+  Fields: petName breed age weight allergies
+  medicalHistory photo
+
+  Firestore collection: pets
+  --------------------------------------------------
+
+4. VACCINATION REMINDER SYSTEM
+
+Features: - vaccination history - next booster reminder - automated
+notifications
+
+Uses Firebase notifications.
+
+  --------------------------------------------------
+  5. GOOGLE MAPS VET FINDER
+  --------------------------------------------------
+  Use Google Maps API + Google Places API.
+
+  Features: - Map centered on user location - Nearby
+  veterinary clinics - Ratings and contact info
+
+  Search Query: “veterinary clinic near me”
+
+  Clinic card displays: Vet Clinic Name Address
+  Rating Call Book Appointment Navigate
+
+  Navigation opens Google Maps.
+  --------------------------------------------------
+
+6. VET APPOINTMENT BOOKING
+
+Flow: Find clinic ↓ Select clinic ↓ Choose time slot ↓ Confirm booking ↓
+Pay consultation fee
+
+Firestore collection: appointments
+
+Fields: appointmentId petId ownerId vetId date time status paymentStatus
+
+  --------------------------------------------------
+  7. STRIPE PAYMENT INTEGRATION
+  --------------------------------------------------
+  Used for: - vet consultation payments - adoption
+  fees
+
+  Firestore collection: payments
+
+  Fields: paymentId userId amount status timestamp
+  --------------------------------------------------
+
+8. ADOPTION MARKETPLACE
+
+Users browse pets for adoption.
+
+Card layout: Pet Name Age Breed Shelter Name Adopt Button
+
+Firestore collection: adoptions
+
+Fields: petName breed age description shelterId status
+
+  --------------------------------------------------
+  9. LOST AND FOUND PETS
+  --------------------------------------------------
+  Users report missing pets.
+
+  Features: - upload image - location tag -
+  description
+
+  Firestore collection: lostPets
+  --------------------------------------------------
+
+10. PET COMMUNITY FEED
+
+Users share posts.
+
+Features: - photos - captions - comments - likes
+
+Collections: posts comments likes
+
+  --------------------------------------------------
+  11. EMERGENCY SOS
+  --------------------------------------------------
+  Large SOS button.
+
+  Function: 1 Detect user location 2 Find nearest
+  vet clinic 3 Show directions via Google Maps 4
+  Notify emergency contacts
+  --------------------------------------------------
+
+12. NOTIFICATION CENTER
+
+Notifications include: - vaccination reminders - appointment
+confirmations - adoption updates - emergency alerts
+
+  --------------------------------------------------
+  13. PET STORE MARKETPLACE
+  --------------------------------------------------
+  Add a Store tab in navigation.
+
+  Updated navigation: Home Pets Map Store Community
+  Profile
+
+  Pet Store Categories: Food Medicine Toys
+  Accessories Grooming Health Supplements
+
+  Product Card: Product Image Product Name Price
+  Rating Stock Availability Add to Cart
+
+  Example: Dog Food Premium ₹899 ⭐ 4.5 [Add to
+  Cart]
+
+  Product Details Fields: productName description
+  price brand category rating stock productImage
+  sellerStore
+
+  Buttons: Add to Cart Buy Now
+  --------------------------------------------------
+
+SHOPPING CART
+
+Features: - increase quantity - remove item - subtotal - checkout
+
+Checkout Flow: Add Product → Cart → Checkout → Stripe Payment → Order
+Confirmation
+
+  ----------------------
+  DATABASE COLLECTIONS
+  ----------------------
+
+products: productId productName category price stock description image
+storeId rating createdAt
+
+orders: orderId userId productIds totalAmount paymentStatus
+deliveryAddress orderStatus timestamp
+
+cart: cartId userId productIds quantity subtotal
+
+stores: storeId storeName ownerId location rating contact
+
+  --------------------------------------------------
+  PET STORE MAP INTEGRATION
+  --------------------------------------------------
+  Search query: “pet store near me”
+
+  Markers display: Store Name Distance Rating
+  Open/Closed Navigate
+  --------------------------------------------------
+
+STORE OWNER FEATURES
+
+-   add products
+-   update inventory
+-   manage orders
+-   track stock
+
+  --------------------------------------------------
+  NOTIFICATIONS
+  --------------------------------------------------
+  - order confirmation - shipping updates - low
+  stock alerts - discount offers
+
+  --------------------------------------------------
+
+DEMO DATA
+
+Seed database with: 10 products 2 pet stores 3 orders
+
+  -----------------
+  FINAL ECOSYSTEM
+  -----------------
+
+Pet Health Management Vet Appointment Booking Vaccination Tracking Pet
+Adoption Lost & Found Alerts Pet Community Emergency SOS Pet Store
+Marketplace

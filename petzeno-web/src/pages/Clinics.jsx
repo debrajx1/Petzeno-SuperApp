@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, MoreVertical, Calendar, Clock, Plus, CheckCircle, XCircle } from 'lucide-react';
+import { getMockData } from '../lib/mockDb';
 import { format } from 'date-fns';
 import styles from './Clinics.module.css';
 
@@ -13,6 +14,18 @@ const appointmentsData = [
 
 export default function Clinics() {
   const [activeTab, setActiveTab] = useState('Appointments');
+  const [appointments, setAppointments] = useState(appointmentsData);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // In a real app this would fetch "appointments", for mock DB we'll just use the static list for clinics tab
+    // since the mock DB currently only holds clinics, shelters, and stores metadata.
+    // Let's pretend we fetched this:
+    setTimeout(() => {
+      setAppointments(appointmentsData);
+      setLoading(false);
+    }, 600);
+  }, []);
 
   return (
     <div className={styles.clinicsContainer}>
@@ -67,7 +80,9 @@ export default function Clinics() {
                   </tr>
                 </thead>
                 <tbody>
-                  {appointmentsData.map(apt => (
+                  {loading ? (
+                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading appointments...</td></tr>
+                  ) : appointments.map(apt => (
                     <tr key={apt.id}>
                       <td className={styles.aptId}>{apt.id}</td>
                       <td>

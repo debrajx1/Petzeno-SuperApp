@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Plus, Package, AlertTriangle, TrendingUp, DollarSign } from 'lucide-react';
+import { getMockData } from '../lib/mockDb';
 import styles from './Stores.module.css';
 
 const INVENTORY_DATA = [
@@ -25,6 +26,16 @@ const StatCard = ({ title, value, icon: Icon, colorClass }) => (
 
 export default function Stores() {
   const [activeTab, setActiveTab] = useState('Inventory');
+  const [inventory, setInventory] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate fetching inventory from DB
+    setTimeout(() => {
+      setInventory(INVENTORY_DATA);
+      setLoading(false);
+    }, 600);
+  }, []);
 
   return (
     <div className={styles.storeContainer}>
@@ -86,7 +97,9 @@ export default function Stores() {
                   </tr>
                 </thead>
                 <tbody>
-                  {INVENTORY_DATA.map(item => (
+                  {loading ? (
+                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading inventory...</td></tr>
+                  ) : inventory.map(item => (
                     <tr key={item.id}>
                       <td className={styles.sku}>{item.id}</td>
                       <td className={styles.itemName}>{item.name}</td>

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Heart, MapPin, Bone, Phone } from 'lucide-react';
+import { getMockData } from '../lib/mockDb';
 import styles from './Shelters.module.css';
 
 const MOCK_PETS = [
@@ -13,6 +14,16 @@ const MOCK_PETS = [
 
 export default function Shelters() {
   const [activeTab, setActiveTab] = useState('Available Pets');
+  const [pets, setPets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate fetching shelter pets from DB
+    setTimeout(() => {
+      setPets(MOCK_PETS);
+      setLoading(false);
+    }, 600);
+  }, []);
 
   return (
     <div className={styles.shelterContainer}>
@@ -58,7 +69,9 @@ export default function Shelters() {
 
       {activeTab === 'Available Pets' && (
         <div className={styles.petsGrid}>
-          {MOCK_PETS.map(pet => (
+          {loading ? (
+            <div style={{ padding: '2rem', textAlign: 'center', width: '100%' }}>Loading pets...</div>
+          ) : pets.map(pet => (
             <div key={pet.id} className={`${styles.petCard} glass-effect`}>
               <div className={styles.petImagePlaceholder}>
                 <span className={styles.emoji}>{pet.image}</span>

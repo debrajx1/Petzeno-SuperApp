@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Users, Activity, Heart, Calendar } from 'lucide-react';
-import { collection, onSnapshot, query, limit } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import styles from './Overview.module.css';
 
 const data = [
@@ -33,21 +31,9 @@ const StatCard = ({ title, value, change, icon: Icon, trend }) => (
 export default function Overview() {
   const [activePets, setActivePets] = useState("12,489");
 
-  // Simulated live connection to Firestore Database
+  // In a real app, this would fetch from the new Express backend API
   useEffect(() => {
-    try {
-      const q = query(collection(db, 'pets'), limit(10));
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-            setActivePets(snapshot.size.toString());
-        }
-      }, (error) => {
-        console.warn("Firebase config is mock/placeholder. Connect your vital keys to enable live sync.");
-      });
-      return () => unsubscribe();
-    } catch(err) {
-      console.warn("Firestore listener init failed:", err);
-    }
+    // setActivePets(fetchedData);
   }, []);
 
   return (
