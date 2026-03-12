@@ -18,6 +18,7 @@ import { CartProvider } from "@/context/CartContext";
 import { CommunityProvider } from "@/context/CommunityContext";
 import { useAutoUpdate } from "@/hooks/useAutoUpdate";
 import { AuthProvider } from "@/context/AuthContext";
+import Colors from "@/constants/colors";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,7 +42,15 @@ function RootLayoutNav() {
       <Stack.Screen name="emergency/index" options={{ title: "Emergency SOS", headerShown: false }} />
       <Stack.Screen name="notifications/index" options={{ title: "Notifications" }} />
       <Stack.Screen name="profile/index" options={{ title: "Owner Profile", headerShown: false }} />
-      <Stack.Screen name="profile/edit" options={{ title: "Edit Profile", presentation: "modal" }} />
+      <Stack.Screen 
+        name="profile/edit" 
+        options={{ 
+          title: "Edit Profile", 
+          presentation: "modal",
+          headerStyle: { backgroundColor: Colors.primaryLight },
+          headerTintColor: "#fff"
+        }} 
+      />
       <Stack.Screen name="profile/privacy" options={{ title: "Privacy & Security", headerShown: false }} />
       <Stack.Screen name="profile/support" options={{ title: "Help & Support", headerShown: false }} />
     </Stack>

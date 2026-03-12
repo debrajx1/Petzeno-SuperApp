@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useColorScheme, Switch } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/colors";
 
 export default function PrivacyScreen() {
@@ -13,12 +14,15 @@ export default function PrivacyScreen() {
   const [dataSharing, setDataSharing] = React.useState(true);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <LinearGradient 
+      colors={[Colors.primaryLight1, Colors.secondary]} 
+      style={styles.container}
+    >
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={colors.text} />
+          <Ionicons name="arrow-back" size={24} color={"#FFF"} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: colors.text }]}>Privacy & Security</Text>
+        <Text style={[styles.headerTitle, { color: "#FFF" }]}>Privacy & Security</Text>
         <View style={styles.placeholderButton} />
       </View>
 
@@ -76,7 +80,7 @@ export default function PrivacyScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 

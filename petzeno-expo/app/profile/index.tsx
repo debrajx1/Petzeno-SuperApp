@@ -186,7 +186,7 @@ export default function ProfileScreen() {
               <Text style={[styles.petName, { color: colors.text }]}>{pet.name}</Text>
               <Text style={[styles.petBreed, { color: colors.textSecondary }]} numberOfLines={1}>{pet.breed}</Text>
               <View style={[styles.petAgeBadge, { backgroundColor: Colors.primaryLight }]}>
-                <Text style={[styles.petAge, { color: Colors.primaryprofile, fontWeight:"bold" }]}>{pet.age} yrs</Text>
+                <Text style={[styles.petAge, { color: Colors.secondary, fontWeight:"bold" }]}>{pet.age} yrs</Text>
               </View>
             </TouchableOpacity>
           ))}

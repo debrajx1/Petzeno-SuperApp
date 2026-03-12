@@ -79,22 +79,34 @@ export default function EditProfileScreen() {
   };
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled"
+    <LinearGradient 
+      colors={[Colors.primaryLight1, Colors.secondary]} 
+      style={styles.container}
     >
-      <TouchableOpacity style={[styles.avatarSection, { backgroundColor: Colors.primaryLight }]} onPress={pickImage}>
-        <View style={[styles.avatar, { backgroundColor: Colors.primary, overflow: "hidden" }]}>
-          {photo ? (
-            <React.Fragment>
-              <Image source={{ uri: photo }} style={{ width: '100%', height: '100%' }} />
-            </React.Fragment>
-          ) : (
-            <Ionicons name="camera" size={32} color="#fff" />
-          )}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+      <TouchableOpacity style={[styles.avatarSection, { backgroundColor: Colors.secondary }]} onPress={pickImage}>
+        <View style={[
+          styles.avatarContainerRing, 
+          { 
+            borderColor: Colors.primaryLight,
+            borderWidth: 2.5,
+            padding: 3,
+          }
+        ]}>
+          <View style={[styles.avatar, { backgroundColor: Colors.primary, overflow: "hidden" }]}>
+            {photo ? (
+              <React.Fragment>
+                <Image source={{ uri: photo }} style={{ width: '100%', height: '100%' }} />
+              </React.Fragment>
+            ) : (
+              <Ionicons name="camera" size={32} color="#fff" />
+            )}
+          </View>
         </View>
-        <Text style={[styles.avatarLabel, { color: Colors.primaryDark, fontFamily: "Inter_600SemiBold" }]}>
+        <Text style={[styles.avatarLabel, { color: "#42cfb1ff", fontFamily: "Inter_600SemiBold" }]}>
           Change Profile Photo
         </Text>
       </TouchableOpacity>
@@ -139,7 +151,8 @@ export default function EditProfileScreen() {
           </Text>
         </LinearGradient>
       </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
@@ -153,9 +166,16 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
+  avatarContainerRing: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   avatar: {
-    width: 80,
-    height: 80,
+    width: '100%',
+    height: '100%',
     borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
