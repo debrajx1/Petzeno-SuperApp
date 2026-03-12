@@ -245,13 +245,13 @@
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
-  padding: 8rem 5% 4rem 5%;
+  padding: 10rem 5% 4rem 5%;
   gap: 4rem;
   max-width: 1300px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  min-height: max(600px, 90vh);
+  min-height: max(650px, 95vh);
 }
 
 .heroContent {
