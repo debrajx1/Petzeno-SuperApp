@@ -209,8 +209,8 @@ export default function HomeScreen() {
 
       {/* Quick Actions */}
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
-          Quick Actions
+        <Text style={[styles.sectionTitle, { color: '#fefefeff', fontFamily: "Inter_600SemiBold" }]}>
+          Quick Actions 
         </Text>
       </View>
       <View style={styles.quickActions}>
@@ -237,11 +237,11 @@ export default function HomeScreen() {
 
       {/* My Pets */}
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
+        <Text style={[styles.sectionTitle, { color: '#027d63db', fontFamily: "Inter_600SemiBold" }]}>
           My Pets
         </Text>
         <TouchableOpacity onPress={() => router.push("/pets")}>
-          <Text style={[styles.seeAll, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
+          <Text style={[styles.seeAll, { color: Colors.secondary, fontFamily: "Inter_500Medium" }]}>
             See all
           </Text>
         </TouchableOpacity>
@@ -275,7 +275,7 @@ export default function HomeScreen() {
                 {pet.breed}
               </Text>
               <View style={[styles.petAgeBadge, { backgroundColor: Colors.primaryLight }]}>
-                <Text style={[styles.petAge, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
+                <Text style={[styles.petAge, { color: Colors.secondary, fontFamily: "Inter_500Medium" }]}>
                   {pet.age}y
                 </Text>
               </View>
@@ -333,11 +333,11 @@ export default function HomeScreen() {
       {upcomingAppointments.length > 0 && (
         <>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
+            <Text style={[styles.sectionTitle, { color: '#007162db', fontFamily: "Inter_600SemiBold" }]}>
               Upcoming Appointments
             </Text>
             <TouchableOpacity onPress={() => router.push("/map")}>
-              <Text style={[styles.seeAll, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
+              <Text style={[styles.seeAll, { color: '#005341db', fontFamily: "Inter_600SemiBold" }]}>
                 Book
               </Text>
             </TouchableOpacity>
@@ -354,12 +354,12 @@ export default function HomeScreen() {
                 <Text style={[styles.apptDetails, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
                   {apt.vetName}
                 </Text>
-                <Text style={[styles.apptDate, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
+                <Text style={[styles.apptDate, { color: "#4eb0acff", fontFamily: "Inter_500Medium" }]}>
                   {formatAppointmentDate(apt.date, apt.time)}
                 </Text>
               </View>
               <View style={[styles.apptStatusBadge, { backgroundColor: "#007AFF15" }]}>
-                <Text style={[styles.apptStatusText, { color: "#007AFF", fontFamily: "Inter_500Medium" }]}>
+                <Text style={[styles.apptStatusText, { color: "#3cad87ff", fontFamily: "Inter_500Medium" }]}>
                   {getDaysUntil(apt.date) === 0 ? "Today" : `${getDaysUntil(apt.date)}d`}
                 </Text>
               </View>
@@ -372,11 +372,11 @@ export default function HomeScreen() {
       {recentNotifs.length > 0 && (
         <>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
+            <Text style={[styles.sectionTitle, { color: "#015445ff", fontFamily: "Inter_600SemiBold" }]}>
               Recent Alerts
             </Text>
             <TouchableOpacity onPress={() => router.push("/notifications")}>
-              <Text style={[styles.seeAll, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
+              <Text style={[styles.seeAll, { color: "#015445ff", fontFamily: "Inter_600SemiBold" }]}>
                 See all
               </Text>
             </TouchableOpacity>

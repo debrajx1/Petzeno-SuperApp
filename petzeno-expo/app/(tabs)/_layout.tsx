@@ -19,7 +19,7 @@ function NativeTabLayout() {
       <NativeTabs.Trigger name="index">
         <Icon sf={{ default: "house", selected: "house.fill" }} />
         <Label>Home</Label>
-        {unreadCount > 0 && <Badge>{unreadCount}</Badge>}
+        {unreadCount > 0 && <Badge>{unreadCount.toString()}</Badge>}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="pets">
         <Icon sf={{ default: "pawprint", selected: "pawprint.fill" }} />
@@ -32,7 +32,7 @@ function NativeTabLayout() {
       <NativeTabs.Trigger name="store">
         <Icon sf={{ default: "bag", selected: "bag.fill" }} />
         <Label>Store</Label>
-        {cartCount > 0 && <Badge>{cartCount}</Badge>}
+        {cartCount > 0 && <Badge>{cartCount.toString()}</Badge>}
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="community">
         <Icon sf={{ default: "person.3", selected: "person.3.fill" }} />
@@ -58,12 +58,12 @@ function ClassicTabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: colors.tabIconDefault,
+        tabBarActiveTintColor: Colors.primaryLight,
+        tabBarInactiveTintColor: colors.textTertiary,
         headerShown: false,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: isIOS ? "transparent" : isDark ? "#000" : "#fff",
+          backgroundColor: isIOS ? "transparent" : isDark ? "#000000ff" : "#fff",
           borderTopWidth: isWeb ? 1 : 0,
           borderTopColor: colors.border,
           elevation: 0,
@@ -91,6 +91,7 @@ function ClassicTabLayout() {
         options={{
           title: "Home",
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
+          tabBarBadgeStyle: { backgroundColor: Colors.emergency, color: '#FFF', fontSize: 10 },
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
               <SymbolView
@@ -152,6 +153,7 @@ function ClassicTabLayout() {
         options={{
           title: "Store",
           tabBarBadge: cartCount > 0 ? cartCount : undefined,
+          tabBarBadgeStyle: { backgroundColor: Colors.emergency, color: '#FFF', fontSize: 10 },
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
               <SymbolView
