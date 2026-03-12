@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { usePets } from "@/context/PetContext";
+import { useAuth } from "@/context/AuthContext";
 import Colors from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
@@ -77,6 +78,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const colors = isDark ? Colors.dark : Colors.light;
   const { pets, appointments, notifications, unreadCount } = usePets();
+  const { logout } = useAuth();
 
   const upcomingAppointments = appointments
     .filter((a) => a.status === "upcoming" && getDaysUntil(a.date) >= 0)
@@ -115,17 +117,28 @@ export default function HomeScreen() {
             PetZeno <Text style={{ fontSize: 14, color: '#AF52DE', fontFamily: 'Inter_700Bold' }}>✨ v2.0 Live (OTA)</Text>
           </Text>
         </View>
-        <TouchableOpacity
-          style={[styles.notifBtn, { backgroundColor: colors.surface }]}
-          onPress={() => router.push("/notifications")}
-        >
-          <Ionicons name="notifications" size={22} color={Colors.primary} />
-          {unreadCount > 0 && (
-            <View style={styles.notifBadge}>
-              <Text style={styles.notifBadgeText}>{unreadCount}</Text>
-            </View>
-          )}
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <TouchableOpacity
+            style={[styles.notifBtn, { backgroundColor: colors.surface }]}
+            onPress={async () => {
+              await logout();
+              router.replace("/(auth)/get-started");
+            }}
+          >
+            <Ionicons name="log-out-outline" size={22} color={Colors.primary} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.notifBtn, { backgroundColor: colors.surface }]}
+            onPress={() => router.push("/notifications")}
+          >
+            <Ionicons name="notifications" size={22} color={Colors.primary} />
+            {unreadCount > 0 && (
+              <View style={styles.notifBadge}>
+                <Text style={styles.notifBadgeText}>{unreadCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Emergency SOS */}

@@ -17,12 +17,14 @@ import { PetProvider } from "@/context/PetContext";
 import { CartProvider } from "@/context/CartContext";
 import { CommunityProvider } from "@/context/CommunityContext";
 import { useAutoUpdate } from "@/hooks/useAutoUpdate";
+import { AuthProvider } from "@/context/AuthContext";
 
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   return (
     <Stack screenOptions={{ headerBackTitle: "Back" }}>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="pet/add" options={{ title: "Add Pet", presentation: "modal" }} />
       <Stack.Screen name="pet/[id]" options={{ title: "Pet Profile" }} />
@@ -65,17 +67,19 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <PetProvider>
-          <CartProvider>
-            <CommunityProvider>
-              <GestureHandlerRootView>
-                <KeyboardProvider>
-                  <RootLayoutNav />
-                </KeyboardProvider>
-              </GestureHandlerRootView>
-            </CommunityProvider>
-          </CartProvider>
-        </PetProvider>
+        <AuthProvider>
+          <PetProvider>
+            <CartProvider>
+              <CommunityProvider>
+                <GestureHandlerRootView>
+                  <KeyboardProvider>
+                    <RootLayoutNav />
+                  </KeyboardProvider>
+                </GestureHandlerRootView>
+              </CommunityProvider>
+            </CartProvider>
+          </PetProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

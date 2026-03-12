@@ -1,12 +1,14 @@
-const primary = "#1E9E7E";
-const primaryLight = "#E8F7F3";
-const primaryDark = "#166D57";
-const secondary = "#FF7B54";
+const primary = "#42cfb1ff"; // Match the exact button green from mockup
+const primaryLight = "#6cceb6ff"; 
+const primaryLight1 = "#4eb399ff"; // More solid light green for background
+const primaryDark = "#42cfb1ff"; // Darker green for text headings
+const secondary = "#fbf9f8ff";
 const emergency = "#FF3B30";
 
 export default {
   primary,
   primaryLight,
+  primaryLight1,
   primaryDark,
   secondary,
   emergency,
@@ -17,7 +19,7 @@ export default {
     textTertiary: "#AEAEB2",
     background: "#F5F6FA",
     surface: "#FFFFFF",
-    surfaceSecondary: "#F2F2F7",
+    surfaceSecondary: "#F2F2F7", 
     border: "#E5E5EA",
     tint: primary,
     tabIconDefault: "#AEAEB2",
