@@ -6,7 +6,6 @@
     radial-gradient(at 100% 100%, rgba(74, 144, 226, 0.05) 0px, transparent 50%);
   color: var(--color-text-main);
   position: relative;
-  overflow-x: hidden;
 }
 
 .bgDecorations {
