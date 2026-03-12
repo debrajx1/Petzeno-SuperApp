@@ -235,7 +235,7 @@ const HorizontalPetUniverse = () => {
     offset: ["start start", "end end"]
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-68%"]);
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]); /* Lower percentage to prevent blank space on large screens */
 
   const items = [
     { title: "Elite Vets", desc: "Top 1% veterinary experts across India at your service.", img: "/indian_vet.png" },
@@ -780,9 +780,9 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="features" className={styles.featuresSection} style={{ position: 'relative' }}>
-        <div className="orb orb-teal" style={{ width: '350px', height: '350px', top: '20%', left: '-10%', opacity: 0.2 }} />
-        <div className="orb orb-primary" style={{ width: '300px', height: '300px', bottom: '10%', right: '-5%', opacity: 0.2 }} />
+      <section id="features" className={styles.featuresSection}>
+        <div className="orb orb-teal" style={{ width: '350px', height: '350px', top: '20%', left: '-10%', opacity: 0.15, zIndex: -1 }} />
+        <div className="orb orb-primary" style={{ width: '300px', height: '300px', bottom: '10%', right: '-5%', opacity: 0.15, zIndex: -1 }} />
         <motion.div
            className={styles.centeredHeader}
            initial={{ opacity: 0, y: 20 }}

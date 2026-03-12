@@ -198,14 +198,14 @@
   color: var(--color-text-muted);
 }
 
-/* Horizontal Scroll Universe - Fixed Robust Version */
+/* Horizontal Scroll Universe - Stable God-Tier Version */
 .horizontalScrollSection {
-  height: 350vh; /* Reduced from 500vh to minimize blank gap */
+  height: 300vh; /* Reduced to match track length better */
   position: relative;
   background-color: var(--color-bg-main);
-  margin-top: 5rem;
-  z-index: 5;
-  margin-bottom: -50vh; /* Pull next section up slightly */
+  margin-top: 0; /* Align with sections above */
+  z-index: 10;
+  margin-bottom: 0; /* REMOVED negative margin to fix overlap with stakeholder section */
 }
 
 .horizontalScrollSticky {
@@ -221,8 +221,8 @@
 
 .horizontalScrollHeader {
   padding: 0 5vw;
-  margin-bottom: 2rem;
-  z-index: 10;
+  margin-bottom: 4rem; /* Increased spacing to cards */
+  z-index: 12;
 }
 
 .horizontalScrollTrack {
@@ -419,12 +419,13 @@
 
 /* Stats Section (Grid) */
 .statsSection {
-  padding: 6rem 5%;
-  background: white;
+  padding: 8rem 5%;
+  background: var(--color-bg-main);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   position: relative;
-  z-index: 2;
+  z-index: 5;
+  margin-top: 0;
 }
 
 .statsGrid {
@@ -465,12 +466,34 @@
   margin-top: 0.25rem;
 }
 
-/* Features Section */
+/* Features Section (Bento Grid) */
 .featuresSection {
-  padding: 10rem 5%;
+  padding: 12rem 5% 10rem 5%; /* Increased top padding to ensure separation from above */
   position: relative;
-  z-index: 2;
-  perspective: 1000px;
+  z-index: 15; /* Higher than stats and scroll section */
+  background: var(--color-bg-main);
+}
+
+.centeredHeader {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 8rem auto; /* Large bottom margin for breathable layout */
+}
+
+.sectionTitle {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  margin-bottom: 2rem;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.sectionSubtitle {
+  font-size: 1.25rem;
+  color: var(--color-text-muted);
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 /* Features Section */
@@ -1128,11 +1151,12 @@
 }
 
 .tickerContainer {
-  padding: 3rem 0;
+  padding: 6rem 0; /* More room to breathe */
   background: var(--color-bg-main);
-  border-bottom: 1px solid var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
   overflow: hidden;
   position: relative;
+  z-index: 4; /* Below hero (2) and hero images, above background */
 }
 
 .tickerHeader {
