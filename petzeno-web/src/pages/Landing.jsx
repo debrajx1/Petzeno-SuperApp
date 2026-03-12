@@ -221,18 +221,55 @@ const PartnerTicker = () => {
 
 const HorizontalPetUniverse = () => {
   const targetRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: targetRef,
+    offset: ["start start", "end end"]
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-65%"]);
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-68%"]);
 
   const items = [
-    { title: "Elite Vets", desc: "Access the top 1% of veterinary experts across India.", img: "/indian_vet.png" },
-    { title: "Premium Shop", desc: "Curated nutrition and elite gear for your companions.", img: "/petzeno_landing_hero.png" },
-    { title: "Global Shelters", desc: "A connected network of verified adoption centers.", img: "/indian_owner.png" },
+    { title: "Elite Vets", desc: "Top 1% veterinary experts across India at your service.", img: "/indian_vet.png" },
+    { title: "Premium Shop", desc: "Verified nutrition and elite gear for your companions.", img: "/petzeno_landing_hero.png" },
+    { title: "Global Shelters", desc: "Connected network of verified adoption centers.", img: "/indian_owner.png" },
     { title: "Mobile Core", desc: "The entire ecosystem in the palm of your hand.", img: "/petzeno-logo.png" }
   ];
+
+  if (isMobile) {
+    return (
+      <section id="universe" className={styles.statsSection} style={{ background: 'var(--color-bg-main)', border: 'none' }}>
+        <div className={styles.horizontalScrollHeader}>
+           <h2 className="elite-heading" style={{ fontSize: '3rem' }}>The PetZeno<br/><span className="shimmer-3d">Universe</span></h2>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '0 5%' }}>
+          {items.map((item, i) => (
+            <motion.div 
+              key={i} 
+              className={styles.universeCard}
+              style={{ minWidth: 'auto', width: '100%', height: '400px' }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <img src={item.img} alt={item.title} className={styles.universeBg} />
+              <div className={styles.universeOverlay} />
+              <h3 className={styles.universeTitle} style={{ fontSize: '2rem' }}>{item.title}</h3>
+              <p className={styles.universeDesc}>{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section ref={targetRef} className={styles.horizontalScrollSection}>
@@ -245,7 +282,7 @@ const HorizontalPetUniverse = () => {
             <div key={i} className={styles.universeCard}>
               <img src={item.img} alt={item.title} className={styles.universeBg} />
               <div className={styles.universeOverlay} />
-              <h1 className={styles.universeTitle}>{item.title}</h1>
+              <h3 className={styles.universeTitle}>{item.title}</h3>
               <p className={styles.universeDesc}>{item.desc}</p>
             </div>
           ))}
