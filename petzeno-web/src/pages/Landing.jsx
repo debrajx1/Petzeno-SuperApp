@@ -552,11 +552,11 @@ export default function Landing() {
 
   const t = {
     en: {
-      heroTitle: "The Ultimate Complete Pet Ecosystem for the Modern World",
-      heroSubtitle: "A secure AI-powered digital ecosystem connecting pet owners, veterinarians, and shelters across India.",
+      heroTitle: "The Complete Pet Care Super App",
+      heroSubtitle: "A unified digital platform connecting pet owners, veterinarians, shelters, and businesses. Seamlessly manage health records, appointments, and adoptions in a single ecosystem.",
       downloadApp: "Download the App",
       joinProvider: "Join as Provider",
-      futureBadge: "The Future of Pet Care in India",
+      futureBadge: "The Complete Pet Ecosystem",
       features: "Features",
       process: "Process",
       reviews: "Reviews",
@@ -573,11 +573,11 @@ export default function Landing() {
       voiceTip: "Listen to Page"
     },
     hi: {
-      heroTitle: "आधुनिक दुनिया के लिए सर्वोत्तम पालतू पारिस्थितिकी तंत्र",
-      heroSubtitle: "भारत भर में पालतू जानवरों के मालिकों, पशु चिकित्सकों और आश्रयों को जोड़ने वाला एक सुरक्षित एआई-संचालित डिजिटल पारिस्थितिकी तंत्र।",
+      heroTitle: "संपूर्ण पेट केयर सुपर ऐप",
+      heroSubtitle: "पालतू जानवरों के मालिकों, पशु चिकित्सकों, आश्रयों और व्यवसायों को जोड़ने वाला एक एकीकृत डिजिटल प्लेटफ़ॉर्म। एक ही इकोसिस्टम में स्वास्थ्य रिकॉर्ड, अपॉइंटमेंट और गोद लेने का सहजता से प्रबंधन करें।",
       downloadApp: "ऐप डाउनलोड करें",
       joinProvider: "प्रदाता के रूप में जुड़ें",
-      futureBadge: "भारत में पेट केयर का भविष्य",
+      futureBadge: "संपूर्ण पेट केयर इकोसिस्टम",
       features: "विशेषताएं",
       process: "प्रक्रिया",
       reviews: "समीक्षाएं",
@@ -594,11 +594,11 @@ export default function Landing() {
       voiceTip: "पेज सुनें"
     },
     or: {
-      heroTitle: "ଆଧୁନିକ ଦୁନିଆ ପାଇଁ ସର୍ବୋତ୍ତମ ପୋଷା ପ୍ରାଣୀ ପରିସଂସ୍ଥାନ",
-      heroSubtitle: "ଭାରତର ପୋଷା ପ୍ରାଣୀ ମାଲିକ, ପଶୁ ଚିକିତ୍ସକ ଏବଂ ଆଶ୍ରୟସ୍ଥଳୀକୁ ସଂଯୋଗ କରୁଥିବା ଏକ ସୁରକ୍ଷିତ AI- ଚାଳିତ ଡିଜିଟାଲ୍ ପରିସଂସ୍ଥାନ |",
+      heroTitle: "ସମ୍ପୂର୍ଣ୍ଣ ପେଟ୍ କେୟାର ସୁପର ଆପ୍",
+      heroSubtitle: "ପୋଷା ପ୍ରାଣୀ ମାଲିକ, ପଶୁ ଚିକିତ୍ସକ, ଆଶ୍ରୟସ୍ଥଳୀ ଏବଂ ବ୍ୟବସାୟଗୁଡ଼ିକୁ ସଂଯୋଗ କରୁଥିବା ଏକ ଏକୀକୃତ ଡିଜିଟାଲ୍ ପ୍ଲାଟଫର୍ମ। ଗୋଟିଏ ଇକୋସିଷ୍ଟମରେ ସ୍ୱାସ୍ଥ୍ୟ ରେକର୍ଡ, ଆପଏଣ୍ଟମେଣ୍ଟ ଏବଂ ପୋଷ୍ୟଗ୍ରହଣକୁ ସହଜରେ ପରିଚାଳନା କରନ୍ତୁ।",
       downloadApp: "ଆପ୍ ଡାଉନଲୋଡ୍ କରନ୍ତୁ",
       joinProvider: "ପ୍ରଦାନକାରୀ ଭାବରେ ଯୋଗ ଦିଅନ୍ତୁ",
-      futureBadge: "ଭାରତରେ ପୋଷା ଯତ୍ନର ଭବିଷ୍ୟତ",
+      futureBadge: "ସମ୍ପୂର୍ଣ୍ଣ ପେଟ୍ ଇକୋସିଷ୍ଟମ୍",
       features: "ବୈଶିଷ୍ଟ୍ୟ",
       process: "ପ୍ରକ୍ରିୟା",
       reviews: "ସମୀକ୍ଷା",
@@ -725,13 +725,15 @@ export default function Landing() {
 
           <h1 className={`${styles.heroTitle} elite-heading text-reveal`}>
             {lang === 'en' ? (
-              <TextReveal className="shimmer-3d">The Ultimate Complete Pet Ecosystem</TextReveal>
+              <>
+                <TextReveal className="shimmer-3d">The Complete Pet Care</TextReveal>
+                <div className={styles.heroLineTwo}>
+                  <TextReveal>Super App Ecosystem</TextReveal>
+                </div>
+              </>
             ) : (
               <TextReveal>{content.heroTitle}</TextReveal>
             )}
-            <div className={styles.heroLineTwo}>
-              <TextReveal>for the Modern World</TextReveal>
-            </div>
           </h1>
 
           <p className={styles.heroSubtitle}>
