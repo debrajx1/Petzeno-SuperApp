@@ -16,7 +16,7 @@ export default {
   light: {
     text: "#1C1C1E",
     textSecondary: "#636366",
-    textTertiary: "#AEAEB2",
+    textTertiary: "#004437ff",
     background: "#F5F6FA",
     surface: "#FFFFFF",
     surfaceSecondary: "#F2F2F7", 
@@ -31,7 +31,7 @@ export default {
   dark: {
     text: "#FFFFFF",
     textSecondary: "#AEAEB2",
-    textTertiary: "#636366",
+    textTertiary: "#003d2bff",
     background: "#000000",
     surface: "#1C1C1E",
     surfaceSecondary: "#2C2C2E",
