@@ -1,7 +1,11 @@
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=250&section=header&text=PetZeno%20SuperApp&fontSize=60&fontAlignY=35&desc=The%20Ultimate%20Unified%20Digital%20Pet%20Platform&descAlignY=55&descAlign=50" alt="PetZeno Banner" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=42cfb1ff&height=250&section=header&text=PetZeno%20SuperApp&fontSize=60&fontColor=ffffff&fontAlignY=35&desc=The%20Ultimate%20Unified%20Digital%20Pet%20Platform&descAlignY=55&descAlign=50&descColor=ffffff" alt="PetZeno Banner" />
 
-  <h3>🐾 Bridging the gap in Pet Care, One Paw at a Time! 🐾</h3>
+
+<h3>
+<span style="color:white;">🐾</span> Bridging the gap in Pet Care, One Paw at a Time! <span style="color:white;">🐾</span>
+</h3>
+
 
   <p align="center">
     <a href="#-about-the-project">About</a> •
