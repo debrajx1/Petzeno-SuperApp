@@ -13,6 +13,7 @@ import {
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCommunity } from "@/context/CommunityContext";
 import Colors from "@/constants/colors";
 
@@ -78,11 +79,14 @@ export default function ReportLostFoundScreen() {
   };
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled"
+    <LinearGradient 
+      colors={[Colors.primaryLight1, Colors.secondary]} 
+      style={styles.container}
     >
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
       {/* Type Selection */}
       <View style={styles.typeRow}>
         <TouchableOpacity
@@ -173,7 +177,8 @@ export default function ReportLostFoundScreen() {
           {saving ? "Submitting..." : `Post ${type === "lost" ? "Lost" : "Found"} Pet Report`}
         </Text>
       </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 

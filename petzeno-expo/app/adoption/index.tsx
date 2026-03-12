@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCommunity } from "@/context/CommunityContext";
 import Colors from "@/constants/colors";
 
@@ -33,7 +34,10 @@ export default function AdoptionScreen() {
       );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
+    >
       {/* Filters */}
       <View style={styles.filtersRow}>
         {FILTERS.map((f) => (
@@ -117,7 +121,7 @@ export default function AdoptionScreen() {
           </TouchableOpacity>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 }
 

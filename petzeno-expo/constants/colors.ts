@@ -4,6 +4,7 @@ const primaryLight1 = "#4eb399ff"; // More solid light green for background
 const primaryDark = "#42cfb1ff"; // Darker green for text headings
 const secondary = "#fbf9f8ff";
 const emergency = "#FF3B30";
+const black = "#000000";
 
 export default {
   primary,
@@ -12,6 +13,7 @@ export default {
   primaryDark,
   secondary,
   emergency,
+  black,
 
   light: {
     text: "#1C1C1E",

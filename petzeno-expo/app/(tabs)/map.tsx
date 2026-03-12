@@ -10,11 +10,13 @@ import {
   Linking,
   ActivityIndicator,
   Dimensions,
+  Image,
 } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
+import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
@@ -148,17 +150,20 @@ export default function MapScreen() {
   const displayClinics = MOCK_CLINICS;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
+    >
       {/* Header */}
-      <View style={[styles.header, { paddingTop: topPadding + 12, backgroundColor: colors.background }]}>
-        <Text style={[styles.headerTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
+      <View style={[styles.header, { paddingTop: topPadding + 12 }]}>
+        <Text style={[styles.headerTitle, { color: "#ffffffff", fontFamily: "Inter_700Bold" }]}>
           Find Nearby
         </Text>
         {locationGranted && (
           <View style={styles.locationBadge}>
-            <Ionicons name="location" size={14} color={Colors.primary} />
-            <Text style={[styles.locationText, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
-              Bangalore
+            <Ionicons name="location" size={14} color={Colors.black} />
+            <Text style={[styles.locationText, { color: Colors.black, fontFamily: "Inter_500Medium" }]}>
+              Bhubaneswar
             </Text>
           </View>
         )}
@@ -170,8 +175,16 @@ export default function MapScreen() {
           style={[styles.tab, activeTab === "vets" && styles.tabActive, activeTab === "vets" && { backgroundColor: Colors.primary }]}
           onPress={() => setActiveTab("vets")}
         >
-          <Ionicons name="medical" size={16} color={activeTab === "vets" ? "#fff" : colors.textSecondary} />
-          <Text style={[styles.tabText, { color: activeTab === "vets" ? "#fff" : colors.textSecondary, fontFamily: "Inter_600SemiBold" }]}>
+          <Image 
+            source={require("@/assets/images/clinic-logo.png")} 
+            style={{ 
+              width: 18, 
+              height: 18, 
+              borderRadius: 4,
+              opacity: activeTab === "vets" ? 1 : 0.6
+            }} 
+          />
+          <Text style={[styles.tabText, { color: activeTab === "vets" ? "#fff" : "#F5F6FA", fontFamily: "Inter_600SemiBold" }]}>
             Vet Clinics
           </Text>
         </TouchableOpacity>
@@ -179,8 +192,16 @@ export default function MapScreen() {
           style={[styles.tab, activeTab === "stores" && styles.tabActive, activeTab === "stores" && { backgroundColor: Colors.primary }]}
           onPress={() => setActiveTab("stores")}
         >
-          <Ionicons name="storefront" size={16} color={activeTab === "stores" ? "#fff" : colors.textSecondary} />
-          <Text style={[styles.tabText, { color: activeTab === "stores" ? "#fff" : colors.textSecondary, fontFamily: "Inter_600SemiBold" }]}>
+          <Image 
+            source={require("@/assets/images/store-logo.png")} 
+            style={{ 
+              width: 18, 
+              height: 18, 
+              borderRadius: 4,
+              opacity: activeTab === "stores" ? 1 : 0.6
+            }} 
+          />
+          <Text style={[styles.tabText, { color: activeTab === "stores" ? "#fff" : "#F5F6FA", fontFamily: "Inter_600SemiBold" }]}>
             Pet Stores
           </Text>
         </TouchableOpacity>
@@ -224,11 +245,17 @@ export default function MapScreen() {
           <View key={clinic.id} style={[styles.clinicCard, { backgroundColor: colors.surface }]}>
             <View style={styles.clinicHeader}>
               <View style={[styles.clinicIcon, { backgroundColor: Colors.primaryLight }]}>
-                <Ionicons
-                  name={activeTab === "vets" ? "medical" : "storefront"}
-                  size={20}
-                  color={Colors.primary}
-                />
+                {activeTab === "vets" ? (
+                  <Image 
+                    source={require("@/assets/images/clinic-logo.png")} 
+                    style={{ width: 26, height: 26, borderRadius: 6 }} 
+                  />
+                ) : (
+                  <Image 
+                    source={require("@/assets/images/store-logo.png")} 
+                    style={{ width: 26, height: 26, borderRadius: 6 }} 
+                  />
+                )}
               </View>
               <View style={styles.clinicInfo}>
                 <Text style={[styles.clinicName, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
@@ -285,17 +312,17 @@ export default function MapScreen() {
                 style={[styles.clinicActionBtn, { backgroundColor: colors.surfaceSecondary }]}
                 onPress={() => handleNavigate(clinic)}
               >
-                <Ionicons name="navigate" size={16} color="#007AFF" />
-                <Text style={[styles.clinicActionText, { color: "#007AFF", fontFamily: "Inter_600SemiBold" }]}>
+                <Ionicons name="navigate" size={16} color={Colors.primary} />
+                <Text style={[styles.clinicActionText, { color: Colors.primary, fontFamily: "Inter_600SemiBold" }]}>
                   Directions
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.clinicActionBtnPrimary, { backgroundColor: Colors.primary }]}
+                style={[styles.clinicActionBtn, { backgroundColor: colors.surfaceSecondary }]}
                 onPress={() => router.push({ pathname: "/appointment/book", params: { clinicId: clinic.id, clinicName: clinic.name, clinicAddress: clinic.address, vetName: "Dr. Available" } })}
               >
-                <Ionicons name="calendar" size={16} color="#fff" />
-                <Text style={[styles.clinicActionTextWhite, { fontFamily: "Inter_600SemiBold" }]}>
+                <Ionicons name="calendar" size={16} color={Colors.primary} />
+                <Text style={[styles.clinicActionText, { color: Colors.primary, fontFamily: "Inter_600SemiBold" }]}>
                   Book
                 </Text>
               </TouchableOpacity>
@@ -303,7 +330,7 @@ export default function MapScreen() {
           </View>
         ))}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
