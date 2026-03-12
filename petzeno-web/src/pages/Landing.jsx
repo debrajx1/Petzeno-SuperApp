@@ -219,24 +219,7 @@ const PartnerTicker = () => {
   );
 };
 
-const HorizontalPetUniverse = () => {
-  const targetRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start start", "end end"]
-  });
-
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-300%"]); /* Faster scroll for wider portals */
-
+const PetUniverse = () => {
   const items = [
     { title: "Elite Vets", desc: "Access the top 1% of veterinary experts across the nation with AI-powered diagnostics.", img: "/indian_vet.png" },
     { title: "Smart Shop", desc: "Curated premium nutrition and IoT-enabled gear for the modern pet parent.", img: "/petzeno_landing_hero.png" },
@@ -244,53 +227,39 @@ const HorizontalPetUniverse = () => {
     { title: "Core Sync", desc: "Your entire pet's health, history, and heart—synced across all devices.", img: "/petzeno-logo.png" }
   ];
 
-  if (isMobile) {
-    return (
-      <section id="universe" className={styles.statsSection} style={{ background: 'var(--color-bg-main)', border: 'none' }}>
-        <div className={styles.horizontalScrollHeader}>
-           <h2 className="elite-heading" style={{ fontSize: '3rem' }}>The PetZeno<br/><span className="shimmer-3d">Universe</span></h2>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem', padding: '0 5%' }}>
-          {items.map((item, i) => (
-            <motion.div 
-              key={i} 
-              className={styles.immersivePortal}
-              style={{ minWidth: 'auto', width: '100%', height: 'auto', margin: 0, padding: '2rem' }}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-            >
-              <div className={styles.portalContent} style={{ transform: 'none', background: 'none', border: 'none' }}>
-                <h3 className={styles.portalTitle} style={{ fontSize: '2.5rem' }}>{item.title}</h3>
-                <p className={styles.portalDesc}>{item.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <section ref={targetRef} className={styles.horizontalScrollSection}>
-      <div className={styles.horizontalScrollSticky}>
-        <div className={styles.horizontalScrollHeader}>
-           <h2 className="elite-heading" style={{ fontSize: '4.5rem' }}><TextReveal>The PetZeno</TextReveal><br/><TextReveal className="shimmer-3d">Universe</TextReveal></h2>
-        </div>
-        <motion.div style={{ x }} className={styles.horizontalScrollTrack}>
-          {items.map((item, i) => (
-            <div key={i} className={styles.immersivePortal}>
-              <div className={styles.portalMedia}>
-                 <img src={item.img} alt={item.title} className={styles.portalImage} />
-                 <div className={styles.portalOverlay} />
-              </div>
-              <div className={styles.portalContent}>
-                <h3 className={styles.portalTitle}>{item.title}</h3>
-                <p className={styles.portalDesc}>{item.desc}</p>
-              </div>
+    <section id="universe" className={styles.universeSection}>
+      <motion.div 
+        className={styles.universeHeader}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+         <h2 className="elite-heading" style={{ fontSize: 'clamp(3rem, 8vw, 6rem)' }}>
+           The PetZeno<br/><span className="shimmer-3d">Universe</span>
+         </h2>
+      </motion.div>
+
+      <div className={styles.universePortals}>
+        {items.map((item, i) => (
+          <motion.div 
+            key={i} 
+            className={styles.immersivePortal}
+            initial={{ opacity: 0, y: 100, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className={styles.portalMedia}>
+               <img src={item.img} alt={item.title} className={styles.portalImage} />
+               <div className={styles.portalOverlay} />
             </div>
-          ))}
-        </motion.div>
+            <div className={styles.portalContent}>
+              <h3 className={styles.portalTitle}>{item.title}</h3>
+              <p className={styles.portalDesc}>{item.desc}</p>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );
@@ -773,7 +742,7 @@ export default function Landing() {
       </header>
       <PartnerTicker />
 
-      <HorizontalPetUniverse />
+      <PetUniverse />
 
       <section className={styles.statsSection}>
         <div className={styles.statsGrid}>

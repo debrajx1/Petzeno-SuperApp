@@ -198,45 +198,34 @@
   color: var(--color-text-muted);
 }
 
-/* Horizontal Scroll Universe - Stable God-Tier Version */
-.horizontalScrollSection {
-  height: 300vh; /* Reduced to match track length better */
+/* Vertical Universe Section - God-Tier Immersive Version */
+.universeSection {
+  padding: 10rem 0;
   position: relative;
   background-color: var(--color-bg-main);
-  margin-top: 0; /* Align with sections above */
   z-index: 10;
-  margin-bottom: 0; /* REMOVED negative margin to fix overlap with stakeholder section */
+  overflow: visible; /* Allow parallax to bleed */
 }
 
-.horizontalScrollSticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
+.universeHeader {
+  padding: 0 5vw;
+  margin-bottom: 8rem;
+  text-align: center;
+  z-index: 12;
+}
+
+.universePortals {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  overflow: hidden;
-  background-color: var(--color-bg-main);
-}
-
-.horizontalScrollHeader {
+  gap: 15rem; /* Large gap for clear separation between universes */
   padding: 0 5vw;
-  margin-bottom: 6rem; /* More space for immersion */
-  z-index: 12;
-  text-align: center; /* Centered for classic premium look */
-}
-
-.horizontalScrollTrack {
-  display: flex;
-  gap: 3rem;
-  padding: 0 5vw;
-  will-change: transform;
 }
 
 .immersivePortal {
-  min-width: 80vw; /* Much wider for immersion */
-  height: 65vh;
-  margin: 0 4vw;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 75vh;
   border-radius: var(--radius-3xl);
   position: relative;
   overflow: hidden;
@@ -245,7 +234,7 @@
   justify-content: center;
   background: var(--color-bg-subtle);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.9);
   transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
