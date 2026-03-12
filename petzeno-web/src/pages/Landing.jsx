@@ -12,7 +12,7 @@ import styles from './Landing.module.css';
 
 const TextReveal = ({ children, className }) => (
   <motion.span className={`text-reveal ${className}`}>
-    <motion.span 
+    <motion.span
       className="text-reveal-content"
       initial={{ y: "100%" }}
       whileInView={{ y: 0 }}
@@ -28,11 +28,11 @@ const FloatingIcon = ({ icon: Icon, delay, initialX, initialY }) => (
   <motion.div
     className={styles.floatingIcon}
     initial={{ x: initialX, y: initialY, opacity: 0 }}
-    animate={{ 
+    animate={{
       y: [initialY, initialY - 20, initialY],
       opacity: [0, 0.6, 0]
     }}
-    transition={{ 
+    transition={{
       duration: 3 + Math.random() * 2,
       repeat: Infinity,
       delay: delay,
@@ -44,7 +44,7 @@ const FloatingIcon = ({ icon: Icon, delay, initialX, initialY }) => (
 );
 
 const StatItem = ({ num, label, icon: Icon, delay }) => (
-  <motion.div 
+  <motion.div
     className={styles.statItem}
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -98,7 +98,7 @@ const TiltCard = ({ children, className }) => {
       <div style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}>
         {children}
       </div>
-      <motion.div 
+      <motion.div
         className={styles.spotlight}
         style={{
           background: useTransform(
@@ -113,7 +113,7 @@ const TiltCard = ({ children, className }) => {
 
 const FeatureCard = ({ icon: Icon, title, description, index }) => (
   <TiltCard className={styles.featureCard}>
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -135,7 +135,7 @@ const FeatureCard = ({ icon: Icon, title, description, index }) => (
 
 const TestimonialCard = ({ quote, name, role, image, delay }) => (
   <TiltCard className={styles.testimonialCard}>
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
@@ -170,7 +170,7 @@ const FAQItem = ({ question, answer }) => {
       </button>
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             className={styles.faqContent}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -200,13 +200,13 @@ const PartnerTicker = () => {
     <div className={styles.tickerContainer}>
       <div className={styles.tickerHeader}>Trusted by India's Top Organizations</div>
       <div className={styles.tickerTrack}>
-        <motion.div 
+        <motion.div
           className={styles.tickerContent}
           animate={{ x: ['0%', '-50%'] }}
-          transition={{ 
-            duration: 25, 
-            repeat: Infinity, 
-            ease: "linear" 
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
           }}
         >
           {duplicatedPartners.map((p, idx) => (
@@ -223,29 +223,32 @@ const PartnerTicker = () => {
 
 const PetUniverse = () => {
   const items = [
-    { title: "Elite Vets", desc: "Access the top 1% of veterinary experts across the nation with AI-powered diagnostics.", img: "/indian_vet.png" },
-    { title: "Smart Shop", desc: "Curated premium nutrition and IoT-enabled gear for the modern pet parent.", img: "/petzeno_landing_hero.png" },
-    { title: "Safe Haven", desc: "A decentralized network of verified shelters ensuring every pet finds a home.", img: "/indian_owner.png" },
-    { title: "Core Sync", desc: "Your entire pet's health, history, and heart—synced across all devices.", img: "/petzeno-logo.png" }
+    { title: "Digital Health Card", desc: "Centralized medical records, vaccination history, and custom health reminders.", img: "/indian_vet.png" },
+    { title: "Smart Adoption", desc: "AI-driven matchmaking connecting shelters and loving homes across the nation.", img: "/indian_owner.png" },
+    { title: "Emergency SOS", desc: "Immediate access to urgent veterinary assistance and 24/7 clinic locations.", img: "/petzeno_landing_hero.png" },
+    { title: "Pet Supply Store", desc: "Integrated dashboard for premium gear, nutrition, and provider inventory sync.", img: "/petzeno-logo.png" }
   ];
 
   return (
     <section id="universe" className={styles.universeSection}>
-      <motion.div 
+      <motion.div
         className={styles.universeHeader}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-         <h2 className="elite-heading" style={{ fontSize: 'clamp(3rem, 8vw, 6rem)' }}>
-           The PetZeno<br/><span className="shimmer-3d">Universe</span>
-         </h2>
+        <h2 className={styles.sectionTitle} style={{ marginBottom: '1rem' }}>
+          The Pet <span className="shimmer-3d">Super App</span>
+        </h2>
+        <p className={styles.sectionSubtitle}>
+          A unified digital ecosystem ending fragmentation. Seamlessly connecting pet parents, elite vets, and shelters on a single, centralized platform.
+        </p>
       </motion.div>
 
       <div className={styles.universePortals}>
         {items.map((item, i) => (
-          <motion.div 
-            key={i} 
+          <motion.div
+            key={i}
             className={styles.immersivePortal}
             initial={{ opacity: 0, y: 100, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -253,12 +256,16 @@ const PetUniverse = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className={styles.portalMedia}>
-               <img src={item.img} alt={item.title} className={styles.portalImage} />
-               <div className={styles.portalOverlay} />
+              <img src={item.img} alt={item.title} className={styles.portalImage} />
+              <div className={styles.portalOverlay} />
             </div>
             <div className={styles.portalContent}>
               <h3 className={styles.portalTitle}>{item.title}</h3>
               <p className={styles.portalDesc}>{item.desc}</p>
+              <div className={styles.portalAction}>
+                <span>Explore</span>
+                <ArrowRight size={20} />
+              </div>
             </div>
           </motion.div>
         ))}
@@ -280,14 +287,14 @@ const QuickContact = () => {
     <div className={styles.quickContactWrapper}>
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             className={styles.contactMenu}
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
           >
             {contacts.map((c, idx) => (
-              <motion.a 
+              <motion.a
                 key={idx}
                 href={c.href}
                 className={styles.contactItem}
@@ -300,7 +307,7 @@ const QuickContact = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.button 
+      <motion.button
         className={`${styles.contactTrigger} ${isOpen ? styles.active : ''}`}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -325,7 +332,7 @@ const Newsletter = () => {
 
   return (
     <section className={styles.newsletterSection}>
-      <motion.div 
+      <motion.div
         className={`${styles.newsletterBox} glass-effect`}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -335,18 +342,18 @@ const Newsletter = () => {
           <div className={styles.newsletterIcon}><motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ repeat: Infinity, duration: 2 }}><Mail size={40} color="var(--color-primary)" /></motion.div></div>
           <h2>Join the Elite Pet Club</h2>
           <p>Get exclusive updates, vet-verified pet care tips, and early access to new PetZeno features.</p>
-          
+
           {status !== 'success' ? (
             <form className={styles.newsletterForm} onSubmit={handleSubmit}>
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                required 
+              <input
+                type="email"
+                placeholder="Enter your email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={styles.newsletterInput}
               />
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={styles.newsletterBtn}
@@ -357,7 +364,7 @@ const Newsletter = () => {
               </motion.button>
             </form>
           ) : (
-            <motion.div 
+            <motion.div
               className={styles.successMessage}
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
@@ -398,26 +405,26 @@ const ConnectionRoadmap = ({ title }) => {
             transition={{ duration: 1.5, ease: "easeInOut" }}
           />
           <motion.path
-             d="M 50 50 L 90 20"
-             stroke="#2dd4bf"
-             strokeWidth="0.3"
-             style={{ strokeOpacity: 0.6 }}
-             strokeDasharray="1,1"
-             fill="none"
-             initial={{ pathLength: 0 }}
-             whileInView={{ pathLength: 1 }}
-             transition={{ duration: 1.5, delay: 0.5 }}
+            d="M 50 50 L 90 20"
+            stroke="#2dd4bf"
+            strokeWidth="0.3"
+            style={{ strokeOpacity: 0.6 }}
+            strokeDasharray="1,1"
+            fill="none"
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            transition={{ duration: 1.5, delay: 0.5 }}
           />
           <motion.path
-             d="M 50 50 L 90 80"
-             stroke="#2dd4bf"
-             strokeWidth="0.3"
-             style={{ strokeOpacity: 0.6 }}
-             strokeDasharray="1,1"
-             fill="none"
-             initial={{ pathLength: 0 }}
-             whileInView={{ pathLength: 1 }}
-             transition={{ duration: 1.5, delay: 0.5 }}
+            d="M 50 50 L 90 80"
+            stroke="#2dd4bf"
+            strokeWidth="0.3"
+            style={{ strokeOpacity: 0.6 }}
+            strokeDasharray="1,1"
+            fill="none"
+            initial={{ pathLength: 0 }}
+            whileInView={{ pathLength: 1 }}
+            transition={{ duration: 1.5, delay: 0.5 }}
           />
         </svg>
 
@@ -461,8 +468,8 @@ const TeamSection = ({ title }) => {
       </div>
       <div className={styles.teamGrid}>
         {team.map((member, idx) => (
-          <motion.div 
-            key={idx} 
+          <motion.div
+            key={idx}
             className={styles.teamCard}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -531,14 +538,14 @@ export default function Landing() {
       ${content.stakeholderTitle}. 
       ${content.stakeholderSubtitle}.
     `;
-    
+
     const utterance = new SpeechSynthesisUtterance(textToRead);
     if (lang === 'en') utterance.lang = 'en-US';
     else if (lang === 'hi') utterance.lang = 'hi-IN';
     else utterance.lang = 'or-IN';
-    
+
     utterance.onend = () => setIsSpeaking(false);
-    
+
     setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
   };
@@ -628,7 +635,7 @@ export default function Landing() {
 
       <nav className={`${styles.nav} glass-effect`}>
         <div className={styles.navBrand}>
-          <motion.div 
+          <motion.div
             className={styles.logo}
             whileHover={{ scale: 1.05 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -646,28 +653,27 @@ export default function Landing() {
           <motion.a href="#community" whileHover={{ y: -2 }}>{content.community}</motion.a>
           <motion.a href="#testimonials" whileHover={{ y: -2 }}>{content.reviews}</motion.a>
           <motion.a href="#support" whileHover={{ y: -2 }}>{content.support}</motion.a>
-          
           <div className={styles.navControls}>
             <div className={styles.navSeparator} />
-            
+
             <div className={styles.controlWrapper} data-tooltip={content.themeTip}>
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className={styles.themeToggle} 
-                onClick={toggleTheme} 
+                className={styles.themeToggle}
+                onClick={toggleTheme}
                 aria-label="Toggle Theme"
               >
                 {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
               </motion.button>
             </div>
-            
+
             <div className={styles.controlWrapper} data-tooltip={content.langTip}>
-              <motion.button 
+              <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={styles.langToggle} 
-                onClick={toggleLang} 
+                className={styles.langToggle}
+                onClick={toggleLang}
                 aria-label="Switch Language"
               >
                 <Languages size={18} />
@@ -675,10 +681,10 @@ export default function Landing() {
               </motion.button>
             </div>
 
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/login')} 
+              onClick={() => navigate('/login')}
               className={styles.loginBtn}
             >
               {content.providerPortal}
@@ -689,13 +695,13 @@ export default function Landing() {
 
       <header className={styles.hero}>
         <div className="perspective-grid" />
-        <motion.div 
+        <motion.div
           className={styles.heroContent}
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <motion.div 
+          <motion.div
             className={styles.badge}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -704,7 +710,7 @@ export default function Landing() {
             <Zap size={14} />
             <span>{content.futureBadge}</span>
           </motion.div>
-          
+
           <h1 className={`${styles.heroTitle} elite-heading text-reveal`}>
             {lang === 'en' ? (
               <TextReveal className="shimmer-3d">The Ultimate Complete Pet Ecosystem</TextReveal>
@@ -712,26 +718,26 @@ export default function Landing() {
               <TextReveal>{content.heroTitle}</TextReveal>
             )}
             <div className={styles.heroLineTwo}>
-               <TextReveal>for the Modern World</TextReveal>
+              <TextReveal>for the Modern World</TextReveal>
             </div>
           </h1>
-          
+
           <p className={styles.heroSubtitle}>
             {content.heroSubtitle}
           </p>
-          
+
           <div className={styles.heroBtns}>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05, boxShadow: 'var(--shadow-primary)' }}
               whileTap={{ scale: 0.95 }}
               className={`${styles.primaryBtn} glow-ring`}
             >
               {content.downloadApp}
             </motion.button>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/login')} 
+              onClick={() => navigate('/login')}
               className={styles.secondaryBtn}
             >
               {content.joinProvider} <ArrowRight size={18} />
@@ -739,7 +745,7 @@ export default function Landing() {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className={styles.heroImageContainer}
           initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -748,8 +754,8 @@ export default function Landing() {
           <div className="morph-blob" style={{ width: '120%', height: '120%', top: '-10%', left: '-10%', background: 'linear-gradient(135deg, rgba(255,123,84,0.15), rgba(45,212,191,0.1))' }} />
           <div className={styles.imageBlob}></div>
           <img src="/petzeno_landing_hero.png" alt="Happy pets" className={styles.heroImage} />
-          
-          <motion.div 
+
+          <motion.div
             className={`${styles.statsFloating} glass-effect`}
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -781,51 +787,87 @@ export default function Landing() {
         <div className="orb orb-teal" style={{ width: '350px', height: '350px', top: '20%', left: '-10%', opacity: 0.15, zIndex: -1 }} />
         <div className="orb orb-primary" style={{ width: '300px', height: '300px', bottom: '10%', right: '-5%', opacity: 0.15, zIndex: -1 }} />
         <motion.div
-           className={styles.centeredHeader}
-           initial={{ opacity: 0, y: 20 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
+          className={styles.centeredHeader}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
         >
           <h2 className={styles.sectionTitle}>{content.stakeholderTitle}</h2>
           <p className={styles.sectionSubtitle}>{content.stakeholderSubtitle}</p>
         </motion.div>
-        
+
         <div className={styles.featuresGrid}>
-          <FeatureCard 
+          <FeatureCard
             index={0}
-            icon={Shield} 
-            title="Veterinary Ecosystem" 
+<<<<<<< Updated upstream
+            icon={Shield}
+            title="Veterinary Ecosystem"
             description="Integrated clinic management systems for veterinarians with seamless appointment booking and medical record synchronization."
+=======
+            icon={Shield}
+            title="Elite Vet Network"
+            description="Complete clinic operations, medical records, and appointment scheduling with 100% data integrity."
+>>>>>>> Stashed changes
           />
-          <FeatureCard 
+          <FeatureCard
             index={1}
-            icon={Activity} 
-            title="Digital Health Cards" 
+<<<<<<< Updated upstream
+            icon={Activity}
+            title="Digital Health Cards"
             description="Secure pet profiles and digital health cards to store complete medical history, vaccination records, and health reminders."
+=======
+            icon={Heart}
+            title="Shelter Intelligence"
+            description="Manage adoptions, track pet availability, and find loving homes with AI-driven matching."
+>>>>>>> Stashed changes
           />
-          <FeatureCard 
+          <FeatureCard
             index={2}
-            icon={Heart} 
-            title="Shelter & Adoption" 
+<<<<<<< Updated upstream
+            icon={Heart}
+            title="Shelter & Adoption"
             description="Unified platform for pet adoption, shelter management tracking, and a dedicated 'Lost & Found' network."
+=======
+            icon={Globe}
+            title="Ecosystem Inventory"
+            description="Inventory management for pet stores and service providers with global supply sync."
+>>>>>>> Stashed changes
           />
-          <FeatureCard 
+          <FeatureCard
             index={3}
-            icon={Globe} 
-            title="Dashboards & Analytics" 
+<<<<<<< Updated upstream
+            icon={Globe}
+            title="Dashboards & Analytics"
             description="Web dashboards for store inventory tracking and advanced analytics for monitoring pet health trends and service usage."
+=======
+            icon={Activity}
+            title="Emergency 24/7"
+            description="One-tap access to emergency pet services and critical care transportation."
+>>>>>>> Stashed changes
           />
-          <FeatureCard 
+          <FeatureCard
             index={4}
-            icon={Zap} 
-            title="Emergency SOS" 
+<<<<<<< Updated upstream
+            icon={Zap}
+            title="Emergency SOS"
             description="High-priority SOS feature providing instant access to urgent veterinary assistance and emergency care facilities."
+=======
+            icon={Zap}
+            title="Premium Nutrition"
+            description="Custom diet plans verified by top nutritionists for your elite companions."
+>>>>>>> Stashed changes
           />
-          <FeatureCard 
+          <FeatureCard
             index={5}
-            icon={Users} 
-            title="Social Community" 
+<<<<<<< Updated upstream
+            icon={Users}
+            title="Social Community"
             description="Connect with a verified community of pet lovers to share updates, stories, and advice within a safe digital ecosystem."
+=======
+            icon={Lock}
+            title="Pet Passport"
+            description="A secure, digital identity for your pet, valid across the entire verified ecosystem."
+>>>>>>> Stashed changes
           />
         </div>
       </section>
@@ -842,8 +884,8 @@ export default function Landing() {
             { icon: ShoppingBag, title: "Manage Dashboards", desc: "Clinics, shelters aur shops ke liye web-based management panels ka upyog karein." },
             { icon: Zap, title: "Emergency SOS", desc: "Kisi bhi urgent situation mein one-tap SOS button use karke emergency assistance payein." }
           ].map((item, idx) => (
-            <motion.div 
-              key={idx} 
+            <motion.div
+              key={idx}
               className={styles.stepCard}
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -861,28 +903,28 @@ export default function Landing() {
 
       <section id="testimonials" className={styles.testimonialsSection}>
         <div className={styles.centeredHeader}>
-          <h2 className={styles.sectionTitle}>Trusted by Indian Community</h2>
-          <p className={styles.sectionSubtitle}>Hear from the ones who use PetZeno every day.</p>
+          <h2 className={styles.sectionTitle}>Trusted by the Community</h2>
+          <p className={styles.sectionSubtitle}>Hear from pet parents, elite vets, and verified shelters using our complete ecosystem every day.</p>
         </div>
         <div className={styles.testimonialsGrid}>
-          <TestimonialCard 
+          <TestimonialCard
             name="Dr. Ananya Iyer"
-            role="Chief Vet, Paws & Claws (Mumbai)"
-            quote="PetZeno ne hamare clinic ka operation bilkul change kar diya hai. Medical records manage karna ab bahut aasan hai, aur AI insights help karti hain!"
+            role="Chief Vet, Paws & Claws"
+            quote="PetZeno's web dashboard completely transformed our clinic. Managing operations, tracking digital health cards, and booking vaccinations is now entirely seamless."
             image="/indian_vet.png"
             delay={0.1}
           />
-          <TestimonialCard 
+          <TestimonialCard
             name="Rahul Malhotra"
-            role="Pet Parent, New Delhi"
-            quote="Mere Labrador ke liye mujhe best vet PetZeno se hi mila. Booking process bilkul smooth hai aur saare records mere phone me rehte hain."
+            role="Pet Parent"
+            quote="The emergency SOS feature alone makes this application a lifesaver. Plus, having all vaccination reminders and medical records in one place is incredibly convenient."
             image="/indian_owner.png"
             delay={0.2}
           />
-          <TestimonialCard 
+          <TestimonialCard
             name="Kavita Reddy"
-            role="Director, Hope Shelter (Hyderabad)"
-            quote="Jab se hum PetZeno se jude hain, adoption rate 40% badh gaya hai. Ye platform humein directly genuine pet lovers se connect karta hai."
+            role="Shelter Director"
+            quote="Since deploying the shelter management panel, our adoptions have increased by 40%. Tracking availability and matching pets with loving owners has never been easier."
             image="https://api.dicebear.com/7.x/avataaars/svg?seed=Kavita"
             delay={0.3}
           />
@@ -890,7 +932,7 @@ export default function Landing() {
       </section>
 
       <section id="security" className={styles.securitySection}>
-        <motion.div 
+        <motion.div
           className={`${styles.securityBox} glass-effect`}
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -902,7 +944,7 @@ export default function Landing() {
           </div>
           <h2>Fully Verified Indian Network</h2>
           <p>
-            Fraudulent services ko rokne ke liye, hum har provider ko manually verify karte hain. 
+            Fraudulent services ko rokne ke liye, hum har provider ko manually verify karte hain.
             Vets aur Shelters ko valid registration documents submit karne hote hain.
           </p>
           <div className={styles.securitySteps}>
@@ -911,8 +953,8 @@ export default function Landing() {
               "Document Verification",
               "Gateway Access"
             ].map((step, idx) => (
-              <motion.div 
-                key={idx} 
+              <motion.div
+                key={idx}
                 className={styles.step}
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -936,36 +978,36 @@ export default function Landing() {
           <p className={styles.sectionSubtitle}>Everything you need to know about India's most advanced pet ecosystem.</p>
         </div>
         <div className={styles.faqList}>
-          <FAQItem 
-            question="Is PetZeno free for pet owners?" 
+          <FAQItem
+            question="Is PetZeno free for pet owners?"
             answer="Absolutely! PetZeno is free for pet owners. You can search for verified vets, book appointments, and manage all your pet's health records at no cost."
           />
-          <FAQItem 
-            question="How do I register as a Veterinary Provider?" 
+          <FAQItem
+            question="How do I register as a Veterinary Provider?"
             answer="Click on the 'Join as Provider' button, fill in your clinic's details, and upload your professional certifications. Our team will verify your documents within 24-48 hours."
           />
-          <FAQItem 
-            question="How is my pet's medical data secured?" 
+          <FAQItem
+            question="How is my pet's medical data secured?"
             answer="We use enterprise-grade end-to-end encryption to ensure that your pet's medical history is only accessible to you and the veterinarians you share it with."
           />
-          <FAQItem 
-            question="Can I manage multiple pets on one account?" 
+          <FAQItem
+            question="Can I manage multiple pets on one account?"
             answer="Yes! You can add multiple pet profiles under a single account, each with their own unique medical history, vaccination records, and appointment schedules."
           />
-          <FAQItem 
-            question="What happens if I have an emergency?" 
+          <FAQItem
+            question="What happens if I have an emergency?"
             answer="The PetZeno app features a dedicated 'Emergency' button that instantly lists the nearest 24/7 animal hospitals and available emergency vet clinics in your area."
           />
-          <FAQItem 
-            question="Are all service providers on the platform verified?" 
+          <FAQItem
+            question="Are all service providers on the platform verified?"
             answer="Yes, every veterinarian, shelter, and store owner must go through a manual verification process, including background checks and license validation, before joining our network."
           />
-          <FAQItem 
-            question="Can I switch between an Owner and a Provider profile?" 
+          <FAQItem
+            question="Can I switch between an Owner and a Provider profile?"
             answer="Currently, Owner and Provider accounts are separate to maintain data integrity. However, you can use the same email address to register for both roles with distinct profiles."
           />
-          <FAQItem 
-            question="Does PetZeno support pet adoption?" 
+          <FAQItem
+            question="Does PetZeno support pet adoption?"
             answer="Yes! We partner with verified shelters across India to showcase pets available for adoption. You can view profiles, chat with shelter directors, and start the adoption process directly through the app."
           />
         </div>
@@ -973,7 +1015,7 @@ export default function Landing() {
 
       <Newsletter />
       <section className={styles.finalCTA}>
-        <motion.div 
+        <motion.div
           className={styles.ctaBox}
           whileInView={{ scale: [0.95, 1], opacity: [0, 1] }}
           transition={{ duration: 0.8 }}
@@ -992,29 +1034,29 @@ export default function Landing() {
         <div className="orb orb-primary" style={{ width: '200px', height: '200px', bottom: '-20%', right: '10%', opacity: 0.15 }} />
         <div className={styles.footerGrid}>
           <div className={styles.footerInfo}>
-             <div className={styles.footerBrand}>
-                <img src="/petzeno-logo.png" alt="PetZeno" className={styles.footerLogo} />
-                <span>PetZeno</span>
-             </div>
-             <p>Building India's largest secure network for pet stakeholders.</p>
+            <div className={styles.footerBrand}>
+              <img src="/petzeno-logo.png" alt="PetZeno" className={styles.footerLogo} />
+              <span>PetZeno</span>
+            </div>
+            <p>The ultimate Pet Care Super App integrating health cards, adoption, store inventory, and emergency services.</p>
           </div>
           <div className={styles.footerLinks}>
-             <h4>Company</h4>
-             <a href="#features">About Us</a>
-             <a href="#how-it-works">How it Works</a>
-             <a href="#">Security</a>
+            <h4>Ecosystem</h4>
+            <a href="#features">Mobile Application</a>
+            <a href="#features">Provider Dashboard</a>
+            <a href="#features">Shelter Management</a>
           </div>
           <div className={styles.footerLinks}>
-             <h4>Legal</h4>
-             <a href="#">Privacy Policy</a>
-             <a href="#">Terms of Service</a>
-             <a href="#">Cookie Policy</a>
+            <h4>Legal</h4>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Cookie Policy</a>
           </div>
           <div className={styles.footerLinks}>
-             <h4>Contact</h4>
-             <a href="mailto:support@petzeno.com">support@petzeno.com</a>
-             <div className={styles.socials}>
-             </div>
+            <h4>Contact</h4>
+            <a href="mailto:support@petzeno.com">support@petzeno.com</a>
+            <div className={styles.socials}>
+            </div>
           </div>
         </div>
         <div className={styles.footerBottom}>
@@ -1023,7 +1065,7 @@ export default function Landing() {
       </footer>
 
       <div className={styles.voiceControlWrapper} data-tooltip={content.voiceTip}>
-        <motion.button 
+        <motion.button
           className={styles.accessibilityBtn}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
