@@ -653,55 +653,55 @@ export default function Landing() {
           <motion.a href="#community" whileHover={{ y: -2 }}>{content.community}</motion.a>
           <motion.a href="#testimonials" whileHover={{ y: -2 }}>{content.reviews}</motion.a>
           <motion.a href="#support" whileHover={{ y: -2 }}>{content.support}</motion.a>
-          <div className={styles.navControls}>
-            <div className={styles.navSeparator} />
+        </div>
 
-            <div className={styles.controlWrapper} data-tooltip={content.themeTip}>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className={styles.themeToggle}
-                onClick={toggleTheme}
-                aria-label="Toggle Theme"
-              >
-                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-              </motion.button>
-            </div>
+        <div className={styles.navControls}>
 
-            <div className={styles.controlWrapper} data-tooltip={content.voiceTip}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={styles.voiceToggle}
-                onClick={readPage}
-                aria-label="Read Page"
-              >
-                <Volume2 size={18} className={isSpeaking ? styles.pulseIcon : ''} />
-              </motion.button>
-            </div>
+          <div className={styles.controlWrapper} data-tooltip={content.themeTip}>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className={styles.themeToggle}
+              onClick={toggleTheme}
+              aria-label="Toggle Theme"
+            >
+              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            </motion.button>
+          </div>
 
-            <div className={styles.controlWrapper} data-tooltip={content.langTip}>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={styles.langToggle}
-                onClick={toggleLang}
-                aria-label="Switch Language"
-              >
-                <Languages size={18} />
-                <span>{lang.toUpperCase()}</span>
-              </motion.button>
-            </div>
-
+          <div className={styles.controlWrapper} data-tooltip={content.voiceTip}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/login')}
-              className={styles.loginBtn}
+              className={styles.voiceToggle}
+              onClick={readPage}
+              aria-label="Read Page"
             >
-              {content.providerPortal}
+              <Volume2 size={18} className={isSpeaking ? styles.pulseIcon : ''} />
             </motion.button>
           </div>
+
+          <div className={styles.controlWrapper} data-tooltip={content.langTip}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={styles.langToggle}
+              onClick={toggleLang}
+              aria-label="Switch Language"
+            >
+              <Languages size={18} />
+              <span>{lang.toUpperCase()}</span>
+            </motion.button>
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/login')}
+            className={styles.loginBtn}
+          >
+            {content.providerPortal}
+          </motion.button>
         </div>
       </nav>
 
