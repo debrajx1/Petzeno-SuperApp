@@ -235,13 +235,13 @@ const HorizontalPetUniverse = () => {
     offset: ["start start", "end end"]
   });
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]); /* Lower percentage to prevent blank space on large screens */
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-300%"]); /* Faster scroll for wider portals */
 
   const items = [
-    { title: "Elite Vets", desc: "Top 1% veterinary experts across India at your service.", img: "/indian_vet.png" },
-    { title: "Premium Shop", desc: "Verified nutrition and elite gear for your companions.", img: "/petzeno_landing_hero.png" },
-    { title: "Global Shelters", desc: "Connected network of verified adoption centers.", img: "/indian_owner.png" },
-    { title: "Mobile Core", desc: "The entire ecosystem in the palm of your hand.", img: "/petzeno-logo.png" }
+    { title: "Elite Vets", desc: "Access the top 1% of veterinary experts across the nation with AI-powered diagnostics.", img: "/indian_vet.png" },
+    { title: "Smart Shop", desc: "Curated premium nutrition and IoT-enabled gear for the modern pet parent.", img: "/petzeno_landing_hero.png" },
+    { title: "Safe Haven", desc: "A decentralized network of verified shelters ensuring every pet finds a home.", img: "/indian_owner.png" },
+    { title: "Core Sync", desc: "Your entire pet's health, history, and heart—synced across all devices.", img: "/petzeno-logo.png" }
   ];
 
   if (isMobile) {
@@ -250,20 +250,20 @@ const HorizontalPetUniverse = () => {
         <div className={styles.horizontalScrollHeader}>
            <h2 className="elite-heading" style={{ fontSize: '3rem' }}>The PetZeno<br/><span className="shimmer-3d">Universe</span></h2>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '0 5%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem', padding: '0 5%' }}>
           {items.map((item, i) => (
             <motion.div 
               key={i} 
-              className={styles.universeCard}
-              style={{ minWidth: 'auto', width: '100%', height: '400px' }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              className={styles.immersivePortal}
+              style={{ minWidth: 'auto', width: '100%', height: 'auto', margin: 0, padding: '2rem' }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
             >
-              <img src={item.img} alt={item.title} className={styles.universeBg} />
-              <div className={styles.universeOverlay} />
-              <h3 className={styles.universeTitle} style={{ fontSize: '2rem' }}>{item.title}</h3>
-              <p className={styles.universeDesc}>{item.desc}</p>
+              <div className={styles.portalContent} style={{ transform: 'none', background: 'none', border: 'none' }}>
+                <h3 className={styles.portalTitle} style={{ fontSize: '2.5rem' }}>{item.title}</h3>
+                <p className={styles.portalDesc}>{item.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -275,15 +275,19 @@ const HorizontalPetUniverse = () => {
     <section ref={targetRef} className={styles.horizontalScrollSection}>
       <div className={styles.horizontalScrollSticky}>
         <div className={styles.horizontalScrollHeader}>
-           <h2 className="elite-heading"><TextReveal>The PetZeno</TextReveal><br/><TextReveal className="shimmer-3d">Universe</TextReveal></h2>
+           <h2 className="elite-heading" style={{ fontSize: '4.5rem' }}><TextReveal>The PetZeno</TextReveal><br/><TextReveal className="shimmer-3d">Universe</TextReveal></h2>
         </div>
         <motion.div style={{ x }} className={styles.horizontalScrollTrack}>
           {items.map((item, i) => (
-            <div key={i} className={styles.universeCard}>
-              <img src={item.img} alt={item.title} className={styles.universeBg} />
-              <div className={styles.universeOverlay} />
-              <h3 className={styles.universeTitle}>{item.title}</h3>
-              <p className={styles.universeDesc}>{item.desc}</p>
+            <div key={i} className={styles.immersivePortal}>
+              <div className={styles.portalMedia}>
+                 <img src={item.img} alt={item.title} className={styles.portalImage} />
+                 <div className={styles.portalOverlay} />
+              </div>
+              <div className={styles.portalContent}>
+                <h3 className={styles.portalTitle}>{item.title}</h3>
+                <p className={styles.portalDesc}>{item.desc}</p>
+              </div>
             </div>
           ))}
         </motion.div>
