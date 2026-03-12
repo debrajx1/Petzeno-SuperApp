@@ -381,67 +381,94 @@ const Newsletter = () => {
 
 const ConnectionRoadmap = ({ title }) => {
   const points = [
-    { id: 'parents', label: 'Pet Parents', icon: Heart, x: '10%', y: '50%' },
-    { id: 'vets', label: 'Veterinarians', icon: PlusCircle, x: '90%', y: '20%' },
-    { id: 'shelters', label: 'Shelters', icon: Shield, x: '90%', y: '80%' },
-    { id: 'core', label: 'PetZeno Core', icon: Zap, x: '50%', y: '50%', main: true }
+    { id: 'sos', label: 'Emergency SOS', icon: Activity, x: '20%', y: '15%', color: '#ef4444' }, // Red
+    { id: 'parents', label: 'Pet Parents', icon: Heart, x: '10%', y: '50%', color: '#ec4899' }, // Pink
+    { id: 'training', label: 'Pro Training', icon: Zap, x: '20%', y: '85%', color: '#8b5cf6' }, // Purple
+    { id: 'shops', label: 'Pet Stores', icon: ShoppingBag, x: '80%', y: '15%', color: '#f59e0b' }, // Amber
+    { id: 'vets', label: 'Veterinarians', icon: PlusCircle, x: '90%', y: '50%', color: '#10b981' }, // Emerald
+    { id: 'labs', label: 'Diagnostic Labs', icon: Search, x: '80%', y: '85%', color: '#3b82f6' }, // Blue
+    { id: 'core', label: 'PetZeno Core', icon: Zap, x: '50%', y: '50%', main: true, color: '#f97316' } // Orange
   ];
 
   return (
     <section className={styles.roadmapSection}>
       <div className={styles.centeredHeader}>
         <h2 className={styles.sectionTitle}>{title}</h2>
-        <p className={styles.sectionSubtitle}>Connecting every node in the pet care universe seamlessly.</p>
+        <p className={styles.sectionSubtitle}>Connecting every node in the pet care universe through a central verified hub.</p>
       </div>
       <div className={styles.roadmapContainer}>
         <svg className={styles.roadmapSvg} viewBox="0 0 100 100" preserveAspectRatio="none">
-          <motion.path
-            d="M 10 50 L 50 50"
-            stroke="#2dd4bf"
-            strokeWidth="0.5"
-            fill="none"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          />
-          <motion.path
-            d="M 50 50 L 90 20"
-            stroke="#2dd4bf"
-            strokeWidth="0.3"
-            style={{ strokeOpacity: 0.6 }}
-            strokeDasharray="1,1"
-            fill="none"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            transition={{ duration: 1.5, delay: 0.5 }}
-          />
-          <motion.path
-            d="M 50 50 L 90 80"
-            stroke="#2dd4bf"
-            strokeWidth="0.3"
-            style={{ strokeOpacity: 0.6 }}
-            strokeDasharray="1,1"
-            fill="none"
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            transition={{ duration: 1.5, delay: 0.5 }}
-          />
+          {/* Central Hub Connections */}
+          {points.filter(p => !p.main).map((p, i) => {
+            const xVal = parseFloat(p.x);
+            const yVal = parseFloat(p.y);
+            const path = `M ${xVal} ${yVal} L 50 50`;
+            return (
+              <React.Fragment key={p.id}>
+                {/* Static Background Path */}
+                <motion.path
+                  d={path}
+                  stroke={p.color}
+                  strokeWidth="0.2"
+                  style={{ strokeOpacity: 0.15 }}
+                  fill="none"
+                />
+                {/* Animated Entrance Path */}
+                <motion.path
+                  d={path}
+                  stroke={p.color}
+                  strokeWidth="0.4"
+                  fill="none"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  whileInView={{ pathLength: 1, opacity: 0.4 }}
+                  transition={{ duration: 1.5, delay: i * 0.1 }}
+                />
+                {/* Data Pulse (Color Matched) */}
+                <motion.circle
+                  r="0.5"
+                  fill={p.color}
+                  initial={{ offsetDistance: "0%" }}
+                  animate={{ offsetDistance: "100%" }}
+                  transition={{
+                    duration: 3 + Math.random() * 2,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: i * 0.4
+                  }}
+                  style={{
+                    offsetPath: `path("${path}")`,
+                    filter: `drop-shadow(0 0 4px ${p.color})`
+                  }}
+                />
+              </React.Fragment>
+            );
+          })}
         </svg>
 
         {points.map((p, idx) => (
           <motion.div
             key={p.id}
             className={`${styles.roadmapNode} ${p.main ? styles.nodeMain : ''}`}
-            style={{ left: p.x, top: p.y }}
+            style={{
+              left: p.x,
+              top: p.y,
+              '--node-color': p.color
+            }}
             initial={{ scale: 0, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
-            transition={{ delay: idx * 0.2 }}
+            transition={{
+              type: "spring",
+              stiffness: 260,
+              damping: 20,
+              delay: idx * 0.1
+            }}
           >
             <div className={styles.nodeIconWrapper}>
-              <div className={styles.nodeIcon}>
-                <p.icon size={p.main ? 32 : 24} />
+              <div className={styles.nodeIcon} style={{ borderColor: p.main ? 'transparent' : `${p.color}44`, color: p.color }}>
+                <p.icon size={p.main ? 36 : 24} />
+                {!p.main && <div className={styles.nodeAura} style={{ background: p.color }} />}
               </div>
-              {p.main && <div className={styles.nodePulse}></div>}
+              {p.main && <div className={styles.nodePulse} style={{ background: `${p.color}66` }}></div>}
             </div>
             <div className={styles.nodeLabel}>{p.label}</div>
           </motion.div>
@@ -493,13 +520,17 @@ export default function Landing() {
   const [theme, setTheme] = useState('light');
   const [lang, setLang] = useState('en');
   const { scrollYProgress } = useScroll();
+  const lenisRef = useRef(null);
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.5,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      lerp: 0.05
     });
+
+    lenisRef.current = lenis;
 
     function raf(time) {
       lenis.raf(time);
@@ -508,8 +539,24 @@ export default function Landing() {
 
     requestAnimationFrame(raf);
 
-    return () => lenis.destroy();
+    return () => {
+      lenis.destroy();
+      lenisRef.current = null;
+    };
   }, []);
+
+  const scrollToSection = (id) => {
+    if (lenisRef.current) {
+      const target = document.querySelector(id);
+      if (target) {
+        lenisRef.current.scrollTo(target, {
+          offset: -100,
+          duration: 1.8,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
+        });
+      }
+    }
+  };
 
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -638,7 +685,13 @@ export default function Landing() {
           <motion.div
             className={styles.logo}
             whileHover={{ scale: 1.05 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => {
+              if (lenisRef.current) {
+                lenisRef.current.scrollTo(0, { duration: 1.5 });
+              } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
           >
             <div className={styles.logoIcon}>
               <img src="/petzeno-logo.png" alt="PetZeno" className={styles.brandLogo} />
@@ -648,11 +701,11 @@ export default function Landing() {
         </div>
 
         <div className={styles.navLinks}>
-          <motion.a href="#features" whileHover={{ y: -2 }}>{content.features}</motion.a>
-          <motion.a href="#how-it-works" whileHover={{ y: -2 }}>{content.process}</motion.a>
-          <motion.a href="#community" whileHover={{ y: -2 }}>{content.community}</motion.a>
-          <motion.a href="#testimonials" whileHover={{ y: -2 }}>{content.reviews}</motion.a>
-          <motion.a href="#support" whileHover={{ y: -2 }}>{content.support}</motion.a>
+          <motion.a href="#universe" whileHover={{ y: -2 }} onClick={(e) => { e.preventDefault(); scrollToSection('#universe'); }}>{content.features}</motion.a>
+          <motion.a href="#how-it-works" whileHover={{ y: -2 }} onClick={(e) => { e.preventDefault(); scrollToSection('#how-it-works'); }}>{content.process}</motion.a>
+          <motion.a href="#community" whileHover={{ y: -2 }} onClick={(e) => { e.preventDefault(); scrollToSection('#community'); }}>{content.community}</motion.a>
+          <motion.a href="#testimonials" whileHover={{ y: -2 }} onClick={(e) => { e.preventDefault(); scrollToSection('#testimonials'); }}>{content.reviews}</motion.a>
+          <motion.a href="#support" whileHover={{ y: -2 }} onClick={(e) => { e.preventDefault(); scrollToSection('#support'); }}>{content.support}</motion.a>
         </div>
 
         <div className={styles.navControls}>
@@ -855,26 +908,45 @@ export default function Landing() {
           <h2 className={styles.sectionTitle}>How PetZeno Works</h2>
           <p className={styles.sectionSubtitle}>A seamless experience for pet owners and care providers.</p>
         </div>
-        <div className={styles.stepsGrid}>
+
+        <div className={styles.roadmapWrapper}>
+          <div className={styles.roadmapLineContainer}>
+            <svg className={styles.roadmapSvgLine} viewBox="0 0 4 100" preserveAspectRatio="none">
+              <motion.path
+                d="M 2 0 L 2 100"
+                stroke="var(--color-primary)"
+                strokeWidth="4"
+                strokeDasharray="10,10"
+                fill="none"
+                initial={{ pathLength: 0 }}
+                whileInView={{ pathLength: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 2, ease: "easeInOut" }}
+              />
+            </svg>
+          </div>
+
           {[
             { icon: Search, title: "Create Profile", desc: "Digital health card banayein aur medical history aur vaccination records ek jagah manage karein." },
             { icon: Calendar, title: "Book & Remind", desc: "Appointments schedule karein aur autonomous vaccination aur health reminders payein." },
             { icon: ShoppingBag, title: "Manage Dashboards", desc: "Clinics, shelters aur shops ke liye web-based management panels ka upyog karein." },
             { icon: Zap, title: "Emergency SOS", desc: "Kisi bhi urgent situation mein one-tap SOS button use karke emergency assistance payein." }
           ].map((item, idx) => (
-            <motion.div
-              key={idx}
-              className={styles.stepCard}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.15 }}
-            >
-              <div className={styles.stepNumber}>0{idx + 1}</div>
-              <div className={styles.stepIcon}><item.icon size={28} /></div>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
-            </motion.div>
+            <div key={idx} className={`${styles.stepWrapper} ${idx % 2 === 0 ? styles.stepWrapperLeft : styles.stepWrapperRight}`}>
+              <motion.div
+                className={styles.stepCard}
+                initial={{ opacity: 0, x: idx % 2 === 0 ? -100 : 100 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <div className={styles.stepNumber}>0{idx + 1}</div>
+                <div className={styles.stepIcon}><item.icon size={32} /></div>
+                <div className={styles.stepDot} />
+                <h3>{item.title}</h3>
+                <p>{item.desc}</p>
+              </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -909,43 +981,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="security" className={styles.securitySection}>
-        <motion.div
-          className={`${styles.securityBox} glass-effect`}
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className={styles.securityIcon}>
-            <Lock size={40} color="white" />
-          </div>
-          <h2>Fully Verified Indian Network</h2>
-          <p>
-            Fraudulent services ko rokne ke liye, hum har provider ko manually verify karte hain.
-            Vets aur Shelters ko valid registration documents submit karne hote hain.
-          </p>
-          <div className={styles.securitySteps}>
-            {[
-              "Join Network",
-              "Document Verification",
-              "Gateway Access"
-            ].map((step, idx) => (
-              <motion.div
-                key={idx}
-                className={styles.step}
-                initial={{ opacity: 0, x: -10 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + (idx * 0.2) }}
-                viewport={{ once: true }}
-              >
-                <CheckCircle size={20} color="var(--color-success)" />
-                <span>{step}</span>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
+
 
       <ConnectionRoadmap title={content.roadmapTitle} />
       <TeamSection title={content.meetTeam} />
@@ -1003,6 +1039,45 @@ export default function Landing() {
           <div className={styles.ctaBtns}>
             <button className={styles.ctaPrimary}>Download App</button>
             <button className={styles.ctaSecondary} onClick={() => navigate('/login')}>Provider Login</button>
+          </div>
+        </motion.div>
+      </section>
+
+      <section id="security" className={styles.securitySection}>
+        <motion.div
+          className={styles.securityBox}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className={styles.scanningLine} />
+          <div className={styles.securityIcon}>
+            <Shield size={36} color="white" />
+          </div>
+          <h2 className="shimmer-3d">Verified Professional Network</h2>
+          <p>
+            To eliminate fraudulent services and ensure elite care standards, we manually verify every single provider.
+            Vets and shelters must undergo rigorous background checks and document validation before joining the PetZeno ecosystem.
+          </p>
+          <div className={styles.securitySteps}>
+            {[
+              "Join Network",
+              "Document Verification",
+              "Gateway Access"
+            ].map((step, idx) => (
+              <motion.div
+                key={idx}
+                className={styles.step}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + (idx * 0.2) }}
+                viewport={{ once: true }}
+              >
+                <CheckCircle size={20} color="var(--color-success)" />
+                <span>{step}</span>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </section>
