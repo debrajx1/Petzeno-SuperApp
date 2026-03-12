@@ -799,75 +799,39 @@ export default function Landing() {
         <div className={styles.featuresGrid}>
           <FeatureCard
             index={0}
-<<<<<<< Updated upstream
             icon={Shield}
             title="Veterinary Ecosystem"
-            description="Integrated clinic management systems for veterinarians with seamless appointment booking and medical record synchronization."
-=======
-            icon={Shield}
-            title="Elite Vet Network"
             description="Complete clinic operations, medical records, and appointment scheduling with 100% data integrity."
->>>>>>> Stashed changes
           />
           <FeatureCard
             index={1}
-<<<<<<< Updated upstream
             icon={Activity}
             title="Digital Health Cards"
             description="Secure pet profiles and digital health cards to store complete medical history, vaccination records, and health reminders."
-=======
-            icon={Heart}
-            title="Shelter Intelligence"
-            description="Manage adoptions, track pet availability, and find loving homes with AI-driven matching."
->>>>>>> Stashed changes
           />
           <FeatureCard
             index={2}
-<<<<<<< Updated upstream
             icon={Heart}
-            title="Shelter & Adoption"
-            description="Unified platform for pet adoption, shelter management tracking, and a dedicated 'Lost & Found' network."
-=======
-            icon={Globe}
-            title="Ecosystem Inventory"
-            description="Inventory management for pet stores and service providers with global supply sync."
->>>>>>> Stashed changes
+            title="Shelter Intelligence"
+            description="Manage adoptions, track pet availability, and find loving homes with AI-driven matching."
           />
           <FeatureCard
             index={3}
-<<<<<<< Updated upstream
             icon={Globe}
-            title="Dashboards & Analytics"
-            description="Web dashboards for store inventory tracking and advanced analytics for monitoring pet health trends and service usage."
-=======
-            icon={Activity}
-            title="Emergency 24/7"
-            description="One-tap access to emergency pet services and critical care transportation."
->>>>>>> Stashed changes
+            title="Ecosystem Dashboards"
+            description="Integrated inventory management for pet stores and advanced analytics for providers with global sync."
           />
           <FeatureCard
             index={4}
-<<<<<<< Updated upstream
             icon={Zap}
             title="Emergency SOS"
-            description="High-priority SOS feature providing instant access to urgent veterinary assistance and emergency care facilities."
-=======
-            icon={Zap}
-            title="Premium Nutrition"
-            description="Custom diet plans verified by top nutritionists for your elite companions."
->>>>>>> Stashed changes
+            description="One-tap access to emergency pet services, urgent veterinary assistance, and critical care transportation."
           />
           <FeatureCard
             index={5}
-<<<<<<< Updated upstream
-            icon={Users}
-            title="Social Community"
-            description="Connect with a verified community of pet lovers to share updates, stories, and advice within a safe digital ecosystem."
-=======
             icon={Lock}
             title="Pet Passport"
             description="A secure, digital identity for your pet, valid across the entire verified ecosystem."
->>>>>>> Stashed changes
           />
         </div>
       </section>
