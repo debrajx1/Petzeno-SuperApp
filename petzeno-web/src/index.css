@@ -290,9 +290,9 @@ button {
   font-weight: 800;
   letter-spacing: -0.04em;
   text-transform: uppercase;
-  font-size: clamp(2.2rem, 10vw, 5rem); /* Slightly smaller max to prevent massive overlap */
+  font-size: clamp(2.2rem, 10vw, 4rem); /* Compact max size for page-fit */
   line-height: 0.95; /* Increased from 0.85 for safer readability */
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
 }
 
 .text-reveal {

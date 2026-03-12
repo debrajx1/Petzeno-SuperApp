@@ -29,24 +29,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 2.5rem;
-  position: fixed; /* Switched from sticky for robust persistence */
+  padding: 0.7rem 2.5rem;
+  position: fixed;
   top: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  max-width: 1400px;
+  max-width: 1300px;
   width: 95%;
   z-index: 1000;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Glass rim effect */
   box-shadow: 
     0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-    0 2px 4px -1px rgba(0, 0, 0, 0.06),
-    inset 0 0 20px 0 rgba(255, 255, 255, 0.05);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav:hover {
@@ -69,15 +69,14 @@
 }
 
 .logoIcon {
-  width: 36px;
-  height: 36px;
-  background: var(--grad-primary);
-  border-radius: var(--radius-md);
+  width: 44px; /* Increased for better presence */
+  height: 44px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-primary);
   overflow: hidden;
+  border-radius: var(--radius-md); /* Slightly larger radius for the larger icon */
 }
 
 .brandLogo, .footerLogo {
@@ -89,40 +88,32 @@
 .navLinks {
   display: flex;
   align-items: center;
-  gap: 3.5rem;
+  gap: 1.5rem; /* Tighter gap for the pill effect */
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.4rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .navLinks a {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   color: var(--color-text-main);
   text-decoration: none;
-  letter-spacing: 0.02em;
-  opacity: 0.8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.4rem;
+  border-radius: var(--radius-full);
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.7;
 }
 
 .navLinks a:hover {
   opacity: 1;
-  color: var(--color-primary);
-  text-shadow: 0 0 15px rgba(255, 123, 84, 0.3);
-}
-
-.navLinks a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--grad-primary);
-  transition: width 0.3s ease;
-  border-radius: var(--radius-full);
-}
-
-.navLinks a:hover::after {
-  width: 100%;
+  color: var(--color-bg-main);
+  background: var(--color-text-main); /* The "Floating Pill" highlight */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .navControls {
@@ -210,22 +201,23 @@
 }
 
 .loginBtn {
-  background: var(--grad-primary);
+  background: linear-gradient(135deg, #ff8a65, #ff6b6b, #ee5253);
   color: white;
   border: none;
-  padding: 0.85rem 2rem;
+  padding: 0.8rem 1.8rem;
   border-radius: var(--radius-full);
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 16px -4px rgba(255, 123, 84, 0.3);
-  letter-spacing: 0.01em;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .loginBtn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 12px 20px -4px rgba(255, 123, 84, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
   filter: brightness(1.1);
 }
 
@@ -234,13 +226,13 @@
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   align-items: center;
-  padding: 1.5rem 5% 4rem 5%; /* Minimized top padding for maximum elevation */
-  gap: 4rem;
+  padding: 6rem 5% 1rem 5%; /* Tightened padding for one-page visibility */
+  gap: 2.5rem;
   max-width: 1300px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
-  min-height: 95vh; /* Increased slightly for that immersive full-page feel */
+  min-height: 100vh; /* Responsive full viewport fill */
 }
 
 .heroContent {
@@ -257,14 +249,14 @@
   border-radius: var(--radius-full);
   font-size: 0.85rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   border: 1px solid rgba(255, 123, 84, 0.2);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .heroTitle {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   max-width: 1000px;
 }
 
@@ -405,7 +397,7 @@
   font-size: 1.35rem;
   color: var(--color-text-muted);
   line-height: 1.6;
-  margin-bottom: 3.5rem;
+  margin-bottom: 1.5rem;
   font-weight: 450;
 }
 
@@ -583,99 +575,99 @@
   line-height: 1.6;
 }
 
-/* Features Section */
 .featuresSection {
-  padding: 8rem 5%;
+  padding: 12rem 5% 10rem 5%;
   position: relative;
-  z-index: 2;
-  perspective: 1200px;
+  z-index: 10;
+  background: var(--color-bg-main);
+  overflow: hidden;
 }
 
 .featuresGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 300px; /* Refined uniform row height */
-  gap: 1.5rem; /* Tighter gap for elite bento feel */
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: minmax(160px, auto);
+  gap: 1.5rem;
   max-width: 1300px;
   margin: 0 auto;
 }
 
 .featureCard {
-  background: var(--color-bg-card);
-  border: 1px solid rgba(255, 255, 255, 0.08); /* Sophisticated hairline border */
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-2xl);
   padding: 2.5rem;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   height: 100%;
   transform-style: preserve-3d;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .featureCard {
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .featureCard:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  border-color: var(--color-primary);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4), 0 18px 36px -18px rgba(0, 0, 0, 0.5);
 }
 
-.featureCard:nth-child(1) { grid-column: span 2; }
-.featureCard:nth-child(4) { grid-row: span 2; }
-.featureCard:nth-child(5) { grid-column: span 2; }
-
-.spotlight {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.featureCard:hover .spotlight {
-  opacity: 1;
-}
+/* Bento Span Logic */
+.featureCard:nth-child(1) { grid-column: span 8; grid-row: span 2; }
+.featureCard:nth-child(2) { grid-column: span 4; grid-row: span 3; }
+.featureCard:nth-child(3) { grid-column: span 4; grid-row: span 2; }
+.featureCard:nth-child(4) { grid-column: span 4; grid-row: span 2; }
+.featureCard:nth-child(5) { grid-column: span 8; grid-row: span 2; }
+.featureCard:nth-child(6) { grid-column: span 4; grid-row: span 1; }
 
 .featureIcon {
-  width: 48px;
-  height: 48px;
-  background: var(--color-primary-soft);
-  border-radius: var(--radius-md);
+  width: 56px;
+  height: 56px;
+  background: var(--color-primary);
+  background: var(--grad-primary);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
-  color: var(--color-primary);
-  transform: translateZ(25px);
-  border: 1px solid rgba(255, 123, 84, 0.2);
+  color: white;
+  transform: translateZ(30px);
+  box-shadow: 0 8px 16px rgba(255, 123, 84, 0.3);
 }
 
 .featureTitle {
-  font-size: 1.6rem;
+  font-size: 1.75rem;
   font-weight: 800;
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
-  transform: translateZ(35px);
+  transform: translateZ(40px);
   line-height: 1.2;
 }
 
 .featureDescription {
   color: var(--color-text-muted);
   line-height: 1.6;
-  font-size: 0.95rem;
-  transform: translateZ(45px);
+  font-size: 1.05rem;
+  transform: translateZ(20px);
   max-width: 90%;
 }
 
 .featurePaw {
   position: absolute;
-  bottom: -15px;
-  right: -15px;
+  bottom: -20px;
+  right: -20px;
   color: var(--color-primary);
-  opacity: 0.05;
+  opacity: 0.1;
   pointer-events: none;
+  transform: rotate(-15deg) translateZ(10px);
 }
 
 /* How It Works Section */

@@ -117,16 +117,18 @@ const FeatureCard = ({ icon: Icon, title, description, index }) => (
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.5 }}
+      transition={{ delay: index * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className={styles.featureCardInner}
     >
       <div className={styles.featureIcon}>
-        <Icon size={28} color="var(--color-primary)" />
+        <Icon size={28} />
       </div>
       <h3 className={styles.featureTitle}>{title}</h3>
       <p className={styles.featureDescription}>{description}</p>
       <div className={styles.featurePaw}>
-        <PawPrint size={80} />
+        <PawPrint size={120} />
       </div>
+      <div className={styles.spotlight} />
     </motion.div>
   </TiltCard>
 );
@@ -551,6 +553,8 @@ export default function Landing() {
       features: "Features",
       process: "Process",
       reviews: "Reviews",
+      community: "Community",
+      support: "Support",
       providerPortal: "Provider Portal",
       stakeholderTitle: "Built for every stakeholder",
       stakeholderSubtitle: "Tailored digital tools for everyone in the pet care journey.",
@@ -570,6 +574,8 @@ export default function Landing() {
       features: "विशेषताएं",
       process: "प्रक्रिया",
       reviews: "समीक्षाएं",
+      community: "कम्युनिटी",
+      support: "सहायता",
       providerPortal: "प्रदाता पोर्टल",
       stakeholderTitle: "हर हितधारक के लिए बनाया गया",
       stakeholderSubtitle: "पेट केयर यात्रा में सभी के लिए तैयार किए गए डिजिटल उपकरण।",
@@ -589,6 +595,8 @@ export default function Landing() {
       features: "ବୈଶିଷ୍ଟ୍ୟ",
       process: "ପ୍ରକ୍ରିୟା",
       reviews: "ସମୀକ୍ଷା",
+      community: "ସମ୍ପ୍ରଦାୟ",
+      support: "ସହାୟତା",
       providerPortal: "ପ୍ରଦାନକାରୀ ପୋର୍ଟାଲ୍",
       stakeholderTitle: "ପ୍ରତ୍ୟେକ ହିତାଧିକାରୀଙ୍କ ପାଇଁ ନିର୍ମିତ",
       stakeholderSubtitle: "ପୋଷା ଯତ୍ନ ଯାତ୍ରାରେ ସମସ୍ତଙ୍କ ପାଇଁ ପ୍ରସ୍ତୁତ ଡିଜିଟାଲ୍ ଉପକରଣ |",
@@ -635,7 +643,9 @@ export default function Landing() {
         <div className={styles.navLinks}>
           <motion.a href="#features" whileHover={{ y: -2 }}>{content.features}</motion.a>
           <motion.a href="#how-it-works" whileHover={{ y: -2 }}>{content.process}</motion.a>
+          <motion.a href="#community" whileHover={{ y: -2 }}>{content.community}</motion.a>
           <motion.a href="#testimonials" whileHover={{ y: -2 }}>{content.reviews}</motion.a>
+          <motion.a href="#support" whileHover={{ y: -2 }}>{content.support}</motion.a>
           
           <div className={styles.navControls}>
             <div className={styles.navSeparator} />
@@ -784,38 +794,38 @@ export default function Landing() {
           <FeatureCard 
             index={0}
             icon={Shield} 
-            title="Elite Vet Network" 
-            description="Complete clinic operations, medical records, and appointment scheduling with 100% data integrity."
+            title="Veterinary Ecosystem" 
+            description="Integrated clinic management systems for veterinarians with seamless appointment booking and medical record synchronization."
           />
           <FeatureCard 
             index={1}
-            icon={Heart} 
-            title="Shelter Intelligence" 
-            description="Manage adoptions, track pet availability, and find loving homes with AI-driven matching."
+            icon={Activity} 
+            title="Digital Health Cards" 
+            description="Secure pet profiles and digital health cards to store complete medical history, vaccination records, and health reminders."
           />
           <FeatureCard 
             index={2}
-            icon={Globe} 
-            title="Ecosystem Inventory" 
-            description="Inventory management for pet stores and service providers with global supply sync."
+            icon={Heart} 
+            title="Shelter & Adoption" 
+            description="Unified platform for pet adoption, shelter management tracking, and a dedicated 'Lost & Found' network."
           />
           <FeatureCard 
             index={3}
-            icon={Activity} 
-            title="Emergency 24/7" 
-            description="One-tap access to emergency pet services and critical care transportation."
+            icon={Globe} 
+            title="Dashboards & Analytics" 
+            description="Web dashboards for store inventory tracking and advanced analytics for monitoring pet health trends and service usage."
           />
           <FeatureCard 
             index={4}
             icon={Zap} 
-            title="Premium Nutrition" 
-            description="Custom diet plans verified by top nutritionists for your elite companions."
+            title="Emergency SOS" 
+            description="High-priority SOS feature providing instant access to urgent veterinary assistance and emergency care facilities."
           />
           <FeatureCard 
             index={5}
-            icon={Lock} 
-            title="Pet Passport" 
-            description="A secure, digital identity for your pet, valid across the entire verified ecosystem."
+            icon={Users} 
+            title="Social Community" 
+            description="Connect with a verified community of pet lovers to share updates, stories, and advice within a safe digital ecosystem."
           />
         </div>
       </section>
@@ -827,10 +837,10 @@ export default function Landing() {
         </div>
         <div className={styles.stepsGrid}>
           {[
-            { icon: Search, title: "Find & Discover", desc: "India ke verified vets, stores, aur shelters ko aasani se dhundein." },
-            { icon: Calendar, title: "Book & Manage", desc: "Appointments schedule karein aur apne pet ke health records manage karein." },
-            { icon: ShoppingBag, title: "Shop & Support", desc: "Best quality pet food aur supplies kharidein ya shelters ko support karein." },
-            { icon: Users, title: "Connect", desc: "India's biggest community of passionate pet lovers ko join karein." }
+            { icon: Search, title: "Create Profile", desc: "Digital health card banayein aur medical history aur vaccination records ek jagah manage karein." },
+            { icon: Calendar, title: "Book & Remind", desc: "Appointments schedule karein aur autonomous vaccination aur health reminders payein." },
+            { icon: ShoppingBag, title: "Manage Dashboards", desc: "Clinics, shelters aur shops ke liye web-based management panels ka upyog karein." },
+            { icon: Zap, title: "Emergency SOS", desc: "Kisi bhi urgent situation mein one-tap SOS button use karke emergency assistance payein." }
           ].map((item, idx) => (
             <motion.div 
               key={idx} 
