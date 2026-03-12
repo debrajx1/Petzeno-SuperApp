@@ -533,6 +533,10 @@ export default function Landing() {
         <FloatingIcon icon={Heart} delay={1.5} initialX="85vw" initialY="15vh" />
         <FloatingIcon icon={Star} delay={0.8} initialX="15vw" initialY="70vh" />
         <FloatingIcon icon={PawPrint} delay={2.2} initialX="80vw" initialY="80vh" />
+        {/* 3D Floating Orbs */}
+        <div className="orb orb-primary" style={{ width: '400px', height: '400px', top: '-10%', right: '-5%' }} />
+        <div className="orb orb-teal" style={{ width: '300px', height: '300px', bottom: '10%', left: '-8%' }} />
+        <div className="orb orb-blue" style={{ width: '250px', height: '250px', top: '40%', right: '20%' }} />
       </div>
 
       <nav className={`${styles.nav} glass-effect`}>
@@ -581,6 +585,7 @@ export default function Landing() {
       </nav>
 
       <header className={styles.hero}>
+        <div className="perspective-grid" />
         <motion.div 
           className={styles.heroContent}
           initial={{ opacity: 0, x: -50 }}
@@ -599,7 +604,7 @@ export default function Landing() {
           
           <h1 className={styles.heroTitle}>
             {lang === 'en' ? (
-              <>The Ultimate <span className={styles.shimmerText}>Complete Pet Ecosystem</span> for the Modern World</>
+              <>The Ultimate <span className="shimmer-3d">Complete Pet Ecosystem</span> for the Modern World</>
             ) : (
               <>{content.heroTitle}</>
             )}
@@ -613,7 +618,7 @@ export default function Landing() {
             <motion.button 
               whileHover={{ scale: 1.05, boxShadow: 'var(--shadow-primary)' }}
               whileTap={{ scale: 0.95 }}
-              className={styles.primaryBtn}
+              className={`${styles.primaryBtn} glow-ring`}
             >
               {content.downloadApp}
             </motion.button>
@@ -634,6 +639,7 @@ export default function Landing() {
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
         >
+          <div className="morph-blob" style={{ width: '120%', height: '120%', top: '-10%', left: '-10%', background: 'linear-gradient(135deg, rgba(255,123,84,0.15), rgba(45,212,191,0.1))' }} />
           <div className={styles.imageBlob}></div>
           <img src="/petzeno_landing_hero.png" alt="Happy pets" className={styles.heroImage} />
           
@@ -663,7 +669,9 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="features" className={styles.featuresSection}>
+      <section id="features" className={styles.featuresSection} style={{ position: 'relative' }}>
+        <div className="orb orb-teal" style={{ width: '350px', height: '350px', top: '20%', left: '-10%', opacity: 0.2 }} />
+        <div className="orb orb-primary" style={{ width: '300px', height: '300px', bottom: '10%', right: '-5%', opacity: 0.2 }} />
         <motion.div
            className={styles.centeredHeader}
            initial={{ opacity: 0, y: 20 }}
@@ -853,7 +861,9 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      <footer className={styles.footer}>
+      <footer className={styles.footer} style={{ position: 'relative', overflow: 'hidden' }}>
+        <div className="perspective-grid" style={{ opacity: 0.3 }} />
+        <div className="orb orb-primary" style={{ width: '200px', height: '200px', bottom: '-20%', right: '10%', opacity: 0.15 }} />
         <div className={styles.footerGrid}>
           <div className={styles.footerInfo}>
              <div className={styles.footerBrand}>

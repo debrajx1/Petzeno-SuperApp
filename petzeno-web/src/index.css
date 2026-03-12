@@ -127,3 +127,158 @@ button {
   padding: var(--spacing-xl);
   overflow-y: auto;
 }
+
+/* ===== 3D Immersive Utilities ===== */
+
+/* Floating Gradient Orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb-primary {
+  background: radial-gradient(circle, rgba(255, 123, 84, 0.6) 0%, transparent 70%);
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+.orb-teal {
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.5) 0%, transparent 70%);
+  animation: orbFloat 10s ease-in-out infinite reverse;
+}
+
+.orb-blue {
+  background: radial-gradient(circle, rgba(74, 144, 226, 0.4) 0%, transparent 70%);
+  animation: orbFloat 12s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -40px) scale(1.1); }
+  50% { transform: translate(-20px, 20px) scale(0.9); }
+  75% { transform: translate(10px, -10px) scale(1.05); }
+}
+
+/* Perspective Grid Background */
+.perspective-grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  perspective: 1000px;
+}
+
+.perspective-grid::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background-image: 
+    linear-gradient(rgba(255, 123, 84, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 123, 84, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  transform: rotateX(60deg);
+  animation: gridScroll 20s linear infinite;
+}
+
+[data-theme="dark"] .perspective-grid::before {
+  background-image: 
+    linear-gradient(rgba(255, 123, 84, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 123, 84, 0.06) 1px, transparent 1px);
+}
+
+@keyframes gridScroll {
+  0% { transform: rotateX(60deg) translateY(0); }
+  100% { transform: rotateX(60deg) translateY(60px); }
+}
+
+/* Morphing Blob Shape */
+.morph-blob {
+  position: absolute;
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  animation: morphBlob 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes morphBlob {
+  0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+  50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+  75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+}
+
+/* Glass Card 3D */
+.glass-card-3d {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.glass-card-3d:hover {
+  transform: translateY(-8px) rotateX(2deg);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Shimmer Text Effect */
+.shimmer-3d {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    #FFD56B 25%,
+    var(--color-primary) 50%,
+    #2dd4bf 75%,
+    var(--color-primary) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerFlow 3s linear infinite;
+}
+
+@keyframes shimmerFlow {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Glow Ring Effect */
+.glow-ring {
+  position: relative;
+}
+
+.glow-ring::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    var(--color-primary),
+    transparent,
+    #2dd4bf,
+    transparent
+  );
+  z-index: -1;
+  animation: glowSpin 4s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes glowSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
