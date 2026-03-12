@@ -13,6 +13,7 @@ import {
 import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePets } from "@/context/PetContext";
 import Colors from "@/constants/colors";
 
@@ -128,11 +129,14 @@ export default function BookAppointmentScreen() {
   };
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled"
+    <LinearGradient 
+      colors={[Colors.primaryLight1, Colors.secondary]} 
+      style={styles.container}
     >
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
       {/* Clinic Info */}
       {params.clinicName && (
         <View style={[styles.clinicCard, { backgroundColor: Colors.primaryLight }]}>
@@ -308,7 +312,8 @@ export default function BookAppointmentScreen() {
           {booking ? "Booking..." : "Confirm Appointment"}
         </Text>
       </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 

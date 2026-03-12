@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCommunity } from "@/context/CommunityContext";
 import Colors from "@/constants/colors";
 
@@ -45,9 +46,12 @@ export default function CommunityScreen() {
   ];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
+    >
       {/* Header */}
-      <View style={[styles.header, { paddingTop: topPadding + 12, backgroundColor: colors.background }]}>
+      <View style={[styles.header, { paddingTop: topPadding + 12 }]}>
         <Text style={[styles.headerTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
           Community
         </Text>
@@ -300,7 +304,7 @@ export default function CommunityScreen() {
           ))}
         </ScrollView>
       )}
-    </View>
+    </LinearGradient>
   );
 }
 

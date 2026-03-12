@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePets } from "@/context/PetContext";
 import Colors from "@/constants/colors";
 
@@ -77,11 +78,14 @@ export default function AddPetScreen() {
   };
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled"
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
     >
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
       {/* Species Selection */}
       <Text style={[styles.label, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
         Pet Type
@@ -172,7 +176,8 @@ export default function AddPetScreen() {
           {saving ? "Saving..." : "Add Pet"}
         </Text>
       </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 

@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { Send, Bot, User, Sparkles } from 'lucide-react-native';
+import { LinearGradient } from "expo-linear-gradient";
 import { getApiUrl } from '@/lib/query-client';
+import Colors from "@/constants/colors";
 
 
 
@@ -66,11 +68,15 @@ export default function AIHealthChatScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container} 
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    <LinearGradient
+      colors={[Colors.primaryLight1, '#F8FAFD']} 
+      style={styles.container}
     >
-      <View style={styles.header}>
+      <KeyboardAvoidingView 
+        style={styles.container} 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View style={styles.header}>
         <View style={styles.headerTitleGroup}>
           <Sparkles size={20} color="#FFD56B" />
           <Text style={styles.headerTitle}>AI Health Assistant</Text>
@@ -146,18 +152,18 @@ export default function AIHealthChatScreen() {
         >
           <Send size={20} color="#FFFFFF" style={styles.sendIcon} />
         </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+        </View>
+      </KeyboardAvoidingView>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFD' },
+  container: { flex: 1 },
   header: {
     paddingTop: 60,
     paddingBottom: 20,
     paddingHorizontal: 20,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
     alignItems: 'center',

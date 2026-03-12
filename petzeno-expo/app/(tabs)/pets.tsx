@@ -12,6 +12,7 @@ import {
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePets } from "@/context/PetContext";
 import Colors from "@/constants/colors";
 
@@ -63,9 +64,12 @@ export default function PetsScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
+    >
       {/* Header */}
-      <View style={[styles.header, { paddingTop: topPadding + 12, backgroundColor: colors.background }]}>
+      <View style={[styles.header, { paddingTop: topPadding + 12 }]}>
         <Text style={[styles.headerTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
           My Pets
         </Text>
@@ -169,7 +173,7 @@ export default function PetsScreen() {
           ))
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
