@@ -40,7 +40,10 @@ function RootLayoutNav() {
       <Stack.Screen name="community/post/[id]" options={{ title: "Post" }} />
       <Stack.Screen name="emergency/index" options={{ title: "Emergency SOS", headerShown: false }} />
       <Stack.Screen name="notifications/index" options={{ title: "Notifications" }} />
+      <Stack.Screen name="profile/index" options={{ title: "Owner Profile", headerShown: false }} />
       <Stack.Screen name="profile/edit" options={{ title: "Edit Profile", presentation: "modal" }} />
+      <Stack.Screen name="profile/privacy" options={{ title: "Privacy & Security", headerShown: false }} />
+      <Stack.Screen name="profile/support" options={{ title: "Help & Support", headerShown: false }} />
     </Stack>
   );
 }

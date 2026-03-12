@@ -8,11 +8,13 @@ import {
   Platform,
   useColorScheme,
   Dimensions,
+  Image,
 } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { usePets } from "@/context/PetContext";
 import { useAuth } from "@/context/AuthContext";
 import Colors from "@/constants/colors";
@@ -59,6 +61,22 @@ function getSpeciesIcon(species: string) {
 
 export default function HomeScreen() {
   const [greeting, setGreeting] = useState("Good morning");
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadProfile = async () => {
+        try {
+          const stored = await AsyncStorage.getItem("petcare_profile");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed.photo) setProfilePhoto(parsed.photo);
+          }
+        } catch (e) { }
+      };
+      loadProfile();
+    }, [])
+  );
 
   useEffect(() => {
     const updateGreeting = () => {
@@ -96,9 +114,12 @@ export default function HomeScreen() {
   const topPaddingWeb = Platform.OS === "web" ? 67 : insets.top;
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
+    >
+      <ScrollView
+        contentContainerStyle={[
         styles.content,
         {
           paddingTop: topPaddingWeb + 8,
@@ -110,22 +131,41 @@ export default function HomeScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={[styles.greeting, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
+          <Text style={[styles.greeting, { color: "#F5F5F5", fontFamily: "Inter_700Bold" }]}>
             {greeting} 👋
           </Text>
-          <Text style={[styles.headerTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
-            PetZeno <Text style={{ fontSize: 14, color: '#AF52DE', fontFamily: 'Inter_700Bold' }}>✨ v2.0 Live (OTA)</Text>
+          <Text style={[styles.headerTitle, { color: "#FFFFFF", fontFamily: "Inter_700Bold" }]}>
+            PetZeno <Text style={{ fontSize: 14, color: '#5bdfc5ff', fontFamily: 'Inter_700Bold' }}></Text>
           </Text>
         </View>
         <View style={{ flexDirection: "row", gap: 10 }}>
           <TouchableOpacity
-            style={[styles.notifBtn, { backgroundColor: colors.surface }]}
-            onPress={async () => {
-              await logout();
-              router.replace("/(auth)/get-started");
-            }}
+            style={[
+              styles.notifBtn,
+              {
+                backgroundColor: colors.surface,
+                borderWidth: 2,
+                borderColor: Colors.primary,
+                padding: 2,
+              }
+            ]}
+            onPress={() => router.push("/profile")}
           >
-            <Ionicons name="log-out-outline" size={22} color={Colors.primary} />
+            <View style={{ width: '100%', height: '100%', borderRadius: 20, overflow: 'hidden' }}>
+              {profilePhoto ? (
+                <Image
+                  source={typeof profilePhoto === "string" ? { uri: profilePhoto } : profilePhoto}
+                  style={{ width: '100%', height: '100%' }}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Image
+                  source={require("@/assets/images/avatar.png")}
+                  style={{ width: '100%', height: '100%' }}
+                  resizeMode="cover"
+                />
+              )}
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.notifBtn, { backgroundColor: colors.surface }]}
@@ -373,7 +413,8 @@ export default function HomeScreen() {
           ))}
         </>
       )}
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
