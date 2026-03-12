@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Lenis from '@studio-freight/lenis';
 import { useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
@@ -8,6 +9,20 @@ import {
   Mail, MessageSquare
 } from 'lucide-react';
 import styles from './Landing.module.css';
+
+const TextReveal = ({ children, className }) => (
+  <motion.span className={`text-reveal ${className}`}>
+    <motion.span 
+      className="text-reveal-content"
+      initial={{ y: "100%" }}
+      whileInView={{ y: 0 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true }}
+    >
+      {children}
+    </motion.span>
+  </motion.span>
+);
 
 const FloatingIcon = ({ icon: Icon, delay, initialX, initialY }) => (
   <motion.div
@@ -201,6 +216,42 @@ const PartnerTicker = () => {
         </motion.div>
       </div>
     </div>
+  );
+};
+
+const HorizontalPetUniverse = () => {
+  const targetRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+  });
+
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-65%"]);
+
+  const items = [
+    { title: "Elite Vets", desc: "Access the top 1% of veterinary experts across India.", img: "/indian_vet.png" },
+    { title: "Premium Shop", desc: "Curated nutrition and elite gear for your companions.", img: "/petzeno_landing_hero.png" },
+    { title: "Global Shelters", desc: "A connected network of verified adoption centers.", img: "/indian_owner.png" },
+    { title: "Mobile Core", desc: "The entire ecosystem in the palm of your hand.", img: "/petzeno-logo.png" }
+  ];
+
+  return (
+    <section ref={targetRef} className={styles.horizontalScrollSection}>
+      <div className={styles.horizontalScrollSticky}>
+        <div className={styles.horizontalScrollHeader}>
+           <h2 className="elite-heading"><TextReveal>The PetZeno</TextReveal><br/><TextReveal className="shimmer-3d">Universe</TextReveal></h2>
+        </div>
+        <motion.div style={{ x }} className={styles.horizontalScrollTrack}>
+          {items.map((item, i) => (
+            <div key={i} className={styles.universeCard}>
+              <img src={item.img} alt={item.title} className={styles.universeBg} />
+              <div className={styles.universeOverlay} />
+              <h1 className={styles.universeTitle}>{item.title}</h1>
+              <p className={styles.universeDesc}>{item.desc}</p>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
   );
 };
 
@@ -424,6 +475,23 @@ export default function Landing() {
   const [lang, setLang] = useState('en');
   const { scrollYProgress } = useScroll();
 
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => lenis.destroy();
+  }, []);
+
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const toggleTheme = () => {
@@ -527,6 +595,7 @@ export default function Landing() {
 
   return (
     <div className={styles.landingContainer}>
+      <div className="noise-overlay" />
       <QuickContact />
       <div className={styles.bgDecorations}>
         <FloatingIcon icon={PawPrint} delay={0} initialX="10vw" initialY="20vh" />
@@ -602,12 +671,15 @@ export default function Landing() {
             <span>{content.futureBadge}</span>
           </motion.div>
           
-          <h1 className={styles.heroTitle}>
+          <h1 className={`${styles.heroTitle} elite-heading text-reveal`}>
             {lang === 'en' ? (
-              <>The Ultimate <span className="shimmer-3d">Complete Pet Ecosystem</span> for the Modern World</>
+              <TextReveal className="shimmer-3d">The Ultimate Complete Pet Ecosystem</TextReveal>
             ) : (
-              <>{content.heroTitle}</>
+              <TextReveal>{content.heroTitle}</TextReveal>
             )}
+            <div className={styles.heroLineTwo}>
+               <TextReveal>for the Modern World</TextReveal>
+            </div>
           </h1>
           
           <p className={styles.heroSubtitle}>
@@ -660,6 +732,8 @@ export default function Landing() {
       </header>
       <PartnerTicker />
 
+      <HorizontalPetUniverse />
+
       <section className={styles.statsSection}>
         <div className={styles.statsGrid}>
           <StatItem icon={Heart} num="12k+" label="Pets Saved" delay={0.1} />
@@ -686,20 +760,38 @@ export default function Landing() {
           <FeatureCard 
             index={0}
             icon={Shield} 
-            title="Veterinary Management" 
-            description="Complete clinic operations, medical records, and appointment scheduling in one place."
+            title="Elite Vet Network" 
+            description="Complete clinic operations, medical records, and appointment scheduling with 100% data integrity."
           />
           <FeatureCard 
             index={1}
             icon={Heart} 
-            title="Shelter Tracking" 
-            description="Manage adoptions, track pet availability, and find loving homes more efficiently."
+            title="Shelter Intelligence" 
+            description="Manage adoptions, track pet availability, and find loving homes with AI-driven matching."
           />
           <FeatureCard 
             index={2}
             icon={Globe} 
-            title="Business Inventory" 
-            description="Inventory management and service tracking for pet stores and service providers."
+            title="Ecosystem Inventory" 
+            description="Inventory management for pet stores and service providers with global supply sync."
+          />
+          <FeatureCard 
+            index={3}
+            icon={Activity} 
+            title="Emergency 24/7" 
+            description="One-tap access to emergency pet services and critical care transportation."
+          />
+          <FeatureCard 
+            index={4}
+            icon={Zap} 
+            title="Premium Nutrition" 
+            description="Custom diet plans verified by top nutritionists for your elite companions."
+          />
+          <FeatureCard 
+            index={5}
+            icon={Lock} 
+            title="Pet Passport" 
+            description="A secure, digital identity for your pet, valid across the entire verified ecosystem."
           />
         </div>
       </section>
