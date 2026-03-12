@@ -633,22 +633,36 @@ export default function Landing() {
         </div>
 
         <div className={styles.navLinks}>
-          <a href="#features">{content.features}</a>
-          <a href="#how-it-works">{content.process}</a>
-          <a href="#testimonials">{content.reviews}</a>
+          <motion.a href="#features" whileHover={{ y: -2 }}>{content.features}</motion.a>
+          <motion.a href="#how-it-works" whileHover={{ y: -2 }}>{content.process}</motion.a>
+          <motion.a href="#testimonials" whileHover={{ y: -2 }}>{content.reviews}</motion.a>
           
           <div className={styles.navControls}>
+            <div className={styles.navSeparator} />
+            
             <div className={styles.controlWrapper} data-tooltip={content.themeTip}>
-              <button className={styles.themeToggle} onClick={toggleTheme} aria-label="Toggle Theme">
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className={styles.themeToggle} 
+                onClick={toggleTheme} 
+                aria-label="Toggle Theme"
+              >
                 {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-              </button>
+              </motion.button>
             </div>
             
             <div className={styles.controlWrapper} data-tooltip={content.langTip}>
-              <button className={styles.langToggle} onClick={toggleLang} aria-label="Switch Language">
-                <Languages size={18} style={{ marginRight: '4px' }} />
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={styles.langToggle} 
+                onClick={toggleLang} 
+                aria-label="Switch Language"
+              >
+                <Languages size={18} />
                 <span>{lang.toUpperCase()}</span>
-              </button>
+              </motion.button>
             </div>
 
             <motion.button 
