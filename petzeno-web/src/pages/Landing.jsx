@@ -331,7 +331,7 @@ const Newsletter = () => {
   };
 
   return (
-    <section className={styles.newsletterSection}>
+    <section id="community" className={styles.newsletterSection}>
       <motion.div
         className={`${styles.newsletterBox} glass-effect`}
         initial={{ opacity: 0, y: 30 }}
@@ -668,6 +668,18 @@ export default function Landing() {
               </motion.button>
             </div>
 
+            <div className={styles.controlWrapper} data-tooltip={content.voiceTip}>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={styles.voiceToggle}
+                onClick={readPage}
+                aria-label="Read Page"
+              >
+                <Volume2 size={18} className={isSpeaking ? styles.pulseIcon : ''} />
+              </motion.button>
+            </div>
+
             <div className={styles.controlWrapper} data-tooltip={content.langTip}>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -936,7 +948,7 @@ export default function Landing() {
       <ConnectionRoadmap title={content.roadmapTitle} />
       <TeamSection title={content.meetTeam} />
 
-      <section className={styles.faqSection}>
+      <section id="support" className={styles.faqSection}>
         <div className={styles.centeredHeader}>
           <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
           <p className={styles.sectionSubtitle}>Everything you need to know about India's most advanced pet ecosystem.</p>
@@ -1028,17 +1040,6 @@ export default function Landing() {
         </div>
       </footer>
 
-      <div className={styles.voiceControlWrapper} data-tooltip={content.voiceTip}>
-        <motion.button
-          className={styles.accessibilityBtn}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={readPage}
-          aria-label="Read Page"
-        >
-          <Volume2 size={24} className={isSpeaking ? styles.pulseIcon : ''} />
-        </motion.button>
-      </div>
     </div>
   );
 }

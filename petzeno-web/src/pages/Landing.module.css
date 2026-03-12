@@ -137,7 +137,8 @@
 }
 
 .themeToggle,
-.langToggle {
+.langToggle,
+.voiceToggle {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--color-text-main);
@@ -155,7 +156,8 @@
 }
 
 .themeToggle:hover,
-.langToggle:hover {
+.langToggle:hover,
+.voiceToggle:hover {
   background: var(--color-primary-soft);
   color: var(--color-primary);
   border-color: var(--color-primary);
@@ -1442,11 +1444,11 @@
 .quickContactWrapper {
   position: fixed;
   bottom: 2rem;
-  left: 2rem;
+  right: 2rem;
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 1rem;
 }
 
