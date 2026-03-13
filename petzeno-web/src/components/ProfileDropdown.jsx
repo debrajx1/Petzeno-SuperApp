@@ -22,7 +22,11 @@ export default function ProfileDropdown({ user, onLogout }) {
     >
       <div className={styles.dropdownHeader}>
         <div className={styles.avatarLarge}>
-          {user.name?.charAt(0) || 'U'}
+          {user.avatar ? (
+            <img src={user.avatar} alt="Profile" className={styles.largeAvatarImg} />
+          ) : (
+            user.name?.charAt(0) || 'U'
+          )}
         </div>
         <div className={styles.userInfo}>
           <span className={styles.userName}>{user.name || 'Anonymous'}</span>

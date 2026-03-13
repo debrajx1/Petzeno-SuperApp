@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useColorScheme, Switch } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useColorScheme, Switch, Platform } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,14 +15,14 @@ export default function PrivacyScreen() {
 
   return (
     <LinearGradient 
-      colors={[Colors.primaryLight1, Colors.secondary]} 
+      colors={[Colors.primaryLight1, colors.background]} 
       style={styles.container}
     >
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={"#FFF"} />
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: "#FFF" }]}>Privacy & Security</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Privacy & Security</Text>
         <View style={styles.placeholderButton} />
       </View>
 
@@ -30,7 +30,7 @@ export default function PrivacyScreen() {
         <View style={[styles.card, { backgroundColor: colors.surface }]}>
           <TouchableOpacity style={styles.row}>
             <View style={styles.rowContent}>
-              <View style={[styles.iconBox, { backgroundColor: `${Colors.primary}15` }]}>
+              <View style={[styles.iconBox, { backgroundColor: `${Colors.primary}12` }]}>
                 <Ionicons name="key-outline" size={20} color={Colors.primary} />
               </View>
               <Text style={[styles.rowText, { color: colors.text }]}>Change Password</Text>
@@ -41,8 +41,8 @@ export default function PrivacyScreen() {
 
           <View style={styles.row}>
             <View style={styles.rowContent}>
-              <View style={[styles.iconBox, { backgroundColor: `#AF52DE15` }]}>
-                <Ionicons name="shield-checkmark-outline" size={20} color="#AF52DE" />
+              <View style={[styles.iconBox, { backgroundColor: `${Colors.primary}12` }]}>
+                <Ionicons name="shield-checkmark-outline" size={20} color={Colors.primary} />
               </View>
               <Text style={[styles.rowText, { color: colors.text }]}>Two-Factor Authentication</Text>
             </View>
@@ -50,14 +50,15 @@ export default function PrivacyScreen() {
               value={twoFactor}
               onValueChange={setTwoFactor}
               trackColor={{ false: colors.border, true: Colors.primary }}
+              thumbColor={Platform.OS === "ios" ? "#fff" : twoFactor ? "#fff" : "#f4f3f4"}
             />
           </View>
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
           <View style={styles.row}>
             <View style={styles.rowContent}>
-              <View style={[styles.iconBox, { backgroundColor: `#34C75915` }]}>
-                <Ionicons name="analytics-outline" size={20} color="#34C759" />
+              <View style={[styles.iconBox, { backgroundColor: `${Colors.healthy}12` }]}>
+                <Ionicons name="analytics-outline" size={20} color={Colors.healthy} />
               </View>
               <Text style={[styles.rowText, { color: colors.text }]}>Diagnostic Data Sharing</Text>
             </View>
@@ -65,16 +66,17 @@ export default function PrivacyScreen() {
               value={dataSharing}
               onValueChange={setDataSharing}
               trackColor={{ false: colors.border, true: Colors.primary }}
+              thumbColor={Platform.OS === "ios" ? "#fff" : dataSharing ? "#fff" : "#f4f3f4"}
             />
           </View>
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
           <TouchableOpacity style={styles.row}>
             <View style={styles.rowContent}>
-              <View style={[styles.iconBox, { backgroundColor: `#FF3B3015` }]}>
-                <Ionicons name="trash-outline" size={20} color="#FF3B30" />
+              <View style={[styles.iconBox, { backgroundColor: `${Colors.emergency}12` }]}>
+                <Ionicons name="trash-outline" size={20} color={Colors.emergency} />
               </View>
-              <Text style={[styles.rowText, { color: "#FF3B30", fontFamily: "Inter_600SemiBold" }]}>Delete Account</Text>
+              <Text style={[styles.rowText, { color: Colors.emergency, fontFamily: "Inter_600SemiBold" }]}>Delete Account</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color={colors.textTertiary} />
           </TouchableOpacity>

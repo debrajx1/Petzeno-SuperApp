@@ -61,7 +61,11 @@ export default function Header() {
               <span className={styles.profileRole}>{roleDisplay}</span>
             </div>
             <div className={styles.avatarWrapper}>
-              {user.name?.charAt(0) || 'U'}
+              {user.avatar ? (
+                <img src={user.avatar} alt="Profile" className={styles.headerAvatarImg} />
+              ) : (
+                user.name?.charAt(0) || 'U'
+              )}
               <div className={styles.activeGlow}></div>
             </div>
           </div>

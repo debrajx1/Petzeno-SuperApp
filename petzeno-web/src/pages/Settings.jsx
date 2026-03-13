@@ -104,11 +104,24 @@ export default function Settings() {
             </div>
 
             <div className={styles.profileHeader}>
-              <div className={styles.avatarWrapper}>
+              <div className={styles.avatarWrapper} onClick={handleAvatarClick}>
                 <div className={styles.avatar}>
-                  {profileData.name?.[0] || 'U'}
+                  {profileData.avatar ? (
+                    <img src={profileData.avatar} alt="Profile" className={styles.avatarImg} />
+                  ) : (
+                    profileData.name?.[0] || 'U'
+                  )}
                 </div>
-                <button className={styles.editAvatar}><Camera size={16} /></button>
+                <button className={styles.editAvatar} type="button">
+                  <Camera size={16} />
+                </button>
+                <input
+                  type="file"
+                  id="avatar-input"
+                  hidden
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
               </div>
               <div className={styles.headerInfo}>
                 <h3 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 800 }}>{profileData.name}</h3>

@@ -63,7 +63,7 @@ export default function Community() {
         userType: user.role || 'user',
         category: postCategory,
         text: newPostText,
-        authorAvatar: user.role === 'vet' ? '👩‍⚕️' : user.role === 'shelter' ? '🐕' : user.role === 'store' ? '🛒' : '👩‍💼'
+        authorAvatar: user.avatar || (user.role === 'vet' ? '👩‍⚕️' : user.role === 'shelter' ? '🐕' : user.role === 'store' ? '🛒' : '👩‍💼')
       });
       setNewPostText('');
       loadPosts();
@@ -183,7 +183,13 @@ export default function Community() {
               >
                 <div className={styles.postHeader}>
                   <div className={styles.avatarWrapper}>
-                    <div className={styles.authorAvatar}>{post.authorAvatar || '👤'}</div>
+                    <div className={styles.authorAvatar}>
+                      {post.authorAvatar?.startsWith('data:image') ? (
+                        <img src={post.authorAvatar} alt={post.author} className={styles.feedAvatarImg} />
+                      ) : (
+                        post.authorAvatar || '👤'
+                      )}
+                    </div>
                     <div className={styles.activePulse}></div>
                   </div>
                   <div className={styles.authorInfo}>
