@@ -8,6 +8,8 @@ const MOCK_USERS = [
   { email: 'admin@petzeno.com', password: 'password123', name: 'Super Admin', role: 'admin', status: 'verified' },
 ];
 
+const bcrypt = require('bcryptjs');
+
 async function seed() {
   console.log('Attempting to connect to:', process.env.MONGODB_URI.replace(/:([^@]+)@/, ':****@'));
   
@@ -25,9 +27,16 @@ async function seed() {
     }));
 
     await User.deleteMany({});
-    await User.create(MOCK_USERS);
     
-    console.log('SUCCESS: Seeded 4 Production Accounts into Atlas!');
+    // Hash passwords before seeding
+    const seededUsers = await Promise.all(MOCK_USERS.map(async (u) => ({
+      ...u,
+      password: await bcrypt.hash(u.password, 10)
+    })));
+
+    await User.create(seededUsers);
+    
+    console.log('SUCCESS: Seeded 4 Production Accounts with Hashed Passwords into Atlas!');
     process.exit(0);
   } catch (err) {
     console.error('CONNECTION FAILED:', err.message);

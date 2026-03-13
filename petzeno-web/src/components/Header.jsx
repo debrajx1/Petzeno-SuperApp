@@ -1,8 +1,9 @@
 import { Bell, Search, UserCircle, Menu, ShieldCheck } from 'lucide-react';
+import { getCurrentUser } from '../lib/api';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const user = JSON.parse(localStorage.getItem('petzeno_user') || '{}');
+  const user = getCurrentUser() || {};
   const roleDisplay = user.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Provider';
 
   return (

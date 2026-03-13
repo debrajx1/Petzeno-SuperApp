@@ -1,173 +1,221 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Plus, Users, Calendar, Clock, MapPin, CheckCircle, MoreVertical } from 'lucide-react';
-import { getMockData } from '../lib/mockDb';
+import { 
+  Search, 
+  Filter, 
+  Plus, 
+  Calendar, 
+  Clock, 
+  MapPin, 
+  CheckCircle, 
+  AlertCircle,
+  Activity,
+  History,
+  MoreVertical,
+  ShieldAlert
+} from 'lucide-react';
 import { format } from 'date-fns';
+import { getCurrentUser } from '../lib/api';
 import styles from './Clinics.module.css';
 
-const appointmentsData = [
-  { id: 'APT-1001', petName: 'Max', species: 'Dog', owner: 'Sarah Connor', date: new Date(2023, 9, 24, 10, 30), reason: 'Vaccination', status: 'Pending', doc: 'Dr. Jane Smith' },
-  { id: 'APT-1002', petName: 'Luna', species: 'Cat', owner: 'John Wick', date: new Date(2023, 9, 24, 11, 0), reason: 'General Checkup', status: 'Confirmed', doc: 'Dr. Alan Grant' },
-  { id: 'APT-1003', petName: 'Charlie', species: 'Dog', owner: 'Emily Blunt', date: new Date(2023, 9, 24, 13, 15), reason: 'Dental Cleaning', status: 'Confirmed', doc: 'Dr. Jane Smith' },
-  { id: 'APT-1004', petName: 'Bella', species: 'Rabbit', owner: 'Peter Parker', date: new Date(2023, 9, 24, 14, 45), reason: 'Skin Allergy', status: 'Pending', doc: 'Dr. Alan Grant' },
-  { id: 'APT-1005', petName: 'Rocky', species: 'Dog', owner: 'Bruce Wayne', date: new Date(2023, 9, 25, 9, 0), reason: 'Surgery Follow-up', status: 'Completed', doc: 'Dr. Jane Smith' },
-];
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+
+const SOSCard = ({ alert, onRespond }) => (
+  <div className={`${styles.sosCard} ${styles[alert.severity || 'high']} glass-effect`}>
+    <div className={styles.sosHeader}>
+      <div className={styles.sosType}>
+        <AlertCircle size={18} />
+        <span>CRITICAL SOS</span>
+      </div>
+      <span className={styles.sosTime}>{format(new Date(), 'HH:mm')}</span>
+    </div>
+    <div className={styles.sosUser}>
+      <div className={styles.userAvatar}>👤</div>
+      <div className={styles.userInfo}>
+        <h4>{alert.userName}</h4>
+        <p>{alert.petDetails?.name} • {alert.petDetails?.species}</p>
+      </div>
+    </div>
+    <div className={styles.sosLocation}>
+      <MapPin size={14} />
+      <span>{alert.location?.address || 'Near Sector 62, Noida'}</span>
+    </div>
+    <div className={styles.sosActions}>
+      <button 
+        className={styles.respondBtn} 
+        onClick={() => onRespond(alert._id)}
+        disabled={alert.status === 'responding'}
+      >
+        {alert.status === 'responding' ? 'RESPONDING...' : 'TAKE ACTION'}
+      </button>
+    </div>
+  </div>
+);
 
 export default function Clinics() {
-  const [activeTab, setActiveTab] = useState('Appointments');
-  const [appointments, setAppointments] = useState(appointmentsData);
+  const user = getCurrentUser() || {};
+  const [activeTab, setActiveTab] = useState('Overview');
+  const [appointments, setAppointments] = useState([]);
+  const [sosAlerts, setSosAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchData = async () => {
+    try {
+      const [appRes, sosRes] = await Promise.all([
+        fetch(`${API_BASE}/appointments${user.role !== 'admin' ? `?businessId=${user.id}` : ''}`),
+        fetch(`${API_BASE}/sos/active`)
+      ]);
+
+      const appData = await appRes.json();
+      const sosData = await sosRes.json();
+
+      setAppointments(Array.isArray(appData) ? appData : []);
+      setSosAlerts(Array.isArray(sosData) ? sosData : []);
+    } catch (err) {
+      console.error('Vet data fetch failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const response = await fetch('https://petzeno-backend.onrender.com/api/appointments');
-        if (response.ok) {
-          const data = await response.json();
-          // Transform backend data to match table format
-          const transformed = data.map(apt => ({
-            id: apt._id,
-            petName: apt.petName,
-            species: 'Dog', // Defaulting to Dog for now as per schema
-            owner: 'Mobile User',
-            date: new Date(`${apt.date}T${apt.time}:00`),
-            reason: apt.notes || apt.type,
-            status: apt.status.charAt(0).toUpperCase() + apt.status.slice(1), // Capitalize
-            doc: 'Dr. Jane Smith'
-          }));
-          if (transformed.length > 0) setAppointments(transformed);
-        }
-      } catch (err) {
-        console.log('Using local appointment data');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAppointments();
-    const interval = setInterval(fetchAppointments, 10000); // Polling for real-time
+    fetchData();
+    const interval = setInterval(fetchData, 15000);
     return () => clearInterval(interval);
   }, []);
 
-  const handleStatusUpdate = async (id, newStatus) => {
+  const handleRespond = async (id) => {
     try {
-      const res = await fetch(`https://petzeno-backend.onrender.com/api/appointments/${id}`, {
+      const res = await fetch(`${API_BASE}/sos/respond/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ responderId: user.id })
+      });
+      if (res.ok) fetchData();
+    } catch (err) {
+      console.error('Response failed:', err);
+    }
+  };
+
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      const res = await fetch(`${API_BASE}/appointments/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status })
       });
-      if (res.ok) {
-        setAppointments(prev => prev.map(a => a.id === id ? { ...a, status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1) } : a));
-      }
+      if (res.ok) fetchData();
     } catch (err) {
       console.error('Update failed:', err);
     }
   };
 
   return (
-    <div className={styles.clinicsContainer}>
+    <div className={styles.clinicContainer}>
       <header className={styles.pageHeader}>
-        <div>
-          <h1 className={styles.pageTitle}>Clinic Management</h1>
-          <p className={styles.pageSubtext}>Manage your veterinary appointments and doctor schedules.</p>
+        <div className={styles.headerInfo}>
+          <h1 className={styles.pageTitle}>Veterinary Hub</h1>
+          <p className={styles.pageSubtext}>Real-time emergency monitoring and patient management.</p>
         </div>
-        <button className={styles.primaryAction}>
-          <Plus size={18} />
-          New Appointment
-        </button>
+        <div className={styles.headerActions}>
+          <button className={styles.primaryAction}>
+            <Plus size={18} />
+            <span>Schedule New</span>
+          </button>
+        </div>
       </header>
 
-      <div className={styles.tabsContainer}>
-        {['Appointments', 'Doctors', 'Health Cards'].map(tab => (
-          <button 
-            key={tab} 
-            className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      <div className={`${styles.contentArea} glass-effect`}>
-        {activeTab === 'Appointments' && (
-          <>
-            <div className={styles.toolbar}>
-              <div className={styles.searchBox}>
-                <Search size={18} className={styles.searchIcon} />
-                <input type="text" placeholder="Search by pet or owner name..." className={styles.searchInput} />
-              </div>
-              <button className={styles.filterBtn}>
-                <Filter size={18} />
-                Filter
+      <div className={styles.dashboardGrid}>
+        <div className={styles.mainContent}>
+          <div className={styles.tabsContainer}>
+            {['Overview', 'Appointments', 'Patients'].map(tab => (
+              <button 
+                key={tab} 
+                className={`${styles.tabBtn} ${activeTab === tab ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
               </button>
-            </div>
-
-            <div className={styles.tableWrapper}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Patient</th>
-                    <th>Date & Time</th>
-                    <th>Reason</th>
-                    <th>Doctor</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading appointments...</td></tr>
-                  ) : appointments.map(apt => (
-                    <tr key={apt.id}>
-                      <td className={styles.aptId}>{apt.id}</td>
-                      <td>
-                        <div className={styles.patientInfo}>
-                          <span className={styles.petName}>{apt.petName}</span>
-                          <span className={styles.species}>{apt.species} • {apt.owner}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className={styles.dateTime}>
-                          <span className={styles.date}><Calendar size={14} />{format(apt.date, 'MMM dd, yyyy')}</span>
-                          <span className={styles.time}><Clock size={14} />{format(apt.date, 'hh:mm a')}</span>
-                        </div>
-                      </td>
-                      <td>{apt.reason}</td>
-                      <td>{apt.doc}</td>
-                      <td>
-                        <span className={`${styles.statusBadge} ${styles[apt.status.toLowerCase()]}`}>
-                          {(apt.status === 'Confirmed' || apt.status === 'Upcoming') && <CheckCircle size={12} />}
-                          {apt.status === 'Pending' && <Clock size={12} />}
-                          {apt.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', gap: '8px' }}>
-                          {apt.status === 'Upcoming' && (
-                            <button 
-                              className={styles.secondaryBtn}
-                              style={{ padding: '4px 8px', fontSize: '12px' }}
-                              onClick={() => handleStatusUpdate(apt.id, 'confirmed')}
-                            >
-                              Confirm
-                            </button>
-                          )}
-                          <button className={styles.iconAction}><MoreVertical size={18} /></button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-
-        {activeTab !== 'Appointments' && (
-          <div className={styles.placeholderContent}>
-            <p>{activeTab} module is currently under development.</p>
+            ))}
           </div>
-        )}
+
+          <div className={styles.tableWrapper}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Schedule</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.length === 0 ? (
+                  <tr><td colSpan="5" className={styles.emptyTable}>No pending appointments found.</td></tr>
+                ) : appointments.map(apt => (
+                  <tr key={apt._id}>
+                    <td>
+                      <div className={styles.patientCell}>
+                        <div className={styles.patientAvatar}>🐶</div>
+                        <div>
+                          <p className={styles.petName}>{apt.petName}</p>
+                          <p className={styles.ownerName}>Mobile User</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className={styles.timeCell}>
+                        <span><Calendar size={12} /> {apt.date}</span>
+                        <span><Clock size={12} /> {apt.time}</span>
+                      </div>
+                    </td>
+                    <td><span className={styles.reasonBadge}>{apt.notes || 'General Checkup'}</span></td>
+                    <td>
+                      <span className={`${styles.statusBadge} ${styles[apt.status]}`}>
+                        {apt.status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className={styles.rowActions}>
+                        {apt.status === 'upcoming' && (
+                          <button onClick={() => handleStatusUpdate(apt._id, 'confirmed')} className={styles.confirmBtn}>Confirm</button>
+                        )}
+                        {apt.status === 'confirmed' && (
+                          <button onClick={() => handleStatusUpdate(apt._id, 'completed')} className={styles.completeBtn}>Finish</button>
+                        )}
+                        <button className={styles.moreBtn}><MoreVertical size={16} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <aside className={styles.sidebar}>
+          <div className={styles.emergencySection}>
+            <div className={styles.sectionHeader}>
+            <h3>
+              <ShieldAlert size={18} />
+              Live SOS Monitor
+            </h3>
+            <span className={styles.livePulse}></span>
+          </div>
+          
+          <div className={styles.sosList}>
+            {sosAlerts.length === 0 ? (
+              <div className={styles.placeholderState}>
+                <Activity size={48} opacity={0.2} />
+                <p>Status Green: No Active Emergencies</p>
+              </div>
+            ) : sosAlerts.map(alert => (
+              <SOSCard key={alert._id} alert={alert} onRespond={handleRespond} />
+            ))}
+          </div>
+        </div>
+      </aside>
       </div>
     </div>
   );

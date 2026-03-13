@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, Key, ShieldCheck, Heart, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { loginProvider, requestAccess } from '../lib/mockDb';
+import { loginProvider, requestAccess } from '../lib/api';
 import styles from './Login.module.css';
 
 export default function Login() {

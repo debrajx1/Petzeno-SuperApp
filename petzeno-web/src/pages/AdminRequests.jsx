@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Check, X, Mail, Phone, Clock, UserCheck } from 'lucide-react';
-import { getMockData } from '../lib/mockDb';
+import { getMockData } from '../lib/api';
 import styles from './AdminRequests.module.css';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function AdminRequests() {
   const [requests, setRequests] = useState([]);
@@ -14,7 +16,7 @@ export default function AdminRequests() {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('https://petzeno-backend.onrender.com/api/auth/admin/requests');
+      const response = await fetch(`${API_BASE}/auth/admin/requests`);
       const data = await response.json();
       setRequests(data);
     } catch (err) {
@@ -27,7 +29,7 @@ export default function AdminRequests() {
   const handleApprove = async (id) => {
     setActionStatus({ id, msg: 'Approving...' });
     try {
-      const response = await fetch(`https://petzeno-backend.onrender.com/api/auth/admin/approve/${id}`, {
+      const response = await fetch(`${API_BASE}/auth/admin/approve/${id}`, {
         method: 'POST'
       });
       const result = await response.json();

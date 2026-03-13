@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, MessageCircle, Share2, Image as ImageIcon, Send } from 'lucide-react';
-import { getCommunityPosts, createCommunityPost } from '../lib/mockDb';
+import { getCommunityPosts, createCommunityPost, getCurrentUser } from '../lib/api';
 import styles from './Community.module.css';
 
 export default function Community() {
+  const user = getCurrentUser() || {};
   const [posts, setPosts] = useState([]);
   const [newPostText, setNewPostText] = useState('');
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ export default function Community() {
   const loadPosts = async () => {
     try {
       const data = await getCommunityPosts();
-      setPosts(data);
+      setPosts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
     } finally {

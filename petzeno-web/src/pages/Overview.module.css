@@ -4,21 +4,55 @@
   gap: var(--spacing-xl);
   max-width: 1400px;
   margin: 0 auto;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: var(--spacing-sm);
 }
 
 .pageTitle {
   font-size: 2rem;
-  color: var(--color-text-main);
-  margin-bottom: var(--spacing-xs);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  background: linear-gradient(135deg, var(--color-text-main) 0%, var(--color-text-muted) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.userName {
+  color: var(--color-primary);
+  -webkit-text-fill-color: var(--color-primary);
 }
 
 .pageSubtext {
   color: var(--color-text-muted);
   font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.liveClock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: rgba(255, 123, 84, 0.1);
+  color: var(--color-primary);
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid rgba(255, 123, 84, 0.2);
+  box-shadow: 0 4px 12px rgba(255, 123, 84, 0.1);
 }
 
 .statsGrid {
@@ -33,12 +67,16 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+  position: relative;
+  overflow: hidden;
 }
 
 .statCard:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-5px);
+  border-color: rgba(255, 123, 84, 0.3);
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
 }
 
 .statHeader {
@@ -117,20 +155,10 @@
   color: var(--color-text-main);
 }
 
-.chartSection, .insightsSection {
-  padding: var(--spacing-lg);
-  border-radius: var(--radius-lg);
-}
-
-.periodSelect {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-border);
-  background-color: var(--color-bg-card);
-  color: var(--color-text-main);
-  font-family: var(--font-body);
-  outline: none;
-  cursor: pointer;
+.chartSection {
+  padding: 2rem;
+  border-radius: 1.5rem;
+  min-height: 400px;
 }
 
 .chartContainer {
@@ -171,6 +199,23 @@
   margin-bottom: var(--spacing-lg);
 }
 
+.sosPulse {
+  width: 12px;
+  height: 12px;
+  background: var(--color-danger);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-shadow: 0 0 0 rgba(239, 68, 68, 0.4);
+  animation: pulseRotate 2s infinite;
+}
+
+@keyframes pulseRotate {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
 .liveBadge {
   background-color: var(--color-danger);
   color: white;
@@ -179,13 +224,6 @@
   padding: 2px 8px;
   border-radius: var(--radius-sm);
   letter-spacing: 1px;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.6; }
-  100% { opacity: 1; }
 }
 
 .sosList {

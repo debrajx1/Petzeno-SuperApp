@@ -1,87 +1,142 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Plus, Package, AlertTriangle, TrendingUp, DollarSign } from 'lucide-react';
-import { getMockData } from '../lib/mockDb';
+import { 
+  Search, 
+  Filter, 
+  Plus, 
+  Package, 
+  AlertTriangle, 
+  TrendingUp, 
+  DollarSign, 
+  Trash2, 
+  Edit3, 
+  CheckCircle,
+  Truck,
+  Box,
+  MoreVertical,
+  ChevronRight
+} from 'lucide-react';
+import { getProducts, createProduct, updateProduct, deleteProduct, getOrders, updateOrderStatus, getCurrentUser } from '../lib/api';
 import styles from './Stores.module.css';
 
-const INVENTORY_DATA = [
-  { id: 'SKU-001', name: 'Premium Dog Food (15kg)', category: 'Food', price: 45.99, stock: 124, status: 'In Stock' },
-  { id: 'SKU-002', name: 'Cat Litter Crystals (5kg)', category: 'Supplies', price: 18.50, stock: 12, status: 'Low Stock' },
-  { id: 'SKU-003', name: 'Interactive Laser Toy', category: 'Toys', price: 12.99, stock: 0, status: 'Out of Stock' },
-  { id: 'SKU-004', name: 'Flea & Tick Treatment (Dogs)', category: 'Health', price: 34.00, stock: 56, status: 'In Stock' },
-  { id: 'SKU-005', name: 'Orthopedic Pet Bed (Large)', category: 'Accessories', price: 89.99, stock: 8, status: 'Low Stock' },
-];
-
-const StatCard = ({ title, value, icon: Icon, colorClass }) => (
+const StatCard = ({ title, value, icon: Icon, colorClass, trend }) => (
   <div className={`${styles.statCard} glass-effect`}>
-    <div className={styles.statIconWrapper} style={{ backgroundColor: `var(--color-${colorClass})`, opacity: 0.1 }}></div>
-    <div className={styles.statIcon} style={{ color: `var(--color-${colorClass})` }}>
+    <div className={styles.statIcon} style={{ background: `rgba(var(--color-${colorClass}-rgb), 0.1)`, color: `var(--color-${colorClass})` }}>
       <Icon size={24} />
     </div>
-    <div className={styles.statInfo}>
-      <h3 className={styles.statValue}>{value}</h3>
+    <div className={styles.statContent}>
       <p className={styles.statTitle}>{title}</p>
+      <h3 className={styles.statValue}>{value}</h3>
+      {trend && <span className={styles.statTrend}>{trend}</span>}
     </div>
   </div>
 );
 
 export default function Stores() {
+  const user = getCurrentUser() || {};
   const [activeTab, setActiveTab] = useState('Inventory');
-  const [inventory, setInventory] = useState(INVENTORY_DATA);
+  const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  
+  // Form State
+  const [productForm, setProductForm] = useState({
+    name: '',
+    category: 'Food',
+    price: '',
+    stock: '',
+    description: ''
+  });
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch('https://petzeno-backend.onrender.com/api/orders');
-        if (response.ok) {
-          const data = await response.json();
-          setOrders(data);
-        }
-      } catch (err) {
-        console.log('Error fetching orders');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
-    const interval = setInterval(fetchOrders, 10000); // Poll every 10s
-    return () => clearInterval(interval);
-  }, []);
+    fetchData();
+  }, [user.id]);
 
-  const handleProcessOrder = async (id, status) => {
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const res = await fetch(`https://petzeno-backend.onrender.com/api/orders/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      });
-      if (res.ok) {
-        setOrders(prev => prev.map(o => o._id === id ? { ...o, status } : o));
-      }
+      const [productsData, ordersData] = await Promise.all([
+        getProducts(user.id),
+        getOrders(user.id)
+      ]);
+      setProducts(Array.isArray(productsData) ? productsData : []);
+      setOrders(Array.isArray(ordersData) ? ordersData : []);
     } catch (err) {
-      console.log('Order update failed');
+      console.error('Failed to fetch store data:', err);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleCreateOrUpdate = async (e) => {
+    e.preventDefault();
+    const data = { ...productForm, businessId: user.id, businessName: user.businessName };
+    try {
+      if (editingProduct) {
+        await updateProduct(editingProduct._id, data);
+      } else {
+        await createProduct(data);
+      }
+      setShowProductModal(false);
+      setEditingProduct(null);
+      setProductForm({ name: '', category: 'Food', price: '', stock: '', description: '' });
+      fetchData();
+    } catch (err) {
+      console.error('Product save failed:', err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        await deleteProduct(id);
+        fetchData();
+      } catch (err) {
+        console.error('Delete failed:', err);
+      }
+    }
+  };
+
+  const handleUpdateOrderStatus = async (id, status) => {
+    try {
+      await updateOrderStatus(id, status);
+      fetchData();
+    } catch (err) {
+      console.error('Order update failed:', err);
+    }
+  };
+
+  const getStockStatus = (stock) => {
+    if (stock === 0) return { label: 'Out of Stock', class: 'danger' };
+    if (stock < 10) return { label: 'Low Stock', class: 'warning' };
+    return { label: 'In Stock', class: 'success' };
+  };
+
+  const totalRevenue = Array.isArray(orders) 
+    ? orders.filter(o => o.status === 'delivered').reduce((sum, o) => sum + (o.totalAmount || 0), 0)
+    : 0;
 
   return (
     <div className={styles.storeContainer}>
       <header className={styles.pageHeader}>
-        <div>
-          <h1 className={styles.pageTitle}>Store & Inventory</h1>
-          <p className={styles.pageSubtext}>Manage your pet store products, orders, and track stock levels.</p>
+        <div className={styles.headerTitle}>
+          <h1 className={styles.pageTitle}>Seller Center</h1>
+          <p className={styles.pageSubtext}>Manage your pet shop inventory and fulfill orders in real-time.</p>
         </div>
-        <button className={styles.primaryAction}>
-          <Plus size={18} />
-          Add Product
-        </button>
+        <div className={styles.headerActions}>
+          <button className={styles.primaryAction} onClick={() => { setEditingProduct(null); setShowProductModal(true); }}>
+            <Plus size={18} />
+            Add New Product
+          </button>
+        </div>
       </header>
 
       <div className={styles.statsGrid}>
-        <StatCard title="Total Products" value="1,248" icon={Package} colorClass="primary" />
-        <StatCard title="Low Stock Alerts" value="15" icon={AlertTriangle} colorClass="warning" />
-        <StatCard title="Out of Stock" value="3" icon={AlertTriangle} colorClass="danger" />
-        <StatCard title="Monthly Revenue" value="$24.5k" icon={DollarSign} colorClass="success" />
+        <StatCard title="Active Listings" value={products.length} icon={Package} colorClass="primary" trend="+2 new today" />
+        <StatCard title="Total Orders" value={orders.length} icon={Box} colorClass="secondary" trend="+12% weekly" />
+        <StatCard title="Total Revenue" value={`₹${totalRevenue.toLocaleString()}`} icon={DollarSign} colorClass="success" trend="+₹4.5k this month" />
+        <StatCard title="Low Stock Alerts" value={products.filter(p => p.stock < 10).length} icon={AlertTriangle} colorClass="warning" />
       </div>
 
       <div className={styles.tabsContainer}>
@@ -102,49 +157,73 @@ export default function Stores() {
             <div className={styles.toolbar}>
               <div className={styles.searchBox}>
                 <Search size={18} className={styles.searchIcon} />
-                <input type="text" placeholder="Search products by name or SKU..." className={styles.searchInput} />
+                <input type="text" placeholder="Search by SKU or Product Name..." className={styles.searchInput} />
               </div>
-              <button className={styles.filterBtn}>
-                <Filter size={18} />
-                Filter by Category
-              </button>
+              <div className={styles.filterGroup}>
+                <select className={styles.categoryFilter}>
+                  <option>All Categories</option>
+                  <option>Food</option>
+                  <option>Accessories</option>
+                  <option>Healthcare</option>
+                </select>
+                <button className={styles.filterBtn}>
+                  <Filter size={18} />
+                  More Filters
+                </button>
+              </div>
             </div>
 
             <div className={styles.tableWrapper}>
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th>SKU</th>
-                    <th>Product Name</th>
+                    <th>Product Details</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Stock Level</th>
+                    <th>Stock</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
-                    <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading inventory...</td></tr>
-                  ) : inventory.map(item => (
-                    <tr key={item.id}>
-                      <td className={styles.sku}>{item.id}</td>
-                      <td className={styles.itemName}>{item.name}</td>
-                      <td>
-                        <span className={styles.categoryBadge}>{item.category}</span>
-                      </td>
-                      <td className={styles.price}>${item.price.toFixed(2)}</td>
-                      <td>{item.stock} units</td>
-                      <td>
-                        <span className={`${styles.statusBadge} ${styles[item.status.replace(/\s+/g, '').toLowerCase()]}`}>
-                          {item.status}
-                        </span>
-                      </td>
-                      <td>
-                        <button className={styles.textLink}>Edit</button>
-                      </td>
-                    </tr>
-                  ))}
+                    <tr><td colSpan="6" className={styles.loadingCell}>Loading inventory...</td></tr>
+                  ) : products.length === 0 ? (
+                    <tr><td colSpan="6" className={styles.emptyCell}>No products listed yet. Start selling!</td></tr>
+                  ) : products.map(product => {
+                    const status = getStockStatus(product.stock);
+                    return (
+                      <tr key={product._id}>
+                        <td>
+                          <div className={styles.productCell}>
+                            <div className={styles.productIcon}><Package size={20} /></div>
+                            <div>
+                              <div className={styles.productName}>{product.name}</div>
+                              <div className={styles.productSku}>SKU: {product._id.slice(-6).toUpperCase()}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td><span className={styles.categoryBadge}>{product.category}</span></td>
+                        <td className={styles.priceCell}>₹{product.price}</td>
+                        <td>{product.stock} {product.unit || 'units'}</td>
+                        <td>
+                          <span className={`${styles.statusBadge} ${styles[status.class]}`}>
+                            {status.label}
+                          </span>
+                        </td>
+                        <td>
+                          <div className={styles.actionGroup}>
+                            <button className={styles.iconBtn} onClick={() => { setEditingProduct(product); setProductForm(product); setShowProductModal(true); }}>
+                              <Edit3 size={16} />
+                            </button>
+                            <button className={`${styles.iconBtn} ${styles.delete}`} onClick={() => handleDelete(product._id)}>
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -152,60 +231,127 @@ export default function Stores() {
         )}
 
         {activeTab === 'Orders' && (
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Order ID</th>
-                  <th>Items</th>
-                  <th>Total</th>
-                  <th>Address</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.length === 0 ? (
-                  <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>No orders found.</td></tr>
-                ) : orders.map(order => (
-                  <tr key={order._id}>
-                    <td className={styles.sku}>ORD-{order._id.slice(-6).toUpperCase()}</td>
-                    <td className={styles.itemName}>
-                      {order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}
-                    </td>
-                    <td className={styles.price}>₹{order.totalAmount}</td>
-                    <td>{order.shippingAddress}</td>
-                    <td>
-                      <span className={`${styles.statusBadge} ${styles[order.status.toLowerCase()]}`}>
-                        {order.status}
-                      </span>
-                    </td>
-                    <td>
-                      {order.status === 'pending' ? (
-                        <button 
-                          className={styles.primaryAction} 
-                          style={{ padding: '6px 12px', fontSize: '12px' }}
-                          onClick={() => handleProcessOrder(order._id, 'processing')}
-                        >
-                          Ship Now
-                        </button>
-                      ) : (
-                        <button className={styles.textLink} disabled>{order.status}</button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className={styles.orderList}>
+            {orders.length === 0 ? (
+              <div className={styles.emptyOrders}>
+                <Box size={48} opacity={0.3} />
+                <p>No customer orders yet.</p>
+              </div>
+            ) : orders.map(order => (
+              <div key={order._id} className={styles.orderCard}>
+                <div className={styles.orderHeader}>
+                  <div className={styles.orderMain}>
+                    <span className={styles.orderId}>#ORD-{order._id.slice(-6).toUpperCase()}</span>
+                    <span className={styles.orderDate}>{new Date(order.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <span className={`${styles.orderStatus} ${styles[order.status]}`}>{order.status}</span>
+                </div>
+                <div className={styles.orderItems}>
+                  {order.items.map((item, i) => (
+                    <div key={i} className={styles.orderItem}>
+                      <span>{item.name}</span>
+                      <span>x{item.quantity} • ₹{item.price}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.orderFooter}>
+                  <div className={styles.shippingInfo}>
+                    <Truck size={14} />
+                    <span>{order.shippingAddress}</span>
+                  </div>
+                  <div className={styles.orderActions}>
+                    {order.status === 'pending' && (
+                      <button onClick={() => handleUpdateOrderStatus(order._id, 'processing')} className={styles.processBtn}>Process Order</button>
+                    )}
+                    {order.status === 'processing' && (
+                      <button onClick={() => handleUpdateOrderStatus(order._id, 'shipped')} className={styles.shipBtn}>Ship Order</button>
+                    )}
+                    {order.status === 'shipped' && (
+                      <button onClick={() => handleUpdateOrderStatus(order._id, 'delivered')} className={styles.deliverBtn}>Mark Delivered</button>
+                    )}
+                    <button className={styles.detailsBtn}><MoreVertical size={16} /></button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
-        {activeTab !== 'Inventory' && activeTab !== 'Orders' && (
-          <div className={styles.placeholderContent}>
-            <p>{activeTab} module is currently under development.</p>
+        {activeTab === 'Analytics' && (
+          <div className={styles.analyticsPlaceholder}>
+            <TrendingUp size={64} color="var(--color-primary)" opacity={0.5} />
+            <h3>Revenue Analytics Coming Soon</h3>
+            <p>Track your sales performance and customer trends with interactive charts.</p>
           </div>
         )}
       </div>
+
+      {showProductModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalHeader}>
+              <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+              <button onClick={() => { setShowProductModal(false); setEditingProduct(null); }} className={styles.closeBtn}>&times;</button>
+            </div>
+            <form onSubmit={handleCreateOrUpdate} className={styles.modalForm}>
+              <div className={styles.formGroup}>
+                <label>Product Name</label>
+                <input 
+                  type="text" 
+                  required 
+                  value={productForm.name} 
+                  onChange={e => setProductForm({...productForm, name: e.target.value})}
+                  placeholder="e.g. Premium Cat Food"
+                />
+              </div>
+              <div className={styles.formGrid}>
+                <div className={styles.formGroup}>
+                  <label>Category</label>
+                  <select 
+                    value={productForm.category} 
+                    onChange={e => setProductForm({...productForm, category: e.target.value})}
+                  >
+                    <option>Food</option>
+                    <option>Accessories</option>
+                    <option>Healthcare</option>
+                    <option>Toys</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Price (₹)</label>
+                  <input 
+                    type="number" 
+                    required 
+                    value={productForm.price} 
+                    onChange={e => setProductForm({...productForm, price: e.target.value})}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Stock Quantity</label>
+                  <input 
+                    type="number" 
+                    required 
+                    value={productForm.stock} 
+                    onChange={e => setProductForm({...productForm, stock: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label>Description</label>
+                <textarea 
+                  rows="3" 
+                  value={productForm.description} 
+                  onChange={e => setProductForm({...productForm, description: e.target.value})}
+                ></textarea>
+              </div>
+              <div className={styles.modalFooter}>
+                <button type="button" onClick={() => setShowProductModal(false)} className={styles.cancelBtn}>Cancel</button>
+                <button type="submit" className={styles.saveBtn}>{editingProduct ? 'Save Changes' : 'List Product'}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

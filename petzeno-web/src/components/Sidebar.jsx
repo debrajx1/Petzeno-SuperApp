@@ -1,30 +1,37 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Stethoscope, Home, ShoppingBag, Users, Settings, ShieldCheck } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  Stethoscope, 
+  Home, 
+  ShoppingBag, 
+  Users, 
+  Settings, 
+  ShieldCheck, 
+  ClipboardList, 
+  Package, 
+  Activity, 
+  LogOut 
+} from 'lucide-react';
+import { getCurrentUser } from '../lib/api';
 import styles from './Sidebar.module.css';
 
 const navItems = [
-  { path: '/dashboard/overview', name: 'Overview', icon: LayoutDashboard },
-  { path: '/dashboard/clinics', name: 'Clinics', icon: Stethoscope },
-  { path: '/dashboard/shelters', name: 'Shelters', icon: Home },
-  { path: '/dashboard/stores', name: 'Stores', icon: ShoppingBag },
-  { path: '/dashboard/community', name: 'Community', icon: Users },
-  { path: '/dashboard/admin-requests', name: 'Verification', icon: ShieldCheck },
+  { path: '/dashboard/overview', name: 'Overview', icon: LayoutDashboard, roles: ['vet', 'shelter', 'store', 'admin'] },
+  { path: '/dashboard/clinics', name: 'Vet Records', icon: Stethoscope, roles: ['vet', 'admin'] },
+  { path: '/dashboard/shelters', name: 'Adoptions', icon: Home, roles: ['shelter', 'admin'] },
+  { path: '/dashboard/stores', name: 'Inventory', icon: ShoppingBag, roles: ['store', 'admin'] },
+  { path: '/dashboard/appointments', name: 'Appointments', icon: ClipboardList, roles: ['vet', 'admin'] },
+  { path: '/dashboard/orders', name: 'Orders', icon: Package, roles: ['store', 'admin'] },
+  { path: '/dashboard/community', name: 'Community', icon: Users, roles: ['vet', 'shelter', 'store', 'admin'] },
+  { path: '/dashboard/admin-requests', name: 'Verification', icon: ShieldCheck, roles: ['admin'] },
 ];
 
 export default function Sidebar() {
-  const user = JSON.parse(localStorage.getItem('petzeno_user') || '{}');
+  const user = getCurrentUser() || {};
   const role = user.role || 'guest';
 
-  const filteredNavItems = navItems.filter(item => {
-    if (role === 'admin') return true;
-    if (item.name === 'Overview' || item.name === 'Community') return true;
-    if (role === 'vet' && item.name === 'Clinics') return true;
-    if (role === 'shelter' && item.name === 'Shelters') return true;
-    if (role === 'store' && item.name === 'Stores') return true;
-    if (role === 'admin' && item.name === 'Verification') return true; // Redundant but explicit
-    return false;
-  });
+  const filteredNavItems = navItems.filter(item => item.roles.includes(role));
 
   const handleLogout = () => {
     localStorage.removeItem('petzeno_user');
@@ -61,7 +68,7 @@ export default function Sidebar() {
           <span className={styles.navText}>Settings</span>
         </NavLink>
         <NavLink to="/" onClick={handleLogout} className={`${styles.navItem} ${styles.logout}`}>
-          <div className={styles.icon}>🚪</div>
+          <span className={styles.icon}><LogOut size={20} /></span>
           <span className={styles.navText}>Logout</span>
         </NavLink>
       </div>

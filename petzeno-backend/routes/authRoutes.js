@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const VerificationRequest = require('../models/VerificationRequest');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 
 // 1. PROVIDER: Request Access (Registration Interest)
 router.post('/register-interest', async (req, res) => {
@@ -38,10 +42,13 @@ router.post('/admin/approve/:id', async (req, res) => {
     const request = await VerificationRequest.findById(req.params.id);
     if (!request) return res.status(404).json({ message: 'Request not found' });
 
+    const tempPassword = 'temp_password_' + Math.floor(1000 + Math.random() * 9000);
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
     // Create real User account
     const newUser = await User.create({
       email: request.email,
-      password: 'temp_password_' + Math.floor(1000 + Math.random() * 9000), // In real production, this would be an encrypted random string
+      password: hashedPassword,
       name: request.name,
       role: request.role,
       businessName: request.businessName,
@@ -53,43 +60,56 @@ router.post('/admin/approve/:id', async (req, res) => {
 
     res.json({ 
       success: true, 
-      message: `Approved! User created with password: ${newUser.password}. In production, this would be sent to ${request.email} securely.` 
+      message: `Approved! User created with password: ${tempPassword}. In production, this would be sent to ${request.email} securely.` 
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// Simple Login (Simulation for Hackathon)
+// Professional Login with JWT
 router.post('/login', async (req, res) => {
   const { email, password, role } = req.body;
+  const { MOCK_FALLBACK } = require('./apiRoutes');
+  const isConnected = mongoose.connection.readyState === 1;
   
   try {
-    // Check if connected to MongoDB
-    const isConnected = mongoose.connection.readyState === 1;
     let user;
-
     if (isConnected) {
       user = await User.findOne({ email, role });
     } else {
-      // Fallback: Check in seeded mock data if DB is down
-      const { MOCK_FALLBACK } = require('./apiRoutes'); // Import mock users
+      console.log('DB Down: Using MOCK_FALLBACK for Auth');
       user = MOCK_FALLBACK.users.find(u => u.email === email && u.role === role);
-      console.log('DB Down: Using Fallback Auth for', email);
     }
     
     if (!user) {
       return res.status(401).json({ success: false, message: 'User not verified or credentials invalid.' });
     }
 
-    if (user.password !== password) {
-      return res.status(401).json({ success: false, message: 'Invalid access key.' });
+    if (isConnected) {
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch && password !== user.password) { 
+        return res.status(401).json({ success: false, message: 'Invalid access key.' });
+      }
+    } else {
+      // In Fallback Mode, just check plain text password
+      if (password !== user.password) {
+        return res.status(401).json({ success: false, message: 'Invalid access key.' });
+      }
     }
+
+    // Generate JWT
+    const token = jwt.sign(
+      { id: user._id || 'mock_id', email: user.email, role: user.role },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
     
     res.json({
       success: true,
+      token,
       user: {
-        id: user._id || 'mock_id_' + Date.now(),
+        id: user._id || 'mock_id',
         email: user.email,
         name: user.name,
         role: user.role,
