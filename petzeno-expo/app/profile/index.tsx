@@ -99,10 +99,12 @@ export default function ProfileScreen() {
 
 
   return (
-    <LinearGradient 
-      colors={[Colors.primaryLight1, colors.background]} 
-      style={styles.container}
-    >
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Decorative Blobs */}
+      <View style={[blob.b1, { backgroundColor: Colors.primary + "03" }]} />
+      <View style={[blob.b2, { backgroundColor: Colors.primaryLight + "05" }]} />
+      <View style={[blob.b3, { backgroundColor: Colors.primary + "04" }]} />
+      <View style={[blob.b4, { backgroundColor: Colors.primaryLight1 + "50" }]} />
       {/* Header Area */}
       <View style={[styles.header, { paddingTop: topPadding }]}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
@@ -181,13 +183,13 @@ export default function ProfileScreen() {
               style={[styles.petCard, { backgroundColor: colors.surface }]}
               onPress={() => router.push({ pathname: "/pet/[id]", params: { id: pet.id } } as any)}
             >
-              <View style={[styles.petAvatar, { backgroundColor: Colors.primaryLight + "30" }]}>
+              <View style={[styles.petAvatar, { backgroundColor: Colors.primary + "08" }]}>
                 <Image source={getSpeciesIcon(pet.species)} style={{ width: 40, height: 40 }} resizeMode="contain" />
               </View>
               <Text style={[styles.petName, { color: colors.text }]}>{pet.name}</Text>
               <Text style={[styles.petBreed, { color: colors.textSecondary }]} numberOfLines={1}>{pet.breed}</Text>
-              <View style={[styles.petAgeBadge, { backgroundColor: Colors.primaryLight + "30" }]}>
-                <Text style={[styles.petAge, { color: Colors.primary, fontWeight:"bold" }]}>{pet.age} yrs</Text>
+              <View style={[styles.petAgeBadge, { backgroundColor: Colors.primary + "12" }]}>
+                <Text style={[styles.petAge, { color: Colors.primary }]}>{pet.age} yrs</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -266,21 +268,16 @@ export default function ProfileScreen() {
 
         {/* Logout Button */}
         <TouchableOpacity
-          style={styles.logoutButton}
+          style={[styles.logoutButton, { backgroundColor: Colors.emergency }]}
           onPress={handleLogout}
         >
-          <LinearGradient
-            colors={[Colors.emergency, "#DC2626"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.logoutGradient}
-          >
+          <View style={styles.logoutInner}>
             <Ionicons name="log-out-outline" size={20} color="#fff" />
             <Text style={styles.logoutText}>Log Out</Text>
-          </LinearGradient>
+          </View>
         </TouchableOpacity>
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -513,13 +510,13 @@ const styles = StyleSheet.create({
   logoutButton: {
     marginTop: 32,
     borderRadius: 16,
-    shadowColor: "#FF3B30",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 5,
+    shadowColor: Colors.emergency,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 3,
   },
-  logoutGradient: {
+  logoutInner: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -530,6 +527,13 @@ const styles = StyleSheet.create({
   logoutText: {
     color: "#fff",
     fontSize: 16,
-    fontFamily: "Inter_600SemiBold",
+    fontFamily: "Inter_700Bold",
   },
+});
+
+const blob = StyleSheet.create({
+  b1: { position: "absolute", width: 280, height: 280, borderRadius: 140, top: -80, right: -80 },
+  b2: { position: "absolute", width: 200, height: 200, borderRadius: 100, top: 180, left: -80 },
+  b3: { position: "absolute", width: 160, height: 160, borderRadius: 80, top: 520, right: -40 },
+  b4: { position: "absolute", width: 220, height: 220, borderRadius: 110, bottom: 200, left: -60 },
 });

@@ -51,7 +51,7 @@ export type Appointment = {
 
 export type Notification = {
   id: string;
-  type: "vaccination" | "appointment" | "adoption" | "emergency" | "store";
+  type: "vaccination" | "appointment" | "adoption" | "emergency" | "store" | "lost_found" | "community";
   title: string;
   message: string;
   timestamp: string;
@@ -210,6 +210,22 @@ const DEMO_NOTIFICATIONS: Notification[] = [
     message: "3 new dogs are available for adoption at Sunshine Shelter",
     timestamp: new Date(Date.now() - 86400000).toISOString(),
     read: true,
+  },
+  {
+    id: "notif_004",
+    type: "lost_found",
+    title: "Nearby Lost Pet Alert",
+    message: "A Beagle matching your search was spotted 2km away in City Park",
+    timestamp: new Date(Date.now() - 14400000).toISOString(),
+    read: false,
+  },
+  {
+    id: "notif_005",
+    type: "community",
+    title: "New Comment on Your Post",
+    message: "Dr. Mike commented: 'That's a very healthy diet for a Persian cat!'",
+    timestamp: new Date(Date.now() - 3600000).toISOString(),
+    read: false,
   },
 ];
 

@@ -11,6 +11,7 @@ import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
+import { useColorScheme } from "react-native";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { queryClient } from "@/lib/query-client";
 import { PetProvider } from "@/context/PetContext";
@@ -22,7 +23,10 @@ import Colors from "@/constants/colors";
 
 SplashScreen.preventAutoHideAsync();
 
-function RootLayoutNav() {
+const RootLayoutNav = () => {
+  const colorScheme = useColorScheme();
+  const colors = colorScheme === "dark" ? Colors.dark : Colors.light;
+
   return (
     <Stack screenOptions={{ headerBackTitle: "Back" }}>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -36,19 +40,19 @@ function RootLayoutNav() {
       <Stack.Screen name="store/orders" options={{ title: "My Orders" }} />
       <Stack.Screen name="adoption/index" options={{ title: "Adopt a Pet" }} />
       <Stack.Screen name="adoption/[id]" options={{ title: "Adoption Details" }} />
+      <Stack.Screen name="adoption/post" options={{ title: "Post for Adoption", presentation: "modal" }} />
       <Stack.Screen name="lost-found/index" options={{ title: "Lost & Found" }} />
       <Stack.Screen name="lost-found/report" options={{ title: "Report Pet", presentation: "modal" }} />
       <Stack.Screen name="community/post/[id]" options={{ title: "Post" }} />
       <Stack.Screen name="emergency/index" options={{ title: "Emergency SOS", headerShown: false }} />
-      <Stack.Screen name="notifications/index" options={{ title: "Notifications" }} />
       <Stack.Screen name="profile/index" options={{ title: "Owner Profile", headerShown: false }} />
       <Stack.Screen 
         name="profile/edit" 
         options={{ 
           title: "Edit Profile", 
           presentation: "modal",
-          headerStyle: { backgroundColor: Colors.primaryLight },
-          headerTintColor: "#fff"
+          headerStyle: { backgroundColor: colors.surface },
+          headerTintColor: colors.text
         }} 
       />
       <Stack.Screen name="profile/privacy" options={{ title: "Privacy & Security", headerShown: false }} />

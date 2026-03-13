@@ -16,12 +16,11 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
-import { LinearGradient } from "expo-linear-gradient";
 import Colors from "@/constants/colors";
 
 const { width } = Dimensions.get("window");
 
-type Clinic = {
+type Place = {
   id: string;
   name: string;
   address: string;
@@ -36,63 +35,122 @@ type Clinic = {
   lng: number;
 };
 
-const MOCK_CLINICS: Clinic[] = [
+const MOCK_CLINICS: Place[] = [ 
   {
-    id: "vet_001",
-    name: "PawCare Veterinary Clinic",
-    address: "123 Park Avenue, MG Road, Bangalore",
-    phone: "+91 80 2222 3333",
-    rating: 4.8,
-    reviewCount: 342,
-    distance: "0.8 km",
-    isOpen: true,
-    hours: "9:00 AM - 8:00 PM",
-    services: ["General Check-up", "Surgery", "Dental", "Vaccination", "Emergency"],
-    lat: 12.9716,
-    lng: 77.5946,
-  },
-  {
-    id: "vet_002",
-    name: "City Animal Hospital",
-    address: "456 Oak Street, Indiranagar, Bangalore",
-    phone: "+91 80 3333 4444",
-    rating: 4.6,
-    reviewCount: 218,
-    distance: "1.2 km",
-    isOpen: true,
-    hours: "24/7 Emergency",
-    services: ["Emergency", "ICU", "Surgery", "Radiology", "Lab"],
-    lat: 12.9784,
-    lng: 77.6408,
-  },
-  {
-    id: "vet_003",
-    name: "Happy Paws Pet Clinic",
-    address: "789 Garden Road, Koramangala, Bangalore",
-    phone: "+91 80 4444 5555",
-    rating: 4.4,
-    reviewCount: 156,
-    distance: "2.1 km",
-    isOpen: false,
-    hours: "10:00 AM - 6:00 PM",
-    services: ["General Check-up", "Vaccination", "Grooming", "Boarding"],
-    lat: 12.9279,
-    lng: 77.6271,
-  },
-  {
-    id: "vet_004",
-    name: "VetCare Specialty Hospital",
-    address: "321 Lake View, Whitefield, Bangalore",
-    phone: "+91 80 5555 6666",
+    id: "vet_bbsr_001",
+    name: "Pet Vet Cure",
+    address: "F'G-18 Indradhanu Market Complex, Nayapalli, Bhubaneswar, Odisha 751015",
+    phone: "+91 98610 60456",
     rating: 4.9,
-    reviewCount: 489,
+    reviewCount: 450,
+    distance: "2.0 km",
+    isOpen: true,
+    hours: "9:00 AM - 9:00 PM",
+    services: ["General Check-up", "Vaccination", "Surgery", "Pet Grooming", "Emergency"],
+    lat: 20.2961,
+    lng: 85.8195,
+  },
+  {
+    id: "vet_bbsr_002",
+    name: "Hello Pet Cares",
+    address: "Baramunda Housing Board Colony, Baramunda, Bhubaneswar, Odisha 751003",
+    phone: "+91 84604 40956",
+    rating: 4.4,
+    reviewCount: 520,
+    distance: "3.2 km",
+    isOpen: true,
+    hours: "24/7",
+    services: ["Emergency", "Vaccination", "Pet Boarding", "Pet Pharmacy", "General Check-up"],
+    lat: 20.2824,
+    lng: 85.8066,
+  },
+  {
+    id: "vet_bbsr_003",
+    name: "Tarzoo Pet Care",
+    address: "50 Forest Park Road, Forest Park, Bhubaneswar, Odisha 751020",
+    phone: "+91 79780 12345",
+    rating: 4.7,
+    reviewCount: 870,
+    distance: "4.1 km",
+    isOpen: true,
+    hours: "24/7",
+    services: ["Surgery", "Diagnostics", "Pet Grooming", "Vaccination", "Pet Boarding"],
+    lat: 20.2624,
+    lng: 85.8338,
+  },
+  {
+    id: "vet_bbsr_004",
+    name: "Government Veterinary Hospital",
+    address: "Maharishi College Road, Saheed Nagar, Bhubaneswar, Odisha 751007",
+    phone: "+91 674 2540924",
+    rating: 4.0,
+    reviewCount: 990,
+    distance: "3.8 km",
+    isOpen: true,
+    hours: "Open 24 Hours",
+    services: ["Emergency", "Vaccination", "Surgery", "X-Ray", "Laboratory"],
+    lat: 20.2869,
+    lng: 85.8445,
+  },
+  {
+    id: "vet_bbsr_005",
+    name: "MSMB Pet Clinic & Diagnostic",
+    address: "Delta Square, Unit 8, Bhubaneswar, Odisha 751008",
+    phone: "+91 84604 40956",
+    rating: 4.6,
+    reviewCount: 310,
+    distance: "2.7 km",
+    isOpen: true,
+    hours: "9:30 AM - 8:30 PM",
+    services: ["General Check-up", "Diagnostics", "Vaccination", "Dental", "Pet Care"],
+    lat: 20.3004,
+    lng: 85.8280,
+  }
+];
+
+const MOCK_STORES: Place[] = [
+  {
+    id: "store_bbsr_001",
+    name: "Just Dogs",
+    address: "Patia, near DLF Cybercity, Bhubaneswar, Odisha 751024",
+    phone: "+91 90400 12345",
+    rating: 4.8,
+    reviewCount: 320,
+    distance: "1.5 km",
+    isOpen: true,
+    hours: "10:30 AM - 9:30 PM",
+    services: ["Premium Food", "Toys", "Accessories", "Pet Grooming", "Pharmacy"],
+    lat: 20.3506,
+    lng: 85.8183,
+  },
+  {
+    id: "store_bbsr_002",
+    name: "Pet's World",
+    address: "Building No. 56, Saheed Nagar, Bhubaneswar, Odisha 751007",
+    phone: "+91 98530 67890",
+    rating: 4.5,
+    reviewCount: 215,
     distance: "3.5 km",
     isOpen: true,
-    hours: "8:00 AM - 10:00 PM",
-    services: ["Orthopedics", "Cardiology", "Oncology", "Dermatology", "Neurology"],
-    lat: 12.9698,
-    lng: 77.7499,
+    hours: "10:00 AM - 9:00 PM",
+    services: ["Pet Food", "Leashes", "Aquarium Supplies", "Bird Feed"],
+    lat: 20.2889,
+    lng: 85.8428,
   },
+  {
+    id: "store_bbsr_003",
+    name: "Doggy Dhaba",
+    address: "IRC Village, Nayapalli, Bhubaneswar, Odisha 751015",
+    phone: "+91 82490 54321",
+    rating: 4.7,
+    reviewCount: 158,
+    distance: "2.2 km",
+    isOpen: true,
+    hours: "11:00 AM - 10:00 PM",
+    services: ["Fresh Pet Meals", "Treats", "Custom Diets", "Home Delivery"],
+    lat: 20.3015,
+    lng: 85.8190,
+  }
 ];
 
 function StarRating({ rating }: { rating: number }) {
@@ -116,7 +174,7 @@ export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const colors = isDark ? Colors.dark : Colors.light;
   const [activeTab, setActiveTab] = useState<"vets" | "stores">("vets");
-  const [selectedClinic, setSelectedClinic] = useState<Clinic | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [locationGranted, setLocationGranted] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
   const topPadding = Platform.OS === "web" ? 67 : insets.top;
@@ -140,23 +198,25 @@ export default function MapScreen() {
     Linking.openURL(`tel:${phone}`);
   };
 
-  const handleNavigate = (clinic: Clinic) => {
+  const handleNavigate = (place: Place) => {
     const url = Platform.OS === "ios"
-      ? `maps:0,0?q=${encodeURIComponent(clinic.name)}&ll=${clinic.lat},${clinic.lng}`
-      : `geo:${clinic.lat},${clinic.lng}?q=${encodeURIComponent(clinic.name)}`;
+      ? `maps:0,0?q=${encodeURIComponent(place.name)}&ll=${place.lat},${place.lng}`
+      : `geo:${place.lat},${place.lng}?q=${encodeURIComponent(place.name)}`;
     Linking.openURL(url);
   };
 
-  const displayClinics = MOCK_CLINICS;
+  const displayPlaces = activeTab === "vets" ? MOCK_CLINICS : MOCK_STORES;
 
   return (
-    <LinearGradient 
-      colors={[Colors.primaryLight1, colors.background]} 
-      style={styles.container}
-    >
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {/* Decorative Blobs */}
+      <View style={[blob.b1, { backgroundColor: Colors.primary + "03" }]} />
+      <View style={[blob.b2, { backgroundColor: Colors.primaryLight + "05" }]} />
+      <View style={[blob.b3, { backgroundColor: Colors.primary + "04" }]} />
+      <View style={[blob.b4, { backgroundColor: Colors.primaryLight1 + "50" }]} />
       {/* Header */}
       <View style={[styles.header, { paddingTop: topPadding + 12 }]}>
-        <Text style={[styles.headerTitle, { color: "#ffffffff", fontFamily: "Inter_700Bold" }]}>
+        <Text style={[styles.headerTitle, { color: "#6366F1", fontFamily: "Inter_700Bold" }]}>
           Find Nearby
         </Text>
         {locationGranted && (
@@ -184,7 +244,7 @@ export default function MapScreen() {
               opacity: activeTab === "vets" ? 1 : 0.6
             }} 
           />
-          <Text style={[styles.tabText, { color: activeTab === "vets" ? "#fff" : "#F5F6FA", fontFamily: "Inter_600SemiBold" }]}>
+          <Text style={[styles.tabText, { color: activeTab === "vets" ? "#fff" : "#6366F1", fontFamily: "Inter_600SemiBold" }]}>
             Vet Clinics
           </Text>
         </TouchableOpacity>
@@ -201,7 +261,7 @@ export default function MapScreen() {
               opacity: activeTab === "stores" ? 1 : 0.6
             }} 
           />
-          <Text style={[styles.tabText, { color: activeTab === "stores" ? "#fff" : "#F5F6FA", fontFamily: "Inter_600SemiBold" }]}>
+          <Text style={[styles.tabText, { color: activeTab === "stores" ? "#fff" : "#6366F1", fontFamily: "Inter_600SemiBold" }]}>
             Pet Stores
           </Text>
         </TouchableOpacity>
@@ -234,15 +294,15 @@ export default function MapScreen() {
         style={styles.list}
         contentContainerStyle={[
           styles.listContent,
-          { paddingBottom: Platform.OS === "web" ? 100 : 100 },
+          { paddingBottom: Platform.OS === "web" ? 100 : insets.bottom + 20 },
         ]}
         showsVerticalScrollIndicator={false}
       >
         <Text style={[styles.listTitle, { color: colors.textSecondary, fontFamily: "Inter_500Medium" }]}>
-          {displayClinics.length} {activeTab === "vets" ? "clinics" : "stores"} found
+          {displayPlaces.length} {activeTab === "vets" ? "clinics" : "stores"} found
         </Text>
-        {displayClinics.map((clinic) => (
-          <View key={clinic.id} style={[styles.clinicCard, { backgroundColor: colors.surface }]}>
+        {displayPlaces.map((place) => (
+          <View key={place.id} style={[styles.clinicCard, { backgroundColor: colors.surface }]}>
             <View style={styles.clinicHeader}>
               <View style={[styles.clinicIcon, { backgroundColor: Colors.primaryLight }]}>
                 {activeTab === "vets" ? (
@@ -259,24 +319,24 @@ export default function MapScreen() {
               </View>
               <View style={styles.clinicInfo}>
                 <Text style={[styles.clinicName, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
-                  {clinic.name}
+                  {place.name}
                 </Text>
                 <Text style={[styles.clinicAddr, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]} numberOfLines={1}>
-                  {clinic.address}
+                  {place.address}
                 </Text>
                 <View style={styles.clinicMeta}>
-                  <StarRating rating={clinic.rating} />
+                  <StarRating rating={place.rating} />
                   <Text style={[styles.clinicRating, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
-                    {clinic.rating} ({clinic.reviewCount})
+                    {place.rating} ({place.reviewCount})
                   </Text>
                   <Text style={[styles.clinicDist, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
-                    • {clinic.distance}
+                    • {place.distance}
                   </Text>
                 </View>
               </View>
-              <View style={[styles.openBadge, { backgroundColor: clinic.isOpen ? "#34C75915" : "#FF3B3015" }]}>
-                <Text style={[styles.openText, { color: clinic.isOpen ? "#34C759" : Colors.emergency, fontFamily: "Inter_600SemiBold" }]}>
-                  {clinic.isOpen ? "Open" : "Closed"}
+              <View style={[styles.openBadge, { backgroundColor: place.isOpen ? "#34C75915" : "#FF3B3015" }]}>
+                <Text style={[styles.openText, { color: place.isOpen ? "#34C759" : Colors.emergency, fontFamily: "Inter_600SemiBold" }]}>
+                  {place.isOpen ? "Open" : "Closed"}
                 </Text>
               </View>
             </View>
@@ -284,12 +344,12 @@ export default function MapScreen() {
             <View style={styles.clinicHoursRow}>
               <Ionicons name="time-outline" size={13} color={colors.textTertiary} />
               <Text style={[styles.clinicHours, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
-                {clinic.hours}
+                {place.hours}
               </Text>
             </View>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.servicesRow}>
-              {clinic.services.map((service) => (
+              {place.services.map((service) => (
                 <View key={service} style={[styles.serviceBadge, { backgroundColor: colors.surfaceSecondary }]}>
                   <Text style={[styles.serviceText, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
                     {service}
@@ -301,7 +361,7 @@ export default function MapScreen() {
             <View style={styles.clinicActions}>
               <TouchableOpacity
                 style={[styles.clinicActionBtn, { backgroundColor: colors.surfaceSecondary }]}
-                onPress={() => handleCall(clinic.phone)}
+                onPress={() => handleCall(place.phone)}
               >
                 <Ionicons name="call" size={16} color={Colors.primary} />
                 <Text style={[styles.clinicActionText, { color: Colors.primary, fontFamily: "Inter_600SemiBold" }]}>
@@ -310,7 +370,7 @@ export default function MapScreen() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.clinicActionBtn, { backgroundColor: colors.surfaceSecondary }]}
-                onPress={() => handleNavigate(clinic)}
+                onPress={() => handleNavigate(place)}
               >
                 <Ionicons name="navigate" size={16} color={Colors.primary} />
                 <Text style={[styles.clinicActionText, { color: Colors.primary, fontFamily: "Inter_600SemiBold" }]}>
@@ -319,7 +379,7 @@ export default function MapScreen() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.clinicActionBtn, { backgroundColor: colors.surfaceSecondary }]}
-                onPress={() => router.push({ pathname: "/appointment/book", params: { clinicId: clinic.id, clinicName: clinic.name, clinicAddress: clinic.address, vetName: "Dr. Available" } })}
+                onPress={() => router.push({ pathname: "/appointment/book", params: { clinicId: place.id, clinicName: place.name, clinicAddress: place.address, vetName: "Dr. Available" } })}
               >
                 <Ionicons name="calendar" size={16} color={Colors.primary} />
                 <Text style={[styles.clinicActionText, { color: Colors.primary, fontFamily: "Inter_600SemiBold" }]}>
@@ -330,7 +390,7 @@ export default function MapScreen() {
           </View>
         ))}
       </ScrollView>
-    </LinearGradient>
+    </View>
   );
 }
 
@@ -454,4 +514,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   clinicActionTextWhite: { color: "#fff", fontSize: 13 },
+});
+
+const blob = StyleSheet.create({
+  b1: { position: "absolute", width: 280, height: 280, borderRadius: 140, top: -80, right: -80 },
+  b2: { position: "absolute", width: 200, height: 200, borderRadius: 100, top: 180, left: -80 },
+  b3: { position: "absolute", width: 160, height: 160, borderRadius: 80, top: 520, right: -40 },
+  b4: { position: "absolute", width: 220, height: 220, borderRadius: 110, bottom: 200, left: -60 },
 });

@@ -186,14 +186,14 @@ export default function HomeScreen() {
           <View style={styles.topActions}>
             <TouchableOpacity
               style={[styles.topBtn, { backgroundColor: colors.surfaceSecondary }]}
-              onPress={() => router.push("/notifications/index" as any)}
+              onPress={() => router.push("/notifications")}
             >
               <Ionicons name="notifications" size={19} color={colors.text} />
               {unreadCount > 0 && <View style={styles.notifDot} />}
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.avatarWrap, { borderColor: colors.border }]}
-              onPress={() => router.push("/profile/index" as any)}
+              onPress={() => router.push("/profile")}
             >
               {profilePhoto ? (
                 <Image source={{ uri: profilePhoto }} style={styles.avatar} />
