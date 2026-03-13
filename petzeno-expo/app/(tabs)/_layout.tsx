@@ -58,32 +58,46 @@ function ClassicTabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.primaryLight,
-        tabBarInactiveTintColor: colors.textTertiary,
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
         headerShown: false,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: isIOS ? "transparent" : isDark ? "#000000ff" : "#fff",
-          borderTopWidth: isWeb ? 1 : 0,
-          borderTopColor: colors.border,
-          elevation: 0,
-          ...(isWeb ? { height: 84 } : {}),
+          bottom: Platform.OS === "ios" ? 35 : 35,
+          left: 35,
+          right: 35,
+          height: 60,
+          borderRadius: 35,
+          backgroundColor: colors.surface,
+          borderTopWidth: 0,
+          paddingBottom: Platform.OS === "ios" ? 0 : 10,
+          paddingTop: 8,
+          ...Platform.select({
+            ios: {
+              shadowColor: colors.shadow,
+              shadowOffset: { width: 0, height: 10 },
+              shadowOpacity: 0.1,
+              shadowRadius: 20,
+            },
+            android: {
+              elevation: 8,
+            },
+            web: {
+              shadowColor: colors.shadow,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.1,
+              shadowRadius: 10,
+            },
+          }),
         },
-        tabBarBackground: () =>
-          isIOS ? (
-            <BlurView
-              intensity={100}
-              tint={isDark ? "dark" : "light"}
-              style={StyleSheet.absoluteFill}
-            />
-          ) : isWeb ? (
-            <View
-              style={[
-                StyleSheet.absoluteFill,
-                { backgroundColor: isDark ? "#000" : "#fff" },
-              ]}
-            />
-          ) : null,
+        tabBarLabelStyle: {
+          fontFamily: "Inter_600SemiBold",
+          fontSize: 10,
+          marginTop: -4,
+        },
+        tabBarIconStyle: {
+          marginBottom: -2,
+        },
       }}
     >
       <Tabs.Screen
@@ -91,18 +105,25 @@ function ClassicTabLayout() {
         options={{
           title: "Home",
           tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
-          tabBarBadgeStyle: { backgroundColor: Colors.emergency, color: '#FFF', fontSize: 10 },
+          tabBarBadgeStyle: { 
+            backgroundColor: Colors.emergency, 
+            color: '#FFF', 
+            fontSize: 9,
+            minWidth: 16,
+            height: 16,
+            lineHeight: 14,
+          },
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
               <SymbolView
                 name={focused ? "house.fill" : "house"}
                 tintColor={color}
-                size={24}
+                size={22}
               />
             ) : (
               <Ionicons
                 name={focused ? "home" : "home-outline"}
-                size={24}
+                size={22}
                 color={color}
               />
             ),
@@ -117,12 +138,12 @@ function ClassicTabLayout() {
               <SymbolView
                 name={focused ? "pawprint.fill" : "pawprint"}
                 tintColor={color}
-                size={24}
+                size={22}
               />
             ) : (
               <Ionicons
                 name={focused ? "paw" : "paw-outline"}
-                size={24}
+                size={22}
                 color={color}
               />
             ),
@@ -137,12 +158,12 @@ function ClassicTabLayout() {
               <SymbolView
                 name={focused ? "map.fill" : "map"}
                 tintColor={color}
-                size={24}
+                size={22}
               />
             ) : (
               <Ionicons
                 name={focused ? "map" : "map-outline"}
-                size={24}
+                size={22}
                 color={color}
               />
             ),
@@ -153,18 +174,25 @@ function ClassicTabLayout() {
         options={{
           title: "Store",
           tabBarBadge: cartCount > 0 ? cartCount : undefined,
-          tabBarBadgeStyle: { backgroundColor: Colors.emergency, color: '#FFF', fontSize: 10 },
+          tabBarBadgeStyle: { 
+            backgroundColor: Colors.emergency, 
+            color: '#FFF', 
+            fontSize: 9,
+            minWidth: 16,
+            height: 16,
+            lineHeight: 14,
+          },
           tabBarIcon: ({ color, focused }) =>
             isIOS ? (
               <SymbolView
                 name={focused ? "bag.fill" : "bag"}
                 tintColor={color}
-                size={24}
+                size={22}
               />
             ) : (
               <Ionicons
                 name={focused ? "bag" : "bag-outline"}
-                size={24}
+                size={22}
                 color={color}
               />
             ),
@@ -179,12 +207,12 @@ function ClassicTabLayout() {
               <SymbolView
                 name={focused ? "person.3.fill" : "person.3"}
                 tintColor={color}
-                size={24}
+                size={22}
               />
             ) : (
               <Ionicons
                 name={focused ? "people" : "people-outline"}
-                size={24}
+                size={22}
                 color={color}
               />
             ),
@@ -199,12 +227,12 @@ function ClassicTabLayout() {
               <SymbolView
                 name={focused ? "bubble.left.and.bubble.right.fill" : "bubble.left.and.bubble.right"}
                 tintColor={color}
-                size={24}
+                size={22}
               />
             ) : (
               <Ionicons
                 name={focused ? "chatbubbles" : "chatbubbles-outline"}
-                size={24}
+                size={22}
                 color={color}
               />
             ),
