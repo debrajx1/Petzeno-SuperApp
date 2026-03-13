@@ -6,7 +6,7 @@ import {
   Shield, Users, Heart, ArrowRight, CheckCircle, Zap, Globe, Lock,
   PawPrint, Star, MessageCircle, Info, ChevronDown, Activity,
   Search, Calendar, ShoppingBag, PlusCircle, Sun, Moon, Languages, Volume2, ChevronUp,
-  Mail, MessageSquare
+  Mail, MessageSquare, Linkedin, Twitter
 } from 'lucide-react';
 import styles from './Landing.module.css';
 
@@ -158,13 +158,16 @@ const TestimonialCard = ({ quote, name, role, image, delay }) => (
   </TiltCard>
 );
 
-const FAQItem = ({ question, answer }) => {
+const FAQItem = ({ question, answer, icon: Icon }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className={styles.faqItem}>
+    <div className={`${styles.faqItem} ${isOpen ? styles.open : ''}`}>
       <button className={styles.faqHeader} onClick={() => setIsOpen(!isOpen)}>
-        <span>{question}</span>
-        <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
+        <div className={styles.faqIcon}>
+          <Icon size={20} />
+        </div>
+        <span className={styles.faqHeaderText}>{question}</span>
+        <motion.div className={styles.faqChevron} animate={{ rotate: isOpen ? 180 : 0 }}>
           <ChevronDown size={20} />
         </motion.div>
       </button>
@@ -175,8 +178,9 @@ const FAQItem = ({ question, answer }) => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <p>{answer}</p>
+            <div className={styles.faqAnswerText}>{answer}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -186,15 +190,15 @@ const FAQItem = ({ question, answer }) => {
 
 const PartnerTicker = () => {
   const partners = [
-    { name: "PetGo", logo: "🐾" },
-    { name: "VetCare", logo: "🏥" },
-    { name: "AnimalAid", logo: "🛡️" },
-    { name: "SafePaws", logo: "🦴" },
-    { name: "HappyTails", logo: "🐕" },
-    { name: "GreenVet", logo: "🌿" }
+    { name: "PetGo", logo: Shield },
+    { name: "VetCare", logo: Activity },
+    { name: "SafePaws", logo: Lock },
+    { name: "HappyTails", logo: Heart },
+    { name: "GreenVet", logo: Zap },
+    { name: "AnimalAid", logo: Globe }
   ];
 
-  const duplicatedPartners = [...partners, ...partners];
+  const duplicatedPartners = [...partners, ...partners, ...partners];
 
   return (
     <div className={styles.tickerContainer}>
@@ -202,21 +206,77 @@ const PartnerTicker = () => {
       <div className={styles.tickerTrack}>
         <motion.div
           className={styles.tickerContent}
-          animate={{ x: ['0%', '-50%'] }}
+          animate={{ x: ['0%', '-33.33%'] }}
           transition={{
-            duration: 25,
+            duration: 30,
             repeat: Infinity,
             ease: "linear"
           }}
         >
           {duplicatedPartners.map((p, idx) => (
             <div key={idx} className={styles.partnerLogo}>
-              <span className={styles.partnerIcon}>{p.logo}</span>
+              <div className={styles.partnerIconBox}>
+                <p.logo size={24} />
+              </div>
               <span className={styles.partnerName}>{p.name}</span>
             </div>
           ))}
         </motion.div>
       </div>
+    </div>
+  );
+};
+
+const FAQSection = () => {
+  const [activeTab, setActiveTab] = useState('general');
+
+  const faqData = {
+    general: [
+      { q: "Is PetZeno free for pet owners?", a: "Absolutely! PetZeno is free for pet owners. You can search for verified vets, book appointments, and manage all your pet's health records at no cost.", icon: Heart },
+      { q: "How is my pet's medical data secured?", a: "We use enterprise-grade end-to-end encryption to ensure that your pet's medical history is only accessible to you and the veterinarians you share it with.", icon: Lock }
+    ],
+    parents: [
+      { q: "Can I manage multiple pets on one account?", a: "Yes! You can add multiple pet profiles under a single account, each with their own unique medical history, vaccination records, and appointment schedules.", icon: Users },
+      { q: "What happens if I have an emergency?", a: "The PetZeno app features a dedicated 'Emergency' button that instantly lists the nearest 24/7 animal hospitals and available emergency vet clinics in your area.", icon: Zap },
+      { q: "Does PetZeno support pet adoption?", a: "Yes! We partner with verified shelters across India to showcase pets available for adoption. You can view profiles, chat with shelter directors, and start the adoption process directly through the app.", icon: Globe }
+    ],
+    providers: [
+      { q: "How do I register as a Veterinary Provider?", a: "Click on the 'Join as Provider' button, fill in your clinic's details, and upload your professional certifications. Our team will verify your documents within 24-48 hours.", icon: Shield },
+      { q: "Are all service providers on the platform verified?", a: "Yes, every veterinarian, shelter, and store owner must go through a manual verification process, including background checks and license validation, before joining our network.", icon: CheckCircle },
+      { q: "Can I switch between an Owner and a Provider profile?", a: "Currently, Owner and Provider accounts are separate to maintain data integrity. However, you can use the same email address to register for both roles with distinct profiles.", icon: Activity }
+    ]
+  };
+
+  return (
+    <div className={styles.faqContainer}>
+      <div className={styles.faqCategoryTabs}>
+        {['general', 'parents', 'providers'].map((tab) => (
+          <button
+            key={tab}
+            className={`${styles.faqCategoryBtn} ${activeTab === tab ? styles.active : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4 }}
+        className={styles.faqList}
+      >
+        {faqData[activeTab].map((item, idx) => (
+          <FAQItem
+            key={idx}
+            question={item.q}
+            answer={item.a}
+            icon={item.icon}
+          />
+        ))}
+      </motion.div>
     </div>
   );
 };
@@ -480,35 +540,56 @@ const ConnectionRoadmap = ({ title }) => {
 
 const TeamSection = ({ title }) => {
   const team = [
-    { name: "Debraj", role: "Founder & Lead", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Debraj" },
-    { name: "Rahul", role: "Core Developer", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul" },
-    { name: "Ankit", role: "Product Design", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ankit" },
-    { name: "Sneha", role: "Operations", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sneha" },
-    { name: "Vikas", role: "Community Manager", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Vikas" },
-    { name: "Priya", role: "QA & Testing", image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya" }
+    { name: "Debraj Naik", role: "Team Leader & Lead Archirect", image: "/team/debraj.jpg" },
+    { name: "Ajay Bala", role: "Full Stack Developer", image: "/team/ajay.jpg" },
+    { name: "Naren Kumar Biswal", role: "Backend & Cloud Engineer", image: "/team/naren.jpg" },
+    { name: "Jems Manjit Sahu", role: "UI/UX & Frontend Specialist", image: "/team/jems.jpg" },
+    { name: "Sushree Dash", role: "Product Strategy & Operations", image: "/team/sushree.jpg" }
   ];
 
   return (
-    <section className={styles.teamSection}>
+    <section id="team" className={styles.teamSection}>
       <div className={styles.centeredHeader}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className={styles.badge}
+          style={{ margin: '0 auto 1.5rem auto' }}
+        >
+          <Users size={14} />
+          <span>The Architects</span>
+        </motion.div>
         <h2 className={styles.sectionTitle}>{title}</h2>
+        <p className={styles.sectionSubtitle}>Meet the visionaries building the world's most advanced pet care ecosystem.</p>
       </div>
+
       <div className={styles.teamGrid}>
         {team.map((member, idx) => (
-          <motion.div
-            key={idx}
-            className={styles.teamCard}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            viewport={{ once: true }}
-          >
-            <div className={styles.teamImgBox}>
-              <img src={member.image} alt={member.name} />
-            </div>
-            <h3>{member.name}</h3>
-            <p>{member.role}</p>
-          </motion.div>
+          <TiltCard key={idx} className={styles.teamCardContainer}>
+            <motion.div
+              className={styles.teamCard}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              viewport={{ once: true }}
+            >
+              <div className={styles.teamImgBox}>
+                <img src={member.image} alt={member.name} />
+                <div className={styles.teamImgOverlay}></div>
+                <div className={styles.teamSocials}>
+                  <motion.a href="#" whileHover={{ y: -3, color: '#0077b5' }}><Linkedin size={18} /></motion.a>
+                  <motion.a href="#" whileHover={{ y: -3, color: '#1DA1F2' }}><Twitter size={18} /></motion.a>
+                </div>
+              </div>
+              <div className={styles.teamInfo}>
+                <div className={styles.teamRoleBadge}>{member.role.split(' ')[0]}</div>
+                <h3>{member.name}</h3>
+                <p>{member.role}</p>
+              </div>
+              <div className={styles.cardGlow} />
+            </motion.div>
+          </TiltCard>
         ))}
       </div>
     </section>
@@ -988,57 +1069,57 @@ export default function Landing() {
 
       <section id="support" className={styles.faqSection}>
         <div className={styles.centeredHeader}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className={styles.badge}
+            style={{ margin: '0 auto 1rem' }}
+          >
+            <MessageSquare size={14} />
+            <span>Support Center</span>
+          </motion.div>
           <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
           <p className={styles.sectionSubtitle}>Everything you need to know about India's most advanced pet ecosystem.</p>
         </div>
-        <div className={styles.faqList}>
-          <FAQItem
-            question="Is PetZeno free for pet owners?"
-            answer="Absolutely! PetZeno is free for pet owners. You can search for verified vets, book appointments, and manage all your pet's health records at no cost."
-          />
-          <FAQItem
-            question="How do I register as a Veterinary Provider?"
-            answer="Click on the 'Join as Provider' button, fill in your clinic's details, and upload your professional certifications. Our team will verify your documents within 24-48 hours."
-          />
-          <FAQItem
-            question="How is my pet's medical data secured?"
-            answer="We use enterprise-grade end-to-end encryption to ensure that your pet's medical history is only accessible to you and the veterinarians you share it with."
-          />
-          <FAQItem
-            question="Can I manage multiple pets on one account?"
-            answer="Yes! You can add multiple pet profiles under a single account, each with their own unique medical history, vaccination records, and appointment schedules."
-          />
-          <FAQItem
-            question="What happens if I have an emergency?"
-            answer="The PetZeno app features a dedicated 'Emergency' button that instantly lists the nearest 24/7 animal hospitals and available emergency vet clinics in your area."
-          />
-          <FAQItem
-            question="Are all service providers on the platform verified?"
-            answer="Yes, every veterinarian, shelter, and store owner must go through a manual verification process, including background checks and license validation, before joining our network."
-          />
-          <FAQItem
-            question="Can I switch between an Owner and a Provider profile?"
-            answer="Currently, Owner and Provider accounts are separate to maintain data integrity. However, you can use the same email address to register for both roles with distinct profiles."
-          />
-          <FAQItem
-            question="Does PetZeno support pet adoption?"
-            answer="Yes! We partner with verified shelters across India to showcase pets available for adoption. You can view profiles, chat with shelter directors, and start the adoption process directly through the app."
-          />
-        </div>
+
+        <FAQSection />
       </section>
 
       <Newsletter />
       <section className={styles.finalCTA}>
+        <div className={styles.ctaGlow} />
         <motion.div
           className={styles.ctaBox}
-          whileInView={{ scale: [0.95, 1], opacity: [0, 1] }}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true }}
         >
-          <h2>Join the Pet Revolution in India</h2>
-          <p>Download the app or register your business to be part of the world's most complete pet ecosystem.</p>
+          <div className={styles.ctaBadge}>
+            <Zap size={14} />
+            <span>Limited Beta Access</span>
+          </div>
+          <h2 className="shimmer-3d">Join the Pet Revolution in India</h2>
+          <p>
+            Experience the future of pet care. Whether you're a pet parent seeking elite care
+            or a provider looking to scale, PetZeno is your gateway to a unified ecosystem.
+          </p>
           <div className={styles.ctaBtns}>
-            <button className={styles.ctaPrimary}>Download App</button>
-            <button className={styles.ctaSecondary} onClick={() => navigate('/login')}>Provider Login</button>
+            <button className={styles.ctaPrimary}>
+              <span>Get Started Now</span>
+              <ArrowRight size={18} />
+            </button>
+            <button className={styles.ctaSecondary} onClick={() => navigate('/login')}>
+              Partner Gateway
+            </button>
+          </div>
+
+          <div className={styles.ctaTrust}>
+            <p>Trusted by 500+ Veterinary Clinics across India</p>
+            <div className={styles.trustLogos}>
+              <Shield size={16} />
+              <span>Enterprise-Grade Security</span>
+            </div>
           </div>
         </motion.div>
       </section>
@@ -1082,38 +1163,57 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      <footer className={styles.footer} style={{ position: 'relative', overflow: 'hidden' }}>
-        <div className="perspective-grid" style={{ opacity: 0.3 }} />
-        <div className="orb orb-primary" style={{ width: '200px', height: '200px', bottom: '-20%', right: '10%', opacity: 0.15 }} />
-        <div className={styles.footerGrid}>
-          <div className={styles.footerInfo}>
+      <footer className={styles.footer}>
+        <div className={styles.footerGlow} />
+
+        <div className={styles.footerTop}>
+          <div className={styles.footerBrandSection}>
             <div className={styles.footerBrand}>
               <img src="/petzeno-logo.png" alt="PetZeno" className={styles.footerLogo} />
               <span>PetZeno</span>
             </div>
-            <p>The ultimate Pet Care Super App integrating health cards, adoption, store inventory, and emergency services.</p>
-          </div>
-          <div className={styles.footerLinks}>
-            <h4>Ecosystem</h4>
-            <a href="#features">Mobile Application</a>
-            <a href="#features">Provider Dashboard</a>
-            <a href="#features">Shelter Management</a>
-          </div>
-          <div className={styles.footerLinks}>
-            <h4>Legal</h4>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Cookie Policy</a>
-          </div>
-          <div className={styles.footerLinks}>
-            <h4>Contact</h4>
-            <a href="mailto:support@petzeno.com">support@petzeno.com</a>
+            <p className={styles.footerDesc}>
+              The ultimate Pet Care Super App integrating health cards, adoption, store inventory, and emergency services into one seamless global ecosystem.
+            </p>
             <div className={styles.socials}>
+              <a href="#" aria-label="Twitter"><Twitter size={20} /></a>
+              <a href="#" aria-label="LinkedIn"><Linkedin size={20} /></a>
+              <a href="#" aria-label="GitHub"><Globe size={20} /></a>
+            </div>
+          </div>
+
+          <div className={styles.footerLinksGrid}>
+            <div className={styles.footerLinks}>
+              <h4>Ecosystem</h4>
+              <a href="#features">Pet Parent Portal</a>
+              <a href="#features">Provider Gateway</a>
+              <a href="#features">Shelter Network</a>
+              <a href="#features">Marketplace API</a>
+            </div>
+            <div className={styles.footerLinks}>
+              <h4>Company</h4>
+              <a href="#about">About Us</a>
+              <a href="#team">Founders & Team</a>
+              <a href="#careers">Careers</a>
+              <a href="#contact">Contact Support</a>
+            </div>
+            <div className={styles.footerLinks}>
+              <h4>Legal</h4>
+              <a href="#privacy">Privacy Policy</a>
+              <a href="#terms">Terms of Service</a>
+              <a href="#cookies">Cookie Policy</a>
+              <a href="#security">Security Protocol</a>
             </div>
           </div>
         </div>
+
         <div className={styles.footerBottom}>
-          <p>&copy; 2026 PetZeno Corporate Ecosystem. All rights reserved.</p>
+          <div className={styles.footerBottomContent}>
+            <p>&copy; {new Date().getFullYear()} PetZeno Corporate Ecosystem. All rights reserved.</p>
+            <div className={styles.footerBottomLinks}>
+              <a href="#status">System Status: <span className={styles.statusDot}></span> Operational</a>
+            </div>
+          </div>
         </div>
       </footer>
 
