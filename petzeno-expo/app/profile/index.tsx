@@ -167,10 +167,10 @@ export default function ProfileScreen() {
         <View style={styles.sectionHeader}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>My Pets</Text>
-            <Ionicons name="heart" size={22} color="#abf8faff" />
+            <Ionicons name="heart" size={22} color={Colors.healthy} />
           </View>
           <TouchableOpacity onPress={() => router.push("/pet/add" as any)}>
-            <Text style={[styles.actionText, { color: Colors.secondary, fontWeight: "bold" }]}>+ Add Pet</Text>
+            <Text style={[styles.actionText, { color: Colors.primary, fontWeight: "bold" }]}>+ Add Pet</Text>
           </TouchableOpacity>
         </View>
 
@@ -181,13 +181,13 @@ export default function ProfileScreen() {
               style={[styles.petCard, { backgroundColor: colors.surface }]}
               onPress={() => router.push({ pathname: "/pet/[id]", params: { id: pet.id } } as any)}
             >
-              <View style={[styles.petAvatar, { backgroundColor: Colors.primaryLight }]}>
+              <View style={[styles.petAvatar, { backgroundColor: Colors.primaryLight + "30" }]}>
                 <Image source={getSpeciesIcon(pet.species)} style={{ width: 40, height: 40 }} resizeMode="contain" />
               </View>
               <Text style={[styles.petName, { color: colors.text }]}>{pet.name}</Text>
               <Text style={[styles.petBreed, { color: colors.textSecondary }]} numberOfLines={1}>{pet.breed}</Text>
-              <View style={[styles.petAgeBadge, { backgroundColor: Colors.primaryLight }]}>
-                <Text style={[styles.petAge, { color: Colors.secondary, fontWeight:"bold" }]}>{pet.age} yrs</Text>
+              <View style={[styles.petAgeBadge, { backgroundColor: Colors.primaryLight + "30" }]}>
+                <Text style={[styles.petAge, { color: Colors.primary, fontWeight:"bold" }]}>{pet.age} yrs</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -224,7 +224,7 @@ export default function ProfileScreen() {
         
         <View style={[styles.settingsList, { backgroundColor: colors.surface }]}>
           <TouchableOpacity style={styles.settingRow} onPress={() => router.push("/profile/edit" as any)}>
-            <View style={[styles.settingIconBoxSmall, { backgroundColor: `${Colors.primary}15` }]}>
+            <View style={[styles.settingIconBoxSmall, { backgroundColor: `${Colors.primary}12` }]}>
               <Ionicons name="person-outline" size={18} color={Colors.primary} />
             </View>
             <Text style={[styles.settingRowText, { color: colors.text }]}>Edit Profile</Text>
@@ -233,8 +233,8 @@ export default function ProfileScreen() {
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
           
           <View style={styles.settingRow}>
-            <View style={[styles.settingIconBoxSmall, { backgroundColor: "#FF950015" }]}>
-              <Ionicons name="notifications-outline" size={18} color="#FF9500" />
+            <View style={[styles.settingIconBoxSmall, { backgroundColor: Colors.warning + "12" }]}>
+              <Ionicons name="notifications-outline" size={18} color={Colors.warning} />
             </View>
             <Text style={[styles.settingRowText, { color: colors.text }]}>Push Notifications</Text>
             <Switch
@@ -247,8 +247,8 @@ export default function ProfileScreen() {
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
           <TouchableOpacity style={styles.settingRow} onPress={() => router.push("/profile/privacy" as any)}>
-            <View style={[styles.settingIconBoxSmall, { backgroundColor: "#AF52DE15" }]}>
-              <Ionicons name="shield-checkmark-outline" size={18} color="#AF52DE" />
+            <View style={[styles.settingIconBoxSmall, { backgroundColor: Colors.primary + "12" }]}>
+              <Ionicons name="shield-checkmark-outline" size={18} color={Colors.primary} />
             </View>
             <Text style={[styles.settingRowText, { color: colors.text }]}>Privacy & Security</Text>
             <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
@@ -256,8 +256,8 @@ export default function ProfileScreen() {
           <View style={[styles.divider, { backgroundColor: colors.border }]} />
 
           <TouchableOpacity style={styles.settingRow} onPress={() => router.push("/profile/support" as any)}>
-            <View style={[styles.settingIconBoxSmall, { backgroundColor: "#007AFF15" }]}>
-              <Ionicons name="help-buoy-outline" size={18} color="#007AFF" />
+            <View style={[styles.settingIconBoxSmall, { backgroundColor: Colors.info + "12" }]}>
+              <Ionicons name="help-buoy-outline" size={18} color={Colors.info} />
             </View>
             <Text style={[styles.settingRowText, { color: colors.text }]}>Help & Support</Text>
             <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
@@ -270,7 +270,7 @@ export default function ProfileScreen() {
           onPress={handleLogout}
         >
           <LinearGradient
-            colors={["#FF6B61", "#FF3B30"]}
+            colors={[Colors.emergency, "#DC2626"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.logoutGradient}

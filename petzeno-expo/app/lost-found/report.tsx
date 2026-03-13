@@ -14,6 +14,19 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "react-native";
+
+function getSpeciesIcon(species: string) {
+  const icons: Record<string, any> = {
+    dog: require("@/assets/images/dog.png"),
+    cat: require("@/assets/images/cat.png"),
+    bird: require("@/assets/images/bird.png"),
+    rabbit: require("@/assets/images/rabbit.png"),
+    fish: require("@/assets/images/fish.png"),
+    other: require("@/assets/images/other.png"),
+  };
+  return icons[species.toLowerCase()] || icons.other;
+}
 import { useCommunity } from "@/context/CommunityContext";
 import Colors from "@/constants/colors";
 
@@ -124,27 +137,30 @@ export default function ReportLostFoundScreen() {
       </View>
 
       {[
-        { label: "Pet Name (if known)", value: petName, setter: setPetName, placeholder: "e.g. Buddy", required: false },
-        { label: "Breed (if known)", value: breed, setter: setBreed, placeholder: "e.g. Beagle", required: false },
-        { label: "Location *", value: location, setter: setLocation, placeholder: "Last seen / found at...", required: true },
-        { label: "Description *", value: description, setter: setDescription, placeholder: "Color, markings, collar, any other details...", required: true },
-        { label: "Your Name", value: contactName, setter: setContactName, placeholder: "Your name", required: false },
-        { label: "Contact Phone *", value: contactPhone, setter: setContactPhone, placeholder: "+91 98765 43210", required: true },
+        { label: "Pet Name (if known)", value: petName, setter: setPetName, placeholder: "e.g. Buddy", required: false, icon: "paw" },
+        { label: "Breed (if known)", value: breed, setter: setBreed, placeholder: "e.g. Beagle", required: false, icon: "git-branch" },
+        { label: "Location *", value: location, setter: setLocation, placeholder: "Last seen / found at...", required: true, icon: "location" },
+        { label: "Description *", value: description, setter: setDescription, placeholder: "Color, markings, collar, any other details...", required: true, icon: "information-circle" },
+        { label: "Your Name", value: contactName, setter: setContactName, placeholder: "Your name", required: false, icon: "person" },
+        { label: "Contact Phone *", value: contactPhone, setter: setContactPhone, placeholder: "+91 98765 43210", required: true, icon: "call" },
       ].map((field) => (
         <View key={field.label}>
           <Text style={[styles.label, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
             {field.label}
           </Text>
-          <TextInput
-            style={[styles.input, { backgroundColor: colors.surface, color: colors.text, borderColor: colors.border }]}
-            value={field.value}
-            onChangeText={field.setter}
-            placeholder={field.placeholder}
-            placeholderTextColor={colors.textTertiary}
-            keyboardType={field.label.includes("Phone") ? "phone-pad" : "default"}
-            multiline={field.label.includes("Description")}
-            numberOfLines={field.label.includes("Description") ? 3 : 1}
-          />
+          <View style={[styles.inputContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <Ionicons name={field.icon as any} size={18} color={colors.textTertiary} style={styles.inputIcon} />
+            <TextInput
+              style={[styles.input, { color: colors.text }]}
+              value={field.value}
+              onChangeText={field.setter}
+              placeholder={field.placeholder}
+              placeholderTextColor={colors.textTertiary}
+              keyboardType={field.label.includes("Phone") ? "phone-pad" : "default"}
+              multiline={field.label.includes("Description")}
+              numberOfLines={field.label.includes("Description") ? 3 : 1}
+            />
+          </View>
         </View>
       ))}
 
@@ -184,50 +200,65 @@ export default function ReportLostFoundScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: 16, gap: 8, paddingBottom: 40 },
-  typeRow: { flexDirection: "row", gap: 10, marginBottom: 8 },
+  content: { padding: 16, gap: 12, paddingBottom: 40 },
+  typeRow: { flexDirection: "row", gap: 12, marginBottom: 8 },
   typeBtn: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    paddingVertical: 14,
-    borderRadius: 14,
-    backgroundColor: "transparent",
-    borderWidth: 1.5,
-    borderColor: "transparent",
-  },
-  typeText: { fontSize: 15 },
-  label: { fontSize: 14, marginTop: 6, marginBottom: 5 },
-  speciesRow: { flexDirection: "row", gap: 10, marginBottom: 4 },
-  speciesBtn: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
-    backgroundColor: "transparent",
-  },
-  speciesEmoji: { fontSize: 28 },
-  input: {
-    borderRadius: 14,
-    borderWidth: 1.5,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 14,
-    marginBottom: 2,
-  },
-  submitBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
     paddingVertical: 16,
     borderRadius: 16,
-    marginTop: 16,
+    backgroundColor: "transparent",
+    borderWidth: 1.5,
+    borderColor: "transparent",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
+  },
+  typeText: { fontSize: 16 },
+  label: { fontSize: 14, marginTop: 10, marginBottom: 8 },
+  speciesRow: { flexDirection: "row", gap: 12, marginBottom: 8 },
+  speciesBtn: {
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "rgba(0,0,0,0.05)",
+    backgroundColor: "rgba(255,255,255,0.4)",
+  },
+  speciesEmoji: { fontSize: 30 },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    borderWidth: 1.5,
+    paddingHorizontal: 14,
+    height: 52,
+  },
+  inputIcon: { marginRight: 10 },
+  input: {
+    flex: 1,
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
+  },
+  submitBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    paddingVertical: 18,
+    borderRadius: 18,
+    marginTop: 24,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
   },
   submitBtnText: { color: "#fff", fontSize: 16 },
 });
