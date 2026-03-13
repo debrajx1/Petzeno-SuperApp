@@ -7,7 +7,10 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['vet', 'shelter', 'store', 'admin'], default: 'vet' },
   status: { type: String, enum: ['pending', 'verified'], default: 'pending' },
   businessName: String,
-  businessId: String
+  businessId: String,
+  phone: String,
+  location: String,
+  bio: String
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

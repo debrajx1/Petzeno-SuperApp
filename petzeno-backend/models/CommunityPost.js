@@ -4,6 +4,8 @@ const communityPostSchema = new mongoose.Schema({
   authorId: { type: String, required: true },
   author: { type: String, required: true },
   authorAvatar: String,
+  userType: { type: String, enum: ['vet', 'shelter', 'store', 'user'], default: 'user' },
+  category: { type: String, enum: ['Health', 'Adoption', 'Marketplace', 'Life', 'General'], default: 'General' },
   petName: String,
   text: { type: String, required: true },
   image: String,

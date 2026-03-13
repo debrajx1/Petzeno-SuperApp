@@ -540,10 +540,10 @@ const ConnectionRoadmap = ({ title }) => {
 
 const TeamSection = ({ title }) => {
   const team = [
-    { name: "Debraj Naik", role: "Team Leader & Lead Archirect", image: "/team/debraj.jpg" },
+    { name: "Debraj Naik", role: "Team Leader, Lead Archirect, Backend", image: "/team/debraj.jpg" },
     { name: "Ajay Bala", role: "Full Stack Developer", image: "/team/ajay.jpg" },
-    { name: "Naren Kumar Biswal", role: "Backend & Cloud Engineer", image: "/team/naren.jpg" },
-    { name: "Jems Manjit Sahu", role: "UI/UX & Frontend Specialist", image: "/team/jems.jpg" },
+    { name: "Jems Manjit Sahu", role: "UI/UX & Frontend Specialist", image: "/team/naren.jpg" },
+    { name: "Naren Kumar Biswal", role: "Research", image: "/team/jems.jpg" },
     { name: "Sushree Dash", role: "Product Strategy & Operations", image: "/team/sushree.jpg" }
   ];
 

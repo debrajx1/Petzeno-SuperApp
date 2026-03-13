@@ -1,85 +1,142 @@
 .sidebar {
-  width: 260px;
+  width: 280px;
   height: 100vh;
   position: sticky;
   top: 0;
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-lg);
-  border-right: 1px solid var(--color-border);
-  z-index: 10;
+  padding: var(--spacing-xl) var(--spacing-md);
+  z-index: 100;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02) !important;
+  backdrop-filter: blur(40px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+  box-shadow: 20px 0 50px -10px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .sidebar {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
   margin-bottom: var(--spacing-2xl);
   padding: 0 var(--spacing-sm);
 }
 
-.logoIcon {
-  font-size: 28px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 4px rgba(255, 123, 84, 0.3));
+.logoImage {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.3));
+  animation: float 6s ease-in-out infinite;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 
 .logoText {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-text-main);
-  letter-spacing: -0.5px;
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  background: linear-gradient(135deg, #FF7B54 0%, #FFB26B 50%, #FFD700 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 
 .nav {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 8px;
 }
 
 .navItem {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  border-radius: var(--radius-lg);
   color: var(--color-text-muted);
-  font-weight: 500;
-  transition: all var(--transition-fast);
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: all var(--transition-normal);
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid transparent;
 }
 
 .navItem:hover {
-  background-color: var(--color-bg-subtle);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--color-text-main);
+  transform: translateX(8px);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .navItem.active {
-  background-color: var(--color-primary);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(255, 123, 84, 0.25);
+  background: rgba(255, 123, 84, 0.12);
+  color: var(--color-primary);
+  border-color: rgba(255, 123, 84, 0.25);
+  box-shadow: 0 10px 25px -5px rgba(255, 123, 84, 0.15);
+}
+
+[data-theme="dark"] .navItem.active {
+  background: rgba(255, 123, 84, 0.08);
+  color: white;
+}
+
+.navItem.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--grad-primary);
+  box-shadow: 0 0 15px var(--color-primary);
 }
 
 .icon {
   flex-shrink: 0;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navItem.active .icon {
+  transform: scale(1.1);
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 8px var(--color-primary));
 }
 
 .footer {
   margin-top: auto;
   padding-top: var(--spacing-lg);
-  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .logout {
-  margin-top: 1rem;
-  color: #f87171;
+  color: var(--color-danger) !important;
+  opacity: 0.8;
 }
 
 .logout:hover {
-  background: #fef2f2 !important;
-  color: #dc2626 !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+  opacity: 1;
 }

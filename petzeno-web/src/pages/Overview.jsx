@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Users, 
   Activity, 
@@ -26,24 +27,65 @@ const data = [
   { name: 'Jul', adoptions: 34, appointments: 43 },
 ];
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+};
+
+const AnimatedCounter = ({ value }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+  
+  useEffect(() => {
+    let start = 0;
+    const end = parseInt(value.toString().replace(/[^0-9]/g, '')) || 0;
+    if (start === end) return;
+
+    let totalDuration = 1500;
+    let increment = end / (totalDuration / 16);
+    
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        setDisplayValue(value);
+        clearInterval(timer);
+      } else {
+        setDisplayValue(Math.floor(start));
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return <span>{displayValue}</span>;
+};
+
 const StatCard = ({ title, value, change, icon: Icon, trend }) => (
-  <div className={`${styles.statCard} glass-effect`}>
+  <motion.div variants={item} className={`${styles.statCard} glass-effect`}>
     <div className={styles.statHeader}>
       <div className={styles.statTitle}>{title}</div>
       <div className={`${styles.statIcon} ${styles[trend]}`}>
         <Icon size={20} />
       </div>
     </div>
-    <div className={styles.statValue}>{value}</div>
+    <div className={styles.statValue}>
+      <AnimatedCounter value={value} />
+    </div>
     <div className={`${styles.statChange} ${trend === 'up' ? styles.positive : styles.negative}`}>
-      <TrendingUp size={14} style={{ marginRight: '4px', transform: trend === 'down' ? 'rotate(90deg)' : 'none' }} />
+      <TrendingUp size={14} style={{ marginRight: '4px', transform: trend === 'down' ? 'rotate(180deg)' : 'none' }} />
       {change} <span className={styles.statChangeText}>vs last month</span>
     </div>
-  </div>
+  </motion.div>
 );
-
-
-
 
 export default function Overview() {
   const user = getCurrentUser() || {};
@@ -68,8 +110,6 @@ export default function Overview() {
     const fetchData = async () => {
       try {
         const businessId = user.id;
-        
-        // Dynamic stats based on role
         const [petRes, aptRes, orderRes, appRes, sosRes] = await Promise.all([
           fetch(`${API_BASE}/listings?type=adoption`),
           fetch(`${API_BASE}/appointments${user.role !== 'admin' ? `?businessId=${businessId}` : ''}`),
@@ -82,49 +122,26 @@ export default function Overview() {
           petRes.json(), aptRes.json(), orderRes.json(), appRes.json(), sosRes.json()
         ]);
         
-        // Customize display stats based on role
-        let mainStats = { main: '0', secondary: '0', tertiary: '0', alerts: '0' };
-        
-        // Ensure we are working with arrays to avoid crashes
         const petArr = Array.isArray(pets) ? pets : [];
         const aptArr = Array.isArray(apts) ? apts : [];
         const orderArr = Array.isArray(orders) ? orders : [];
         const appArr = Array.isArray(apps) ? apps : [];
         const sosArr = Array.isArray(sos) ? sos : [];
 
+        let mainStats = { main: '0', secondary: '0', tertiary: '0', alerts: '0' };
+        
         if (user.role === 'vet') {
-          mainStats = {
-            main: aptArr.length.toString(),
-            secondary: petArr.length.toString(),
-            tertiary: '12', 
-            alerts: sosArr.length.toString()
-          };
+          mainStats = { main: aptArr.length, secondary: petArr.length, tertiary: 12, alerts: sosArr.length };
         } else if (user.role === 'shelter') {
-          mainStats = {
-            main: appArr.length.toString(),
-            secondary: petArr.length.toString(),
-            tertiary: appArr.filter(a => a.status === 'approved').length.toString(),
-            alerts: sosArr.length.toString()
-          };
+          mainStats = { main: appArr.length, secondary: petArr.length, tertiary: appArr.filter(a => a.status === 'approved').length, alerts: sosArr.length };
         } else if (user.role === 'store') {
-          mainStats = {
-            main: orderArr.length.toString(),
-            secondary: '5', 
-            tertiary: '₹45k', 
-            alerts: sosArr.length.toString()
-          };
+          mainStats = { main: orderArr.length, secondary: 5, tertiary: 450, alerts: sosArr.length };
         } else {
-          mainStats = {
-            main: petArr.length.toString(),
-            secondary: aptArr.length.toString(),
-            tertiary: appArr.length.toString(),
-            alerts: sosArr.length.toString()
-          };
+          mainStats = { main: petArr.length, secondary: aptArr.length, tertiary: appArr.length, alerts: sosArr.length };
         }
 
         setStats(mainStats);
         setSosAlerts(sosArr);
-
       } catch (err) {
         console.error('Failed to fetch dashboard data:', err);
       }
@@ -154,27 +171,27 @@ export default function Overview() {
     const configs = {
       vet: {
         label1: "Upcoming Appointments", icon1: Calendar,
-        label2: "Total Pets Managed", icon2: Heart,
+        label2: "Health Subscriptions", icon2: ShieldCheck,
         label3: "Active Patients", icon3: Activity,
-        subtext: `Managing health records and clinic schedules for ${user.businessName || 'your clinic'}.`
+        subtext: `Global health monitoring for ${user.businessName || 'your center'}.`
       },
       shelter: {
-        label1: "Pending Applications", icon1: Users,
-        label2: "Pets for Adoption", icon2: Bone,
-        label3: "Successful Adoptions", icon3: Heart,
-        subtext: `Tracking adoptions and pet capacity for ${user.businessName || 'your shelter'}.`
+        label1: "Live Applications", icon1: Users,
+        label2: "Pets On-Board", icon2: Bone,
+        label3: "Successful Matches", icon3: Heart,
+        subtext: `Tracking adoptions and shelter logistics for ${user.businessName || 'your facility'}.`
       },
       store: {
         label1: "Active Orders", icon1: ShoppingBag,
-        label2: "Low Stock Items", icon2: AlertCircle,
+        label2: "Inventory Level", icon2: AlertCircle,
         label3: "Monthly Revenue", icon3: TrendingUp,
-        subtext: `Monitoring inventory and orders for ${user.businessName || 'your store'}.`
+        subtext: `Supply chain and sales analytics for ${user.businessName || 'your store'}.`
       },
       admin: {
-        label1: "Total Ecosystem Pets", icon1: Heart,
-        label2: "Active Appointments", icon2: Calendar,
-        label3: "Adoption Requests", icon3: Users,
-        subtext: "Platform-wide management and ecosystem monitoring."
+        label1: "Global Pets", icon1: Heart,
+        label2: "Active Sessions", icon2: Activity,
+        label3: "Ecosystem Requests", icon3: ShieldCheck,
+        subtext: "Master platform logistics and verification queue."
       }
     };
     return configs[user.role] || configs.admin;
@@ -183,17 +200,22 @@ export default function Overview() {
   const roleConfig = getRoleConfig();
 
   return (
-    <div className={styles.overviewContainer}>
-      <header className={styles.pageHeader}>
+    <motion.div 
+      className={styles.overviewContainer}
+      initial="hidden"
+      animate="show"
+      variants={container}
+    >
+      <motion.header variants={item} className={styles.pageHeader}>
         <div className={styles.headerInfo}>
           <h1 className={styles.pageTitle}>{greeting}, <span className={styles.userName}>{user.name?.split(' ')[0] || 'Partner'}</span>!</h1>
           <p className={styles.pageSubtext}>{roleConfig.subtext}</p>
         </div>
         <div className={styles.liveClock}>
-          <Clock size={16} />
+          <div className="radar-pulse"></div>
           {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
-      </header>
+      </motion.header>
 
       <div className={styles.statsGrid}>
         <StatCard title={roleConfig.label1} value={stats.main} change="+12.5%" icon={roleConfig.icon1} trend="up" />
@@ -203,78 +225,116 @@ export default function Overview() {
       </div>
 
       <div className={styles.mainContent}>
-        <div className={`${styles.chartSection} glass-effect`}>
+        <motion.div variants={item} className={`${styles.chartSection} glass-effect`}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Performance Analytics</h2>
             <div className={styles.chartLegend}>
-              <span className={styles.legendItem}><span className={styles.dot} style={{backgroundColor: 'var(--color-primary)'}}></span> Adoptions</span>
-              <span className={styles.legendItem}><span className={styles.dot} style={{backgroundColor: 'var(--color-secondary)'}}></span> Apps</span>
+              <span className={styles.legendItem}><span className={styles.dot} style={{backgroundColor: 'var(--color-primary)'}}></span> Growth</span>
+              <span className={styles.legendItem}><span className={styles.dot} style={{backgroundColor: 'var(--color-secondary)'}}></span> Engagement</span>
             </div>
           </div>
           <div className={styles.chartContainer}>
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <AreaChart data={data} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorPrimary" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+                    <stop offset="0%" stopColor="#FF7B54" stopOpacity={0.6}/>
+                    <stop offset="100%" stopColor="#FF7B54" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorSecondary" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-secondary)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--color-secondary)" stopOpacity={0}/>
+                    <stop offset="0%" stopColor="#FFB26B" stopOpacity={0.4}/>
+                    <stop offset="100%" stopColor="#FFB26B" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="name" stroke="var(--color-text-muted)" fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke="var(--color-text-muted)" fontSize={11} tickLine={false} axisLine={false} />
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="name" stroke="rgba(255,255,255,0.3)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={12} tickLine={false} axisLine={false} dx={-10} />
+                <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="rgba(255,255,255,0.08)" />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: '12px' }}
+                  contentStyle={{ 
+                    background: 'rgba(15, 23, 42, 0.95)', 
+                    backdropFilter: 'blur(20px)', 
+                    border: '1px solid rgba(255,255,255,0.15)', 
+                    borderRadius: '16px', 
+                    boxShadow: '0 30px 60px -12px rgba(0,0,0,0.5)',
+                    padding: '12px 16px'
+                  }}
+                  itemStyle={{ color: 'white', fontWeight: 700 }}
+                  cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }}
                 />
-                <Area type="monotone" dataKey="appointments" stroke="var(--color-secondary)" fillOpacity={1} fill="url(#colorSecondary)" strokeWidth={3} />
-                <Area type="monotone" dataKey="adoptions" stroke="var(--color-primary)" fillOpacity={1} fill="url(#colorPrimary)" strokeWidth={3} />
+                <Area 
+                  type="monotone" 
+                  dataKey="appointments" 
+                  stroke="#FFB26B" 
+                  fillOpacity={1} 
+                  fill="url(#colorSecondary)" 
+                  strokeWidth={4} 
+                  animationDuration={2000}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="adoptions" 
+                  stroke="#FF7B54" 
+                  fillOpacity={1} 
+                  fill="url(#colorPrimary)" 
+                  strokeWidth={5} 
+                  animationDuration={2500}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </motion.div>
 
-        <div className={`${styles.insightsSection} glass-effect`}>
+        <motion.div variants={item} className={`${styles.insightsSection} glass-effect`}>
           <div className={styles.sosHeader}>
             <h2 className={styles.sectionTitle}>
-              <span className={styles.sosPulse}></span>
-              Live Emergency Response
+              <div className="radar-pulse"></div>
+              Emergency Hub
             </h2>
-            <span className={styles.liveBadge}>BETA</span>
+            <span className={styles.liveBadge}>LIVE FEED</span>
           </div>
           
           <div className={styles.sosList}>
-            {sosAlerts.length === 0 ? (
-              <div className={styles.emptySos}>
-                <ShieldCheck size={40} opacity={0.3} />
-                <p>No active emergencies.</p>
-              </div>
-            ) : sosAlerts.map(alert => (
-              <div key={alert._id} className={styles.sosItem}>
-                <div className={styles.sosMain}>
-                  <div className={styles.sosIcon}><AlertCircle size={18} /></div>
-                  <div className={styles.sosInfo}>
-                    <p className={styles.sosUser}>{alert.userName} • {alert.petDetails?.name}</p>
-                    <p className={styles.sosLocation}><MapPin size={10} /> {alert.location?.address}</p>
-                  </div>
-                </div>
-                <button 
-                  className={styles.respondBtn}
-                  onClick={() => handleSosRespond(alert._id)}
-                  disabled={alert.status === 'responding'}
+            <AnimatePresence mode="popLayout">
+              {sosAlerts.length === 0 ? (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={styles.emptySos}
                 >
-                  {alert.status === 'responding' ? 'Assigned' : 'Take Action'}
-                </button>
-              </div>
-            ))}
+                  <ShieldCheck size={48} color="var(--color-success)" opacity={0.5} />
+                  <p>System status nominal. <br/>No active emergencies detected.</p>
+                </motion.div>
+              ) : sosAlerts.map(alert => (
+                <motion.div 
+                  layout
+                  key={alert._id} 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  className={styles.sosItem}
+                >
+                  <div className={styles.sosMain}>
+                    <div className={styles.sosIcon}><Activity size={18} /></div>
+                    <div className={styles.sosInfo}>
+                      <p className={styles.sosUser}>{alert.userName}</p>
+                      <p className={styles.sosLocation}><MapPin size={12} /> {alert.location?.address || 'Geolocation Pending'}</p>
+                    </div>
+                  </div>
+                  <button 
+                    className={styles.respondBtn}
+                    onClick={() => handleSosRespond(alert._id)}
+                    disabled={alert.status === 'responding'}
+                  >
+                    {alert.status === 'responding' ? 'RESPONDER ASSIGNED' : 'INITIATE RESCUE'}
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
 
           <hr className={styles.divider} />
 
-          <h3 className={styles.smallTitle}>Strategic Insights</h3>
+          <h3 className={styles.smallTitle}>Quantum Insights</h3>
           <div className={styles.insightList}>
             <div className={styles.insightItem}>
               <div className={styles.insightDot} style={{backgroundColor: 'var(--color-warning)'}}></div>
@@ -285,8 +345,8 @@ export default function Overview() {
               <p>Community engagement is up by 25% this week. Keep up the high-value posts!</p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

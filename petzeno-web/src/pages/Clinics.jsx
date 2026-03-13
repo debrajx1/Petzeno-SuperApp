@@ -13,18 +13,39 @@ import {
   MoreVertical,
   ShieldAlert
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { getCurrentUser } from '../lib/api';
 import styles from './Clinics.module.css';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 15 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
+};
 
 const SOSCard = ({ alert, onRespond }) => (
-  <div className={`${styles.sosCard} ${styles[alert.severity || 'high']} glass-effect`}>
+  <motion.div 
+    layout
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    exit={{ opacity: 0, scale: 0.9 }}
+    className={styles.sosCard}
+  >
     <div className={styles.sosHeader}>
       <div className={styles.sosType}>
-        <AlertCircle size={18} />
+        <div className="radar-pulse" style={{ width: '8px', height: '8px' }}></div>
         <span>CRITICAL SOS</span>
       </div>
       <span className={styles.sosTime}>{format(new Date(), 'HH:mm')}</span>
@@ -33,28 +54,26 @@ const SOSCard = ({ alert, onRespond }) => (
       <div className={styles.userAvatar}>👤</div>
       <div className={styles.userInfo}>
         <h4>{alert.userName}</h4>
-        <p>{alert.petDetails?.name} • {alert.petDetails?.species}</p>
+        <p>{alert.petDetails?.name || 'Unknown Pet'} • {alert.petDetails?.species || 'Pet'}</p>
       </div>
     </div>
     <div className={styles.sosLocation}>
       <MapPin size={14} />
-      <span>{alert.location?.address || 'Near Sector 62, Noida'}</span>
+      <span>{alert.location?.address || 'Geolocation Pending'}</span>
     </div>
-    <div className={styles.sosActions}>
-      <button 
-        className={styles.respondBtn} 
-        onClick={() => onRespond(alert._id)}
-        disabled={alert.status === 'responding'}
-      >
-        {alert.status === 'responding' ? 'RESPONDING...' : 'TAKE ACTION'}
-      </button>
-    </div>
-  </div>
+    <button 
+      className={styles.respondBtn} 
+      onClick={() => onRespond(alert._id)}
+      disabled={alert.status === 'responding'}
+    >
+      {alert.status === 'responding' ? 'RESPONDER ASSIGNED' : 'INITIATE RESCUE'}
+    </button>
+  </motion.div>
 );
 
-export default function Clinics() {
+export default function Clinics({ defaultTab }) {
   const user = getCurrentUser() || {};
-  const [activeTab, setActiveTab] = useState('Overview');
+  const [activeTab, setActiveTab] = useState(defaultTab || 'Overview');
   const [appointments, setAppointments] = useState([]);
   const [sosAlerts, setSosAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -77,6 +96,10 @@ export default function Clinics() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (defaultTab) setActiveTab(defaultTab);
+  }, [defaultTab]);
 
   useEffect(() => {
     fetchData();
@@ -111,22 +134,22 @@ export default function Clinics() {
   };
 
   return (
-    <div className={styles.clinicContainer}>
-      <header className={styles.pageHeader}>
+    <motion.div 
+      className={styles.clinicContainer}
+      initial="hidden"
+      animate="show"
+      variants={container}
+    >
+      <motion.header variants={item} className={styles.pageHeader}>
         <div className={styles.headerInfo}>
           <h1 className={styles.pageTitle}>Veterinary Hub</h1>
-          <p className={styles.pageSubtext}>Real-time emergency monitoring and patient management.</p>
+          <p className={styles.pageSubtext}>Real-time emergency monitoring and health logistics.</p>
         </div>
-        <div className={styles.headerActions}>
-          <button className={styles.primaryAction}>
-            <Plus size={18} />
-            <span>Schedule New</span>
-          </button>
-        </div>
-      </header>
+        {/* Header actions removed for cleaner look */}
+      </motion.header>
 
       <div className={styles.dashboardGrid}>
-        <div className={styles.mainContent}>
+        <motion.div variants={item} className={styles.mainContent}>
           <div className={styles.tabsContainer}>
             {['Overview', 'Appointments', 'Patients'].map(tab => (
               <button 
@@ -150,73 +173,124 @@ export default function Clinics() {
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                {appointments.length === 0 ? (
-                  <tr><td colSpan="5" className={styles.emptyTable}>No pending appointments found.</td></tr>
-                ) : appointments.map(apt => (
-                  <tr key={apt._id}>
-                    <td>
-                      <div className={styles.patientCell}>
-                        <div className={styles.patientAvatar}>🐶</div>
-                        <div>
-                          <p className={styles.petName}>{apt.petName}</p>
-                          <p className={styles.ownerName}>Mobile User</p>
+              <motion.tbody>
+                {activeTab === 'Appointments' ? (
+                  appointments.length === 0 ? (
+                    <tr><td colSpan="5" className={styles.emptyTable}>No pending appointments found.</td></tr>
+                  ) : appointments.map((apt, idx) => (
+                    <motion.tr 
+                      key={apt._id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                    >
+                      <td>
+                        <div className={styles.patientCell}>
+                          <div className={styles.patientAvatar}>🐶</div>
+                          <div>
+                            <p className={styles.petName}>{apt.petName}</p>
+                            <p className={styles.ownerName}>Verified Client</p>
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className={styles.timeCell}>
-                        <span><Calendar size={12} /> {apt.date}</span>
-                        <span><Clock size={12} /> {apt.time}</span>
-                      </div>
-                    </td>
-                    <td><span className={styles.reasonBadge}>{apt.notes || 'General Checkup'}</span></td>
-                    <td>
-                      <span className={`${styles.statusBadge} ${styles[apt.status]}`}>
-                        {apt.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div className={styles.rowActions}>
-                        {apt.status === 'upcoming' && (
-                          <button onClick={() => handleStatusUpdate(apt._id, 'confirmed')} className={styles.confirmBtn}>Confirm</button>
-                        )}
-                        {apt.status === 'confirmed' && (
-                          <button onClick={() => handleStatusUpdate(apt._id, 'completed')} className={styles.completeBtn}>Finish</button>
-                        )}
-                        <button className={styles.moreBtn}><MoreVertical size={16} /></button>
+                      </td>
+                      <td>
+                        <div className={styles.timeCell}>
+                          <span><Calendar size={14} style={{ opacity: 0.6 }} /> {apt.date}</span>
+                          <span><Clock size={14} style={{ opacity: 0.6 }} /> {apt.time}</span>
+                        </div>
+                      </td>
+                      <td><span className={styles.reasonBadge}>{apt.notes || 'General Checkup'}</span></td>
+                      <td>
+                        <span className={`${styles.statusBadge} ${styles[apt.status]}`}>
+                          {apt.status}
+                        </span>
+                      </td>
+                      <td>
+                        <div className={styles.rowActions}>
+                          {apt.status === 'upcoming' && (
+                            <button onClick={() => handleStatusUpdate(apt._id, 'confirmed')} className={styles.confirmBtn}>Confirm</button>
+                          )}
+                          <button className={styles.moreBtn}><MoreVertical size={16} /></button>
+                        </div>
+                      </td>
+                    </motion.tr>
+                  ))
+                ) : activeTab === 'Patients' ? (
+                  // Mock Patient Records for "Vet Records" view
+                  [
+                    { id: 1, name: 'Buddy', species: 'Golden Retriever', lastVisit: '2023-10-25', status: 'Stable' },
+                    { id: 2, name: 'Luna', species: 'Persian Cat', lastVisit: '2023-10-20', status: 'Recovering' },
+                    { id: 3, name: 'Max', species: 'German Shepherd', lastVisit: '2023-10-15', status: 'Critical' }
+                  ].map((p, idx) => (
+                    <motion.tr 
+                      key={p.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                    >
+                      <td>
+                        <div className={styles.patientCell}>
+                          <div className={styles.patientAvatar}>{p.species.includes('Cat') ? '🐱' : '🐶'}</div>
+                          <div>
+                            <p className={styles.petName}>{p.name}</p>
+                            <p className={styles.ownerName}>{p.species}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{p.lastVisit}</td>
+                      <td>Record Sync Active</td>
+                      <td>
+                        <span className={`${styles.statusBadge} ${p.status === 'Critical' ? styles.pending : styles.confirmed}`}>
+                          {p.status}
+                        </span>
+                      </td>
+                      <td><button className={styles.moreBtn}><History size={16} /></button></td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="5" className={styles.emptyTable}>
+                      <div className={styles.overviewSummary}>
+                        <h3>Hub Performance Nominal</h3>
+                        <p>You have {appointments.length} appointments today and {sosAlerts.length} live emergency frequencies tracked.</p>
                       </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
+                )}
+              </motion.tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
 
-        <aside className={styles.sidebar}>
+        <motion.aside variants={item} className={styles.sidebar}>
           <div className={styles.emergencySection}>
             <div className={styles.sectionHeader}>
             <h3>
               <ShieldAlert size={18} />
-              Live SOS Monitor
+              Emergency Monitor
             </h3>
-            <span className={styles.livePulse}></span>
+            <div className="radar-pulse"></div>
           </div>
           
           <div className={styles.sosList}>
-            {sosAlerts.length === 0 ? (
-              <div className={styles.placeholderState}>
-                <Activity size={48} opacity={0.2} />
-                <p>Status Green: No Active Emergencies</p>
-              </div>
-            ) : sosAlerts.map(alert => (
-              <SOSCard key={alert._id} alert={alert} onRespond={handleRespond} />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {sosAlerts.length === 0 ? (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={styles.placeholderState}
+                >
+                  <Activity size={48} color="var(--color-success)" opacity={0.3} />
+                  <p>Status Nominal. <br/>Monitoring live frequencies...</p>
+                </motion.div>
+              ) : sosAlerts.map(alert => (
+                <SOSCard key={alert._id} alert={alert} onRespond={handleRespond} />
+              ))}
+            </AnimatePresence>
           </div>
         </div>
-      </aside>
+      </motion.aside>
       </div>
-    </div>
+    </motion.div>
   );
 }

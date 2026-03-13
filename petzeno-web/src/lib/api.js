@@ -20,8 +20,12 @@ export async function getMockData(collectionName) {
 /**
  * Community Posts
  */
-export const getCommunityPosts = async () => {
-  const response = await fetch(`${API_URL}/community`);
+export const getCommunityPosts = async (category, userType) => {
+  const params = new URLSearchParams();
+  if (category) params.append('category', category);
+  if (userType) params.append('userType', userType);
+  const url = `${API_URL}/community${params.toString() ? `?${params.toString()}` : ''}`;
+  const response = await fetch(url);
   return await response.json();
 };
 
@@ -142,6 +146,21 @@ export const updateOrderStatus = async (id, status) => {
     body: JSON.stringify({ status }),
   });
   return await response.json();
+};
+
+export const updateProfile = async (id, userData) => {
+  const response = await fetch(`${API_URL}/auth/profile/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(userData),
+  });
+  const data = await response.json();
+  if (data.success && data.user) {
+    // Sync local session
+    const currentUser = getCurrentUser();
+    localStorage.setItem('petzeno_user', JSON.stringify({ ...currentUser, ...data.user }));
+  }
+  return data;
 };
 
 /**

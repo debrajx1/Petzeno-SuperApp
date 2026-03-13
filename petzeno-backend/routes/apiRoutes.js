@@ -38,8 +38,10 @@ const MOCK_FALLBACK = {
     { name: 'Healthy Tails Supplies', manager: 'Jane Smith', lowStockItems: 0, totalOrders: 89 },
   ],
   community: [
-    { authorId: 'user_001', author: 'Jane Cooper', petName: 'Max', text: 'My Golden Retriever Max just completed his basic obedience training! So proud of him. 🐕', likes: ['user_002'], authorAvatar: '👩‍💼' },
-    { authorId: 'user_002', author: 'Mark Wilson', petName: 'Luna', text: 'Looking for a dog-friendly cafe in Noida. Any suggestions? ☕', likes: [], authorAvatar: '👨‍🎨' }
+    { authorId: 'user_001', author: 'Dr. Sarah Jenkins', userType: 'vet', category: 'Health', text: 'Summer heat is here! Keep your pets hydrated and avoid long walks between 12 PM and 4 PM. 🌡️🐾', likes: ['user_002'], authorAvatar: '👩‍⚕️' },
+    { authorId: 'user_002', author: 'Happy Paws Rescue', userType: 'shelter', category: 'Adoption', text: 'Bella the Retriever is still looking for her forever home. She is great with kids and very energetic! 🏠❤️', likes: [], authorAvatar: '🐕' },
+    { authorId: 'user_003', author: 'Pet Superstore', userType: 'store', category: 'Marketplace', text: 'Exclusive Flash Sale! 30% off on all premium organic pet food this weekend only. 🛍️✨', likes: ['user_001'], authorAvatar: '🛒' },
+    { authorId: 'user_004', author: 'Jane Cooper', userType: 'user', category: 'Life', petName: 'Max', text: 'Max enjoying his first beach trip! He loves the waves. 🌊🐕', likes: ['user_003'], authorAvatar: '👩‍💼' }
   ],
   listings: [
     { type: 'adoption', name: 'Bella', species: 'Dog', breed: 'Golden Retriever', age: '2 yrs', location: 'City Center Shelter', status: 'Available', imageUrl: '🐶' },
@@ -79,15 +81,27 @@ router.get('/stores', async (req, res) => {
 
 // Get Community Posts
 router.get('/community', async (req, res) => {
+  const { category, userType } = req.query;
   try {
     const isConnected = mongoose.connection.readyState === 1;
-    let posts = isConnected ? await CommunityPost.find().sort({ createdAt: -1 }) : [];
+    let query = {};
+    if (category) query.category = category;
+    if (userType) query.userType = userType;
+    
+    let posts = isConnected ? await CommunityPost.find(query).sort({ createdAt: -1 }) : [];
     
     // Fallback or Merge
-    const allPosts = posts.length > 0 ? posts : [...IN_MEMORY_DB.community, ...MOCK_FALLBACK.community];
+    let fallbackPosts = [...IN_MEMORY_DB.community, ...MOCK_FALLBACK.community];
+    if (category) fallbackPosts = fallbackPosts.filter(p => p.category === category);
+    if (userType) fallbackPosts = fallbackPosts.filter(p => p.userType === userType);
+    
+    const allPosts = posts.length > 0 ? posts : fallbackPosts;
     res.json(allPosts);
   } catch (err) {
-    res.json([...IN_MEMORY_DB.community, ...MOCK_FALLBACK.community]);
+    let fallbackData = [...IN_MEMORY_DB.community, ...MOCK_FALLBACK.community];
+    if (category) fallbackData = fallbackData.filter(p => p.category === category);
+    if (userType) fallbackData = fallbackData.filter(p => p.userType === userType);
+    res.json(fallbackData);
   }
 });
 

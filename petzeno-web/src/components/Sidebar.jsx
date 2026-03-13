@@ -1,4 +1,5 @@
 import React from 'react';
+import logo from '../assets/logo.png';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -40,7 +41,7 @@ export default function Sidebar() {
   return (
     <aside className={`${styles.sidebar} glass-effect`}>
       <div className={styles.logo}>
-        <div className={styles.logoIcon}>🐾</div>
+        <img src={logo} alt="Petzeno" className={styles.logoImage} />
         <span className={styles.logoText}>Petzeno</span>
       </div>
       

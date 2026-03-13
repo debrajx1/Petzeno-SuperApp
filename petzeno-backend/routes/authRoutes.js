@@ -123,4 +123,41 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// UPDATE PROFILE (with Mock Fallback support)
+router.patch('/profile/:id', async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+  const isConnected = mongoose.connection.readyState === 1;
+
+  try {
+    if (isConnected) {
+      const user = await User.findByIdAndUpdate(id, updates, { new: true });
+      if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+      
+      res.json({
+        success: true,
+        user: {
+          id: user._id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          businessName: user.businessName,
+          phone: user.phone,
+          location: user.location,
+          bio: user.bio
+        }
+      });
+    } else {
+      // Mock update for testing without DB
+      res.json({
+        success: true,
+        message: 'Profile updated in session (Mock Mode)',
+        user: { ...updates, id }
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 module.exports = router;

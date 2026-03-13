@@ -128,6 +128,50 @@ button {
   flex: 1;
   padding: var(--spacing-xl);
   overflow-y: auto;
+  animation: pageEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 1;
+}
+
+/* Custom Selection Color */
+::selection {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Elite Glassmorphic Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 123, 84, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 123, 84, 0.5);
+}
+
+/* Global Page Entrance Animation */
+@keyframes pageEntrance {
+  from { opacity: 0; filter: blur(10px); transform: translateY(10px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
 }
 
 /* ===== 3D Immersive Utilities ===== */
@@ -166,12 +210,12 @@ button {
 
 /* Perspective Grid Background */
 .perspective-grid {
-  position: absolute;
+  position: fixed;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  z-index: 0;
-  perspective: 1000px;
+  z-index: -1;
+  perspective: 1200px;
 }
 
 .perspective-grid::before {
@@ -360,4 +404,41 @@ html.lenis {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}
+/* Radar Pulse Effect */
+.radar-pulse {
+  position: relative;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: var(--color-danger);
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.radar-pulse::before, .radar-pulse::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--color-danger);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.radar-pulse::before {
+  animation: radar 2s linear infinite;
+}
+
+.radar-pulse::after {
+  animation: radar 2s linear infinite 1s;
+}
+
+@keyframes radar {
+  0% { width: 100%; height: 100%; opacity: 0.8; }
+  100% { width: 400%; height: 400%; opacity: 0; }
 }

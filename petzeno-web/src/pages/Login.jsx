@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, Key, ShieldCheck, Heart, ArrowRight } from 'lucide-react';
+import { Lock, Mail, Key, ShieldCheck, Heart, ArrowRight, Home, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { loginProvider, requestAccess } from '../lib/api';
 import styles from './Login.module.css';
@@ -24,6 +24,21 @@ export default function Login() {
     message: ''
   });
   const [requestStatus, setRequestStatus] = useState({ loading: false, success: false, error: '' });
+
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const moveX = (clientX - window.innerWidth / 2) / 50;
+    const moveY = (clientY - window.innerHeight / 2) / 50;
+    setMousePos({ x: moveX, y: moveY });
+  };
+
+  const roles = [
+    { id: 'vet', name: 'Veterinary', icon: Heart },
+    { id: 'shelter', name: 'Shelter', icon: Home },
+    { id: 'store', name: 'Pet Store', icon: ShoppingBag }
+  ];
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -65,61 +80,114 @@ export default function Login() {
   };
 
   return (
-    <div className={styles.loginPage}>
-      {/* Dynamic Background Decorations */}
-      <div className={styles.bgDecorations}>
-        <motion.div
-          className={styles.floatingPath}
-          animate={{ x: [0, 50, 0], y: [0, -50, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          style={{ top: '10%', left: '5%', opacity: 0.1 }}
-        >
-          <svg width="200" height="200" viewBox="0 0 200 200"><path d="M10,100 C10,20 190,20 190,100" fill="none" stroke="var(--color-primary)" strokeWidth="2" /></svg>
-        </motion.div>
-        <motion.div
-          className={styles.floatingPath}
-          animate={{ x: [0, -30, 0], y: [0, 60, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          style={{ bottom: '10%', right: '5%', opacity: 0.1 }}
-        >
-          <svg width="250" height="250" viewBox="0 0 250 250"><path d="M240,150 C240,240 10,240 10,150" fill="none" stroke="var(--color-secondary)" strokeWidth="2" /></svg>
-        </motion.div>
+    <div className={styles.loginPage} onMouseMove={handleMouseMove}>
+      {/* ===== 3D Immersive Background ===== */}
+      <div className={styles.bgContainer}>
+        <motion.div 
+          className={`${styles.orb} ${styles.orb1}`}
+          animate={{ 
+            scale: [1, 1.2, 1],
+            x: [mousePos.x * 2, mousePos.x * 2.2, mousePos.x * 2],
+            y: [mousePos.y * 2, mousePos.y * 2.1, mousePos.y * 2]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className={`${styles.orb} ${styles.orb2}`}
+          animate={{ 
+            scale: [1, 1.3, 1],
+            x: [-mousePos.x * 1.5, -mousePos.x * 1.6, -mousePos.x * 1.5],
+            y: [-mousePos.y * 1.5, -mousePos.y * 1.4, -mousePos.y * 1.5]
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className={`${styles.orb} ${styles.orb3}`}
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.2, 0.4, 0.2]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
       </div>
 
       <motion.div
         className={styles.loginCard}
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6, cubicBezier: [0.16, 1, 0.3, 1] }}
+        initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        transition={{ duration: 1, cubicBezier: [0.16, 1, 0.3, 1] }}
       >
         <div className={styles.cardHeader}>
-          <div className={styles.logo}>
-            <Heart color="var(--color-primary)" fill="var(--color-primary)" size={24} />
+          <motion.div 
+            className={styles.logo}
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          >
+            <Heart color="var(--color-primary)" fill="var(--color-primary)" size={28} />
             <span>PetZeno</span>
-          </div>
-          <h1>Provider Gateway</h1>
-          <p>Verified access only for service providers.</p>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            Provider Gateway
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            Elite access for premium pet service providers worldwide.
+          </motion.p>
         </div>
 
-        {error && <div className={styles.errorMessage}>{error}</div>}
+        {error && (
+          <motion.div 
+            className={styles.errorMessage}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            {error}
+          </motion.div>
+        )}
 
         <form className={styles.form} onSubmit={handleLogin}>
           <div className={styles.inputGroup}>
-            <label>Login As</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)} className={styles.select}>
-              <option value="vet">Veterinary Specialist</option>
-              <option value="shelter">Shelter Administrator</option>
-              <option value="store">Pet Store Manager</option>
-            </select>
+            <label>Access Role</label>
+            <div className={styles.roleSwitcher}>
+              <motion.div 
+                className={styles.roleIndicator}
+                animate={{ 
+                  x: roles.findIndex(r => r.id === role) * 100 + '%'
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              />
+              {roles.map((r) => {
+                const Icon = r.icon;
+                return (
+                  <button
+                    key={r.id}
+                    type="button"
+                    className={`${styles.roleTile} ${role === r.id ? styles.active : ''}`}
+                    onClick={() => setRole(r.id)}
+                  >
+                    <Icon size={18} className={styles.roleIcon} />
+                    <span>{r.name}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Verification Email</label>
+            <label>Professional Identity</label>
             <div className={styles.inputWrapper}>
               <Mail size={18} className={styles.inputIcon} />
               <input
                 type="email"
-                placeholder="doctor@petzeno.com"
+                placeholder="identity@petzeno.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -128,7 +196,7 @@ export default function Login() {
           </div>
 
           <div className={styles.inputGroup}>
-            <label>Access Key</label>
+            <label>Master Security Key</label>
             <div className={styles.inputWrapper}>
               <Key size={18} className={styles.inputIcon} />
               <input
@@ -141,36 +209,48 @@ export default function Login() {
             </div>
           </div>
 
-          <button type="submit" className={styles.loginBtn} disabled={isSubmitting}>
-            {isSubmitting ? 'Verifying...' : 'Verify and Enter Dashboard'} <ArrowRight size={18} />
-          </button>
+          <motion.button 
+            type="submit" 
+            className={styles.loginBtn} 
+            disabled={isSubmitting}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {isSubmitting ? 'Authenticating...' : 'Authorize & Enter'} 
+            <ArrowRight size={20} />
+          </motion.button>
         </form>
 
         <div className={styles.divider}>
-          <span>OR</span>
+          <span>PARTNER NETWORK</span>
         </div>
 
         <div className={styles.requestSection}>
           <div className={styles.requestBadge}>
             <ShieldCheck size={16} />
-            <span>New Provider?</span>
+            <span>Identity Verification</span>
           </div>
-          <p>Your team needs to be manually verified before gaining dashboard access.</p>
-          <button
+          <p>Don't have a secure access key yet? Initiate a manual verification request.</p>
+          <motion.button
             type="button"
             className={styles.requestBtn}
             onClick={() => setShowRequestModal(true)}
+            whileHover={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
           >
-            Request Access Credentials
-          </button>
+            Initiate Verification Request
+          </motion.button>
         </div>
       </motion.div>
 
       {showRequestModal && (
         <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
+          <motion.div 
+            className={styles.modalContent}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+          >
             <div className={styles.modalHeader}>
-              <h2>Partner Verification Request</h2>
+              <h2>Gateway Access Request</h2>
               <button
                 className={styles.closeBtn}
                 onClick={() => setShowRequestModal(false)}
@@ -181,17 +261,23 @@ export default function Login() {
 
             {requestStatus.success ? (
               <div className={styles.successState}>
-                <div className={styles.successIcon}>✅</div>
-                <h3>Application Received!</h3>
-                <p>The Petzeno team will verify your credentials and email you the access key within 24 hours.</p>
+                <motion.div 
+                  className={styles.successIcon}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", damping: 12 }}
+                >
+                  ✅
+                </motion.div>
+                <h3>Request Under Review</h3>
+                <p>Our global verification team will process your application within 24 standard business hours.</p>
               </div>
             ) : (
               <form onSubmit={handleRequestSubmit} className={styles.modalForm}>
-                <p>Please provide your professional details for verification.</p>
-                {requestStatus.error && <p className={styles.errorText}>{requestStatus.error}</p>}
-
+                <p>Provide your professional credentials for the verification queue.</p>
+                
                 <div className={styles.modalGrid}>
-                  <div className={styles.inputGroup}>
+                  <div className={styles.modalInputWrapper}>
                     <label>Full Name</label>
                     <input
                       type="text"
@@ -200,7 +286,7 @@ export default function Login() {
                       onChange={(e) => setRequestData({ ...requestData, name: e.target.value })}
                     />
                   </div>
-                  <div className={styles.inputGroup}>
+                  <div className={styles.modalInputWrapper}>
                     <label>Work Email</label>
                     <input
                       type="email"
@@ -209,19 +295,20 @@ export default function Login() {
                       onChange={(e) => setRequestData({ ...requestData, email: e.target.value })}
                     />
                   </div>
-                  <div className={styles.inputGroup}>
+                  <div className={styles.modalInputWrapper}>
                     <label>Business Role</label>
                     <select
                       value={requestData.role}
                       onChange={(e) => setRequestData({ ...requestData, role: e.target.value })}
+                      className={styles.modalSelect}
                     >
                       <option value="vet">Veterinarian</option>
                       <option value="shelter">Shelter Operator</option>
                       <option value="store">Retail Manager</option>
                     </select>
                   </div>
-                  <div className={styles.inputGroup}>
-                    <label>Clinic/Store Name</label>
+                  <div className={styles.modalInputWrapper}>
+                    <label>Entity/Clinic Name</label>
                     <input
                       type="text"
                       required
@@ -231,8 +318,8 @@ export default function Login() {
                   </div>
                 </div>
 
-                <div className={styles.inputGroup}>
-                  <label>Additional Information (License No, Website, etc.)</label>
+                <div className={styles.modalInputWrapper}>
+                  <label>Verification Notes (Licenses, Website, Portfolio)</label>
                   <textarea
                     rows="3"
                     value={requestData.message}
@@ -240,23 +327,30 @@ export default function Login() {
                   ></textarea>
                 </div>
 
-                <button
+                <motion.button
                   type="submit"
                   className={styles.submitRequestBtn}
                   disabled={requestStatus.loading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {requestStatus.loading ? 'Submitting...' : 'Submit Verification Request'}
-                </button>
+                  {requestStatus.loading ? 'Processing...' : 'Submit to Identity Queue'}
+                </motion.button>
               </form>
             )}
-          </div>
+          </motion.div>
         </div>
       )}
 
-      <div className={styles.securityTag}>
+      <motion.div 
+        className={styles.securityTag}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
         <Lock size={14} />
-        <span>End-to-End Encrypted Verification</span>
-      </div>
+        <span>Quantum-Resistant Identity Verification</span>
+      </motion.div>
     </div>
   );
 }
