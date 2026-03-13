@@ -54,9 +54,9 @@ function getSpeciesIcon(species: string) {
     bird: require("@/assets/images/bird.png"),
     rabbit: require("@/assets/images/rabbit.png"),
     fish: require("@/assets/images/fish.png"),
-    other: require("@/assets/images/other.png"), // Fallback to dog or a generic paw if available
+    other: require("@/assets/images/other.png"),
   };
-  return icons[species] || require("@/assets/images/other.png");
+  return icons[species.toLowerCase()] || icons.other;
 }
 
 export default function HomeScreen() {
@@ -134,7 +134,7 @@ export default function HomeScreen() {
           <View style={styles.locationContainer}>
             <Ionicons name="location" size={14} color="#fefefeaa" />
             <Text style={[styles.locationText, { color: "#fefefecc", fontFamily: "Inter_500Medium" }]}>
-              New Delhi, India
+              Khordha, In
             </Text>
             <Ionicons name="chevron-down" size={12} color="#fefefeaa" />
           </View>

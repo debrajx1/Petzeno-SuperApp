@@ -25,7 +25,7 @@ function getSpeciesIcon(species: string) {
     fish: require("@/assets/images/fish.png"),
     other: require("@/assets/images/other.png"),
   };
-  return icons[species] || require("@/assets/images/dog.png");
+  return icons[species.toLowerCase()] || icons.other;
 }
 
 function formatDate(dateStr: string) {

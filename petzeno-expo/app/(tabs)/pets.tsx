@@ -26,7 +26,7 @@ function getSpeciesIcon(species: string) {
     fish: require("@/assets/images/fish.png"),
     other: require("@/assets/images/other.png"),
   };
-  return icons[species] || require("@/assets/images/dog.png");
+  return icons[species.toLowerCase()] || icons.other;
 }
 
 function getSpeciesColor(species: string) {
@@ -38,7 +38,7 @@ function getSpeciesColor(species: string) {
     fish: Colors.petColors.fish,
     other: Colors.petColors.other,
   };
-  return colors[species] || Colors.primary;
+  return colors[species.toLowerCase()] || Colors.primary;
 }
 
 export default function PetsScreen() {
@@ -91,7 +91,11 @@ export default function PetsScreen() {
       >
         {pets.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyEmoji}>🐾</Text>
+            <Image 
+              source={require("@/assets/images/other.png")} 
+              style={{ width: 80, height: 80, marginBottom: 10, opacity: 0.6 }} 
+              resizeMode="contain" 
+            />
             <Text style={[styles.emptyTitle, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
               No pets yet
             </Text>
