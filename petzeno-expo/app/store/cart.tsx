@@ -39,13 +39,13 @@ export default function CartScreen() {
     }
     setPlacing(true);
     try {
-      const order = placeOrder(address);
+      const order = await placeOrder(address);
       if (Platform.OS !== "web") {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       }
       Alert.alert(
         "Order Placed! 🎉",
-        `Your order #${order.id.slice(-6).toUpperCase()} has been placed successfully. Total: ₹${order.total}`,
+        `Your order #${order.id.toString().slice(-6).toUpperCase()} has been placed successfully. Total: ₹${order.total}`,
         [{ text: "View Orders", onPress: () => router.push("/store/orders") }, { text: "Continue Shopping", onPress: () => router.back() }]
       );
     } finally {

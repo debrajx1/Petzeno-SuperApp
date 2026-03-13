@@ -9,21 +9,23 @@ import {
   useColorScheme,
   Alert,
   Platform,
+  Image,
 } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePets } from "@/context/PetContext";
 import Colors from "@/constants/colors";
 
 const SPECIES = [
-  { value: "dog", label: "Dog", emoji: "🐕" },
-  { value: "cat", label: "Cat", emoji: "🐈" },
-  { value: "bird", label: "Bird", emoji: "🦜" },
-  { value: "rabbit", label: "Rabbit", emoji: "🐰" },
-  { value: "fish", label: "Fish", emoji: "🐟" },
-  { value: "other", label: "Other", emoji: "🐾" },
+  { value: "dog", label: "Dog", image: require("@/assets/images/dog.png") },
+  { value: "cat", label: "Cat", image: require("@/assets/images/cat.png") },
+  { value: "bird", label: "Bird", image: require("@/assets/images/bird.png") },
+  { value: "rabbit", label: "Rabbit", image: require("@/assets/images/rabbit.png") },
+  { value: "fish", label: "Fish", image: require("@/assets/images/fish.png") },
+  { value: "other", label: "Other", image: require("@/assets/images/other.png") },
 ];
 
 export default function AddPetScreen() {
@@ -77,11 +79,14 @@ export default function AddPetScreen() {
   };
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={styles.content}
-      keyboardShouldPersistTaps="handled"
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
     >
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
       {/* Species Selection */}
       <Text style={[styles.label, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
         Pet Type
@@ -99,7 +104,11 @@ export default function AddPetScreen() {
             ]}
             onPress={() => setSpecies(s.value)}
           >
-            <Text style={styles.speciesEmoji}>{s.emoji}</Text>
+            <Image 
+              source={s.image} 
+              style={{ width: 28, height: 28 }} 
+              resizeMode="contain" 
+            />
             <Text style={[styles.speciesLabel, { color: species === s.value ? "#fff" : colors.text, fontFamily: "Inter_500Medium" }]}>
               {s.label}
             </Text>
@@ -116,7 +125,7 @@ export default function AddPetScreen() {
             style={[
               styles.genderBtn,
               {
-                backgroundColor: gender === g ? (g === "male" ? "#007AFF" : "#FF2D55") : colors.surface,
+                backgroundColor: gender === g ? (g === "male" ? "#007AFF" : "#fa375bff") : colors.surface,
                 borderColor: gender === g ? (g === "male" ? "#007AFF" : "#FF2D55") : colors.border,
               },
             ]}
@@ -172,7 +181,8 @@ export default function AddPetScreen() {
           {saving ? "Saving..." : "Add Pet"}
         </Text>
       </TouchableOpacity>
-    </ScrollView>
+      </ScrollView>
+    </LinearGradient>
   );
 }
 

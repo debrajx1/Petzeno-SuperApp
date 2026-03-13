@@ -8,23 +8,25 @@ import {
   Platform,
   useColorScheme,
   Alert,
+  Image,
 } from "react-native";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePets } from "@/context/PetContext";
 import Colors from "@/constants/colors";
 
 function getSpeciesIcon(species: string) {
-  const icons: Record<string, string> = {
-    dog: "🐕",
-    cat: "🐈",
-    bird: "🦜",
-    rabbit: "🐰",
-    fish: "🐟",
-    other: "🐾",
+  const icons: Record<string, any> = {
+    dog: require("@/assets/images/dog.png"),
+    cat: require("@/assets/images/cat.png"),
+    bird: require("@/assets/images/bird.png"),
+    rabbit: require("@/assets/images/rabbit.png"),
+    fish: require("@/assets/images/fish.png"),
+    other: require("@/assets/images/other.png"),
   };
-  return icons[species] || "🐾";
+  return icons[species] || require("@/assets/images/dog.png");
 }
 
 function getSpeciesColor(species: string) {
@@ -63,9 +65,12 @@ export default function PetsScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <LinearGradient 
+      colors={[Colors.primaryLight1, colors.background]} 
+      style={styles.container}
+    >
       {/* Header */}
-      <View style={[styles.header, { paddingTop: topPadding + 12, backgroundColor: colors.background }]}>
+      <View style={[styles.header, { paddingTop: topPadding + 12 }]}>
         <Text style={[styles.headerTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
           My Pets
         </Text>
@@ -112,7 +117,11 @@ export default function PetsScreen() {
               activeOpacity={0.85}
             >
               <View style={[styles.petAvatarBox, { backgroundColor: `${getSpeciesColor(pet.species)}18` }]}>
-                <Text style={styles.petEmoji}>{getSpeciesIcon(pet.species)}</Text>
+                <Image 
+                  source={getSpeciesIcon(pet.species)} 
+                  style={{ width: 36, height: 36 }} 
+                  resizeMode="contain" 
+                />
               </View>
               <View style={styles.petInfo}>
                 <View style={styles.petNameRow}>
@@ -123,7 +132,7 @@ export default function PetsScreen() {
                     <Ionicons
                       name={pet.gender === "male" ? "male" : "female"}
                       size={12}
-                      color={pet.gender === "male" ? "#007AFF" : "#FF2D55"}
+                      color={pet.gender === "male" ? "#007AFF" : "#fe5193ff"}
                     />
                   </View>
                 </View>
@@ -169,7 +178,7 @@ export default function PetsScreen() {
           ))
         )}
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCommunity } from "@/context/CommunityContext";
 import Colors from "@/constants/colors";
 
@@ -24,7 +25,10 @@ export default function LostFoundScreen() {
   const filtered = filter === "all" ? lostFoundPets : lostFoundPets.filter((p) => p.type === filter);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <LinearGradient 
+      colors={[Colors.primaryLight1, Colors.secondary]} 
+      style={styles.container}
+    >
       {/* Filters */}
       <View style={styles.filterRow}>
         {(["all", "lost", "found"] as const).map((f) => (
@@ -141,7 +145,7 @@ export default function LostFoundScreen() {
           </View>
         )}
       />
-    </View>
+    </LinearGradient>
   );
 }
 

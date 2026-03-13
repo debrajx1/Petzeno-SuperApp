@@ -4,6 +4,8 @@ const primaryLight1 = "#4eb399ff"; // More solid light green for background
 const primaryDark = "#42cfb1ff"; // Darker green for text headings
 const secondary = "#fbf9f8ff";
 const emergency = "#FF3B30";
+const black = "#000000";
+const deepgreen = "#00684eff";
 
 export default {
   primary,
@@ -12,6 +14,8 @@ export default {
   primaryDark,
   secondary,
   emergency,
+  deepgreen,
+  black,
 
   light: {
     text: "#1C1C1E",
@@ -36,7 +40,7 @@ export default {
     surface: "#1C1C1E",
     surfaceSecondary: "#2C2C2E",
     border: "#38383A",
-    tint: "#2EBF98",
+    tint: "#bf2e2eff",
     tabIconDefault: "#636366",
     tabIconSelected: "#2EBF98",
     card: "#1C1C1E",
