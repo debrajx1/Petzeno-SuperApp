@@ -29,6 +29,18 @@ const OWNER_DATA = {
   photo: require("@/assets/images/avatar.png"),
 };
 
+function getSpeciesIcon(species: string) {
+  const icons: Record<string, any> = {
+    dog: require("@/assets/images/dog.png"),
+    cat: require("@/assets/images/cat.png"),
+    bird: require("@/assets/images/bird.png"),
+    rabbit: require("@/assets/images/rabbit.png"),
+    fish: require("@/assets/images/fish.png"),
+    other: require("@/assets/images/other.png"),
+  };
+  return icons[species.toLowerCase()] || icons.other;
+}
+
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
@@ -85,17 +97,6 @@ export default function ProfileScreen() {
 
   const topPadding = Math.max(20, insets.top);
 
-  function getSpeciesIcon(species: string) {
-    const icons: Record<string, string> = {
-      dog: "🐕",
-      cat: "🐈",
-      bird: "🦜",
-      rabbit: "🐰",
-      fish: "🐟",
-      other: "🐾",
-    };
-    return icons[species] || "🐾";
-  }
 
   return (
     <LinearGradient 
@@ -161,7 +162,7 @@ export default function ProfileScreen() {
             </View>
           </View>
         </View>
-
+ 
         {/* My Pets Section */}
         <View style={styles.sectionHeader}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
@@ -181,7 +182,7 @@ export default function ProfileScreen() {
               onPress={() => router.push({ pathname: "/pet/[id]", params: { id: pet.id } } as any)}
             >
               <View style={[styles.petAvatar, { backgroundColor: Colors.primaryLight }]}>
-                <Text style={styles.petAvatarEmoji}>{getSpeciesIcon(pet.species)}</Text>
+                <Image source={getSpeciesIcon(pet.species)} style={{ width: 40, height: 40 }} resizeMode="contain" />
               </View>
               <Text style={[styles.petName, { color: colors.text }]}>{pet.name}</Text>
               <Text style={[styles.petBreed, { color: colors.textSecondary }]} numberOfLines={1}>{pet.breed}</Text>
@@ -192,7 +193,7 @@ export default function ProfileScreen() {
           ))}
           {pets.length === 0 && (
             <View style={[styles.petCardEmpty, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-              <Ionicons name="paw-outline" size={32} color={colors.textTertiary} />
+              <Image source={require("@/assets/images/other.png")} style={{ width: 40, height: 40, opacity: 0.5 }} resizeMode="contain" />
               <Text style={[styles.emptyPetsText, { color: colors.textSecondary }]}>No pets yet</Text>
             </View>
           )}

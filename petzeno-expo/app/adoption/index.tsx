@@ -43,11 +43,11 @@ export default function AdoptionScreen() {
         {FILTERS.map((f) => (
           <TouchableOpacity
             key={f}
-            style={[styles.filterBtn, filter === f && { backgroundColor: Colors.primary }]}
+            style={[styles.filterBtn, filter === f && { backgroundColor: Colors.secondary }]}
             onPress={() => setFilter(f)}
           >
             <Text style={[styles.filterText, {
-              color: filter === f ? "#fff" : colors.textSecondary,
+              color: filter === f ? "#006d50ab" : colors.surface,
               fontFamily: filter === f ? "Inter_600SemiBold" : "Inter_400Regular",
             }]}>
               {f}
@@ -65,7 +65,7 @@ export default function AdoptionScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
           <View style={styles.emptyState}>
-            <Text style={[styles.emptyText, { color: colors.textSecondary, fontFamily: "Inter_500Medium" }]}>
+            <Text style={[styles.emptyText, { color: "#ffffffff", fontFamily: "Inter_500Medium" }]}>
               No pets available for this filter
             </Text>
           </View>
