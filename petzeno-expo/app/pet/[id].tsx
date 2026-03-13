@@ -8,6 +8,7 @@ import {
   useColorScheme,
   Platform,
   Alert,
+  Image,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,8 +17,15 @@ import { usePets } from "@/context/PetContext";
 import Colors from "@/constants/colors";
 
 function getSpeciesIcon(species: string) {
-  const icons: Record<string, string> = { dog: "🐕", cat: "🐈", bird: "🦜", rabbit: "🐰", fish: "🐟", other: "🐾" };
-  return icons[species] || "🐾";
+  const icons: Record<string, any> = {
+    dog: require("@/assets/images/dog.png"),
+    cat: require("@/assets/images/cat.png"),
+    bird: require("@/assets/images/bird.png"),
+    rabbit: require("@/assets/images/rabbit.png"),
+    fish: require("@/assets/images/fish.png"),
+    other: require("@/assets/images/other.png"),
+  };
+  return icons[species] || require("@/assets/images/dog.png");
 }
 
 function formatDate(dateStr: string) {
@@ -57,7 +65,11 @@ export default function PetDetailScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Hero */}
         <View style={[styles.hero, { backgroundColor: Colors.primaryLight }]}>
-          <Text style={styles.petEmoji}>{getSpeciesIcon(pet.species)}</Text>
+          <Image 
+            source={getSpeciesIcon(pet.species)} 
+            style={{ width: 72, height: 72 }} 
+            resizeMode="contain" 
+          />
           <Text style={[styles.petName, { color: Colors.primaryDark, fontFamily: "Inter_700Bold" }]}>
             {pet.name}
           </Text>

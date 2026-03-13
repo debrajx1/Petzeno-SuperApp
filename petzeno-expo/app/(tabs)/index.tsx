@@ -48,15 +48,15 @@ function getDaysUntil(dateStr: string) {
 }
 
 function getSpeciesIcon(species: string) {
-  const icons: Record<string, string> = {
-    dog: "🐕",
-    cat: "🐈",
-    bird: "🦜",
-    rabbit: "🐰",
-    fish: "🐟",
-    other: "🐾",
+  const icons: Record<string, any> = {
+    dog: require("@/assets/images/dog.png"),
+    cat: require("@/assets/images/cat.png"),
+    bird: require("@/assets/images/bird.png"),
+    rabbit: require("@/assets/images/rabbit.png"),
+    fish: require("@/assets/images/fish.png"),
+    other: require("@/assets/images/other.png"), // Fallback to dog or a generic paw if available
   };
-  return icons[species] || "🐾";
+  return icons[species] || require("@/assets/images/other.png");
 }
 
 export default function HomeScreen() {
@@ -128,50 +128,56 @@ export default function HomeScreen() {
       ]}
       showsVerticalScrollIndicator={false}
     >
-      {/* Header */}
+      {/* Header with Background Pattern/Gradient */}
       <View style={styles.header}>
         <View>
+          <View style={styles.locationContainer}>
+            <Ionicons name="location" size={14} color="#fefefeaa" />
+            <Text style={[styles.locationText, { color: "#fefefecc", fontFamily: "Inter_500Medium" }]}>
+              New Delhi, India
+            </Text>
+            <Ionicons name="chevron-down" size={12} color="#fefefeaa" />
+          </View>
           <Text style={[styles.greeting, { color: "#F5F5F5", fontFamily: "Inter_700Bold" }]}>
             {greeting} 👋
           </Text>
           <Text style={[styles.headerTitle, { color: "#FFFFFF", fontFamily: "Inter_700Bold" }]}>
-            PetZeno <Text style={{ fontSize: 14, color: '#5bdfc5ff', fontFamily: 'Inter_700Bold' }}></Text>
+            PetZeno
           </Text>
         </View>
-        <View style={{ flexDirection: "row", gap: 10 }}>
+        <View style={styles.headerActions}>
           <TouchableOpacity
             style={[
               styles.notifBtn,
               {
-                backgroundColor: colors.surface,
-                borderWidth: 2,
-                borderColor: Colors.primary,
-                padding: 2,
+                backgroundColor: "rgba(255,255,255,0.15)",
+                borderWidth: 1.5,
+                borderColor: "rgba(255,255,255,0.2)",
               }
             ]}
             onPress={() => router.push("/profile")}
           >
-            <View style={{ width: '100%', height: '100%', borderRadius: 20, overflow: 'hidden' }}>
+            <View style={styles.avatarInner}>
               {profilePhoto ? (
                 <Image
                   source={typeof profilePhoto === "string" ? { uri: profilePhoto } : profilePhoto}
-                  style={{ width: '100%', height: '100%' }}
+                  style={styles.avatarImg}
                   resizeMode="cover"
                 />
               ) : (
                 <Image
                   source={require("@/assets/images/avatar.png")}
-                  style={{ width: '100%', height: '100%' }}
+                  style={styles.avatarImg}
                   resizeMode="cover"
                 />
               )}
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.notifBtn, { backgroundColor: colors.surface }]}
+            style={[styles.notifBtn, { backgroundColor: "rgba(255,255,255,0.15)" }]}
             onPress={() => router.push("/notifications")}
           >
-            <Ionicons name="notifications" size={22} color={Colors.primary} />
+            <Ionicons name="notifications" size={22} color="#FFFFFF" />
             {unreadCount > 0 && (
               <View style={styles.notifBadge}>
                 <Text style={styles.notifBadgeText}>{unreadCount}</Text>
@@ -181,59 +187,41 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Emergency SOS */}
-      <TouchableOpacity
-        onPress={() => router.push("/emergency")}
-        activeOpacity={0.85}
-      >
-        <LinearGradient
-          colors={["#FF3B30", "#FF6B61"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.sosCard}
-        >
-          <View style={styles.sosContent}>
-            <View style={styles.sosPulse}>
-              <Ionicons name="alert-circle" size={32} color="#fff" />
-            </View>
-            <View style={styles.sosText}>
-              <Text style={[styles.sosTitle, { fontFamily: "Inter_700Bold" }]}>Emergency SOS</Text>
-              <Text style={[styles.sosSubtitle, { fontFamily: "Inter_400Regular" }]}>
-                Tap for immediate vet assistance
-              </Text>
-            </View>
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.8)" />
-        </LinearGradient>
-      </TouchableOpacity>
-
-      {/* Quick Actions */}
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: '#fefefeff', fontFamily: "Inter_600SemiBold" }]}>
-          Quick Actions 
-        </Text>
-      </View>
-      <View style={styles.quickActions}>
+      {/* Profile/Category Icons (Flipkart Style) */}
+      <View style={styles.categoryContainer}>
         {[
-          { icon: "add-circle", label: "Add Pet", color: Colors.primary, route: "/pet/add" },
-          { icon: "calendar", label: "Book Vet", color: "#007AFF", route: "/map" },
-          { icon: "heart", label: "Adopt", color: "#FF7B54", route: "/adoption" },
-          { icon: "search", label: "Lost & Found", color: "#AF52DE", route: "/lost-found" },
-        ].map((action) => (
-          <TouchableOpacity
-            key={action.label}
-            style={[styles.quickActionBtn, { backgroundColor: colors.surface }]}
-            onPress={() => router.push(action.route as any)}
+          { icon: "alert-circle", label: "Emergency SOS", color: Colors.emergency, bgColor: "#FFE5E5", route: "/emergency" },
+          { icon: "calendar", label: "Book Vet", color: "#007AFF", bgColor: "#E5F1FF", route: "/map" },
+          { icon: "heart", label: "Adopt", color: "#fa3c3cff", bgColor: "#FFF0EB", route: "/adoption" },
+          { icon: "search", label: "Lost & Found", color: "#AF52DE", bgColor: "#F5EBFF", route: "/lost-found" },
+        ].map((item) => (
+          <TouchableOpacity 
+            key={item.label} 
+            style={[styles.categoryCard, { backgroundColor: colors.surface }]}
+            onPress={() => router.push(item.route as any)}
           >
-            <View style={[styles.quickActionIcon, { backgroundColor: `${action.color}15` }]}>
-              <Ionicons name={action.icon as any} size={24} color={action.color} />
+            <View style={[styles.categoryIconCircle, { backgroundColor: item.bgColor }]}>
+              <Ionicons name={item.icon as any} size={28} color={item.color} />
             </View>
-            <Text style={[styles.quickActionLabel, { color: colors.text, fontFamily: "Inter_500Medium" }]}>
-              {action.label}
+            <Text style={[styles.categoryLabel, { color: colors.text, fontFamily: "Inter_600SemiBold" }]} numberOfLines={2}>
+              {item.label}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
+
+      {/* Search Bar */}
+      <TouchableOpacity 
+        style={[styles.searchBar, { backgroundColor: colors.surface, borderColor: colors.border }]}
+        activeOpacity={0.9}
+        onPress={() => {/* Navigation to Search screen if exists */}}
+      >
+        <Ionicons name="search" size={20} color={colors.textSecondary} />
+        <Text style={[styles.searchText, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
+          Search pets, vets, adoption...
+        </Text>
+      </TouchableOpacity>
+
 
       {/* My Pets */}
       <View style={styles.sectionHeader}>
@@ -266,7 +254,11 @@ export default function HomeScreen() {
               onPress={() => router.push({ pathname: "/pet/[id]", params: { id: pet.id } })}
             >
               <View style={[styles.petAvatar, { backgroundColor: Colors.primaryLight }]}>
-                <Text style={styles.petAvatarEmoji}>{getSpeciesIcon(pet.species)}</Text>
+                <Image 
+                  source={getSpeciesIcon(pet.species)} 
+                  style={{ width: 32, height: 32 }} 
+                  resizeMode="contain" 
+                />
               </View>
               <Text style={[styles.petName, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
                 {pet.name}
@@ -395,7 +387,7 @@ export default function HomeScreen() {
                         notif.type === "emergency" ? "alert-circle" : "notifications"
                   }
                   size={18}
-                  color={Colors.primary}
+                  color={Colors.secondary}
                 />
               </View>
               <View style={styles.notifContent}>
@@ -426,59 +418,109 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 4,
   },
-  greeting: { fontSize: 14 },
-  headerTitle: { fontSize: 28, marginTop: 2 },
+  locationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    gap: 4,
+  },
+  locationText: {
+    fontSize: 12,
+  },
+  headerActions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  greeting: { fontSize: 13, opacity: 0.9 },
+  headerTitle: { fontSize: 28, marginTop: 2, letterSpacing: -0.5 },
   notifBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+  },
+  avatarInner: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  avatarImg: {
+    width: "100%",
+    height: "100%",
   },
   notifBadge: {
     position: "absolute",
-    top: 6,
-    right: 6,
-    backgroundColor: Colors.emergency,
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
+    top: 2,
+    right: 2,
+    backgroundColor: "#FF3B30",
+    borderRadius: 9,
+    minWidth: 18,
+    height: 18,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 3,
+    borderWidth: 2,
+    borderColor: "#4eb399ff", // Match gradient top color
   },
   notifBadgeText: { color: "#fff", fontSize: 10, fontFamily: "Inter_700Bold" },
-  sosCard: {
-    borderRadius: 16,
-    padding: 16,
+  
+  categoryContainer: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 24,
-    shadowColor: Colors.emergency,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
+    marginBottom: 20,
+    gap: 10,
   },
-  sosContent: { flexDirection: "row", alignItems: "center", gap: 12 },
-  sosPulse: {
+  categoryCard: {
+    flex: 1,
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  categoryIconCircle: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "rgba(255,255,255,0.2)",
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: 8,
   },
-  sosText: {},
-  sosTitle: { fontSize: 18, color: "#fff" },
-  sosSubtitle: { fontSize: 13, color: "rgba(255,255,255,0.85)", marginTop: 2 },
+  categoryLabel: {
+    fontSize: 10,
+    textAlign: "center",
+    paddingHorizontal: 2,
+  },
+
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 52,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    marginBottom: 28,
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  searchText: {
+    fontSize: 14,
+    marginLeft: 12,
+    flex: 1,
+    opacity: 0.7,
+  },
+
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -486,38 +528,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 8,
   },
-  sectionTitle: { fontSize: 18 },
-  seeAll: { fontSize: 14 },
-  quickActions: {
-    flexDirection: "row",
-    gap: 10,
-    marginBottom: 24,
-  },
-  quickActionBtn: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 16,
-    borderRadius: 16,
-    gap: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  quickActionIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  quickActionLabel: { fontSize: 11, textAlign: "center" },
+  sectionTitle: { fontSize: 17 },
+  seeAll: { fontSize: 13 },
   petsScroll: { marginBottom: 24, marginHorizontal: -4 },
   petCard: {
-    width: 120,
+    width: 110,
     borderRadius: 16,
-    padding: 14,
+    padding: 12,
     alignItems: "center",
     marginHorizontal: 4,
     shadowColor: "#000",
@@ -527,27 +544,27 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   petAvatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 8,
   },
-  petAvatarEmoji: { fontSize: 28 },
-  petName: { fontSize: 14, textAlign: "center" },
-  petBreed: { fontSize: 11, textAlign: "center", marginTop: 2 },
+  petAvatarEmoji: { fontSize: 24 },
+  petName: { fontSize: 13, textAlign: "center" },
+  petBreed: { fontSize: 10, textAlign: "center", marginTop: 2 },
   petAgeBadge: {
-    marginTop: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 10,
+    marginTop: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
   },
-  petAge: { fontSize: 12 },
+  petAge: { fontSize: 11 },
   petCardAdd: {
-    width: 120,
+    width: 110,
     borderRadius: 16,
-    padding: 14,
+    padding: 12,
     alignItems: "center",
     justifyContent: "center",
     marginHorizontal: 4,
@@ -555,7 +572,7 @@ const styles = StyleSheet.create({
     borderStyle: "dashed",
     gap: 6,
   },
-  petCardAddText: { fontSize: 12 },
+  petCardAddText: { fontSize: 11 },
   emptyPetsCard: {
     borderRadius: 16,
     padding: 24,
@@ -570,7 +587,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
-    padding: 14,
+    padding: 12,
     marginBottom: 8,
     gap: 12,
     shadowColor: "#000",
@@ -580,26 +597,26 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   vaccIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
   },
   vaccInfo: { flex: 1 },
   vaccName: { fontSize: 14 },
-  vaccPet: { fontSize: 12, marginTop: 2 },
+  vaccPet: { fontSize: 11, marginTop: 2 },
   vaccBadge: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 10,
+    borderRadius: 8,
   },
-  vaccBadgeText: { fontSize: 12 },
+  vaccBadgeText: { fontSize: 11 },
   apptCard: {
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 14,
-    padding: 14,
+    padding: 12,
     marginBottom: 8,
     gap: 12,
     shadowColor: "#000",
@@ -609,27 +626,27 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   apptIconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
   },
   apptInfo: { flex: 1 },
   apptPet: { fontSize: 14 },
-  apptDetails: { fontSize: 12, marginTop: 2 },
-  apptDate: { fontSize: 12, marginTop: 2 },
+  apptDetails: { fontSize: 11, marginTop: 2 },
+  apptDate: { fontSize: 11, marginTop: 2 },
   apptStatusBadge: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 10,
+    borderRadius: 8,
   },
-  apptStatusText: { fontSize: 12 },
+  apptStatusText: { fontSize: 11 },
   notifCard: {
     flexDirection: "row",
     alignItems: "flex-start",
     borderRadius: 14,
-    padding: 14,
+    padding: 12,
     marginBottom: 8,
     gap: 10,
     shadowColor: "#000",
@@ -639,14 +656,14 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   notifIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
   },
   notifContent: { flex: 1 },
   notifTitle: { fontSize: 13 },
-  notifMsg: { fontSize: 12, marginTop: 2, lineHeight: 16 },
-  notifTime: { fontSize: 11, marginTop: 2 },
+  notifMsg: { fontSize: 11, marginTop: 2, lineHeight: 15 },
+  notifTime: { fontSize: 10, marginTop: 2 },
 });

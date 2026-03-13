@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import * as Haptics from "expo-haptics";
+import { LinearGradient } from "expo-linear-gradient";
 import { usePets } from "@/context/PetContext";
 import Colors from "@/constants/colors";
 
@@ -153,7 +154,10 @@ export default function EmergencyScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: "#0A0E1A" }]}>
+    <LinearGradient
+      colors={[Colors.primaryLight1, "#FFFFFF"]}
+      style={styles.container}
+    >
       {/* Header */}
       <View
         style={[
@@ -162,23 +166,23 @@ export default function EmergencyScreen() {
         ]}
       >
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons name="arrow-back" size={24} color={Colors.black} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { fontFamily: "Inter_700Bold" }]}>
+        <Text style={[styles.headerTitle, { color: Colors.secondary, fontFamily: "Inter_700Bold" }]}>
           Emergency SOS
         </Text>
         <View style={{ width: 44 }} />
       </View>
 
       {/* Location pill */}
-      <View style={styles.locationRow}>
+      <View style={[styles.locationRow, { backgroundColor: "rgba(255, 255, 255, 0)", marginHorizontal: 16, borderRadius: 20, paddingVertical: 6 }]}>
         <Ionicons
           name="location"
           size={14}
-          color={locationGranted ? "#34C759" : "#FF9500"}
+          color={locationGranted ? "#f6f1f1ff" : "#ff0800ff"}
         />
         <Text
-          style={[styles.locationText, { fontFamily: "Inter_400Regular" }]}
+          style={[styles.locationText, { color: Colors.secondary, fontFamily: "Inter_400Regular" }]}
           numberOfLines={1}
         >
           {locationText}
@@ -210,13 +214,13 @@ export default function EmergencyScreen() {
           >
             <Ionicons
               name={alertSent ? "checkmark-circle" : "alert-circle"}
-              size={44}
+              size={48}
               color="#fff"
             />
             <Text style={[styles.sosLabel, { fontFamily: "Inter_700Bold" }]}>
               {alertSent ? "SENT" : "SOS"}
             </Text>
-            <Text style={[styles.sosHint, { fontFamily: "Inter_400Regular" }]}>
+            <Text style={[styles.sosHint, { fontFamily: "bold", textAlign: "center", paddingHorizontal: 10 }]}>
               {alertSent ? "Alert dispatched" : "Tap for emergency"}
             </Text>
           </TouchableOpacity>
@@ -224,7 +228,7 @@ export default function EmergencyScreen() {
 
         {/* Status pills */}
         <View style={styles.pillRow}>
-          <View style={[styles.pill, { backgroundColor: "#1A3A2A" }]}>
+          <View style={[styles.pill, { backgroundColor: "#f4fbf8ff" }]}>
             <Ionicons name="shield-checkmark" size={14} color="#34C759" />
             <Text
               style={[
@@ -235,7 +239,7 @@ export default function EmergencyScreen() {
               3 clinics alerted
             </Text>
           </View>
-          <View style={[styles.pill, { backgroundColor: "#1A2A3A" }]}>
+          <View style={[styles.pill, { backgroundColor: "#f1f4f7ff" }]}>
             <Ionicons name="location" size={14} color="#007AFF" />
             <Text
               style={[
@@ -250,14 +254,14 @@ export default function EmergencyScreen() {
 
         {/* Emergency Clinics */}
         <Text
-          style={[styles.sectionTitle, { fontFamily: "Inter_700Bold" }]}
+          style={[styles.sectionTitle, { color: Colors.deepgreen, fontFamily: "Inter_700Bold" }]}
         >
           Nearby Emergency Vets
         </Text>
         {EMERGENCY_CONTACTS.map((clinic) => (
           <View
             key={clinic.name}
-            style={[styles.clinicCard, { backgroundColor: "#151C2C" }]}
+            style={[styles.clinicCard, { backgroundColor: "#fff", shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 }]}
           >
             <View
               style={[
@@ -275,7 +279,7 @@ export default function EmergencyScreen() {
               <Text
                 style={[
                   styles.clinicName,
-                  { fontFamily: "Inter_600SemiBold" },
+                  { color: Colors.primaryDark, fontFamily: "Inter_600SemiBold" },
                 ]}
               >
                 {clinic.name}
@@ -340,7 +344,7 @@ export default function EmergencyScreen() {
 
         {/* First Aid Tips */}
         <Text
-          style={[styles.sectionTitle, { fontFamily: "Inter_700Bold", marginTop: 8 }]}
+          style={[styles.sectionTitle, { color: Colors.primaryDark, fontFamily: "Inter_700Bold", marginTop: 8 }]}
         >
           While You Wait — First Aid Tips
         </Text>
@@ -348,12 +352,12 @@ export default function EmergencyScreen() {
           {FIRST_AID_TIPS.map((tip) => (
             <View
               key={tip.tip}
-              style={[styles.tipCard, { backgroundColor: "#151C2C" }]}
+              style={[styles.tipCard, { backgroundColor: "#fff", shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 10, elevation: 2 }]}
             >
               <View
                 style={[
                   styles.tipIcon,
-                  { backgroundColor: `${tip.color}20` },
+                  { backgroundColor: `${tip.color}15` },
                 ]}
               >
                 <Ionicons name={tip.icon as any} size={18} color={tip.color} />
@@ -361,7 +365,7 @@ export default function EmergencyScreen() {
               <Text
                 style={[
                   styles.tipText,
-                  { color: "#ccc", fontFamily: "Inter_400Regular" },
+                  { color: Colors.primaryDark, fontFamily: "Inter_400Regular" },
                 ]}
               >
                 {tip.tip}
@@ -370,7 +374,7 @@ export default function EmergencyScreen() {
           ))}
         </View>
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
