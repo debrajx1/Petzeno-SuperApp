@@ -238,6 +238,13 @@ function ClassicTabLayout() {
             ),
         }}
       />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          href: null, // Hidden from bottom bar
+          tabBarIcon: ({ color }) => <Ionicons name="notifications" size={22} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
