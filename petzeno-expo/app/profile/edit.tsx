@@ -80,18 +80,18 @@ export default function EditProfileScreen() {
 
   return (
     <LinearGradient 
-      colors={[Colors.primaryLight1, Colors.secondary]} 
+      colors={[Colors.primaryLight1, colors.background]} 
       style={styles.container}
     >
       <ScrollView
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-      <TouchableOpacity style={[styles.avatarSection, { backgroundColor: Colors.secondary }]} onPress={pickImage}>
+      <TouchableOpacity style={[styles.avatarSection, { backgroundColor: colors.surfaceSecondary }]} onPress={pickImage}>
         <View style={[
           styles.avatarContainerRing, 
           { 
-            borderColor: Colors.primaryLight,
+            borderColor: Colors.primary,
             borderWidth: 2.5,
             padding: 3,
           }
@@ -106,7 +106,7 @@ export default function EditProfileScreen() {
             )}
           </View>
         </View>
-        <Text style={[styles.avatarLabel, { color: "#42cfb1ff", fontFamily: "Inter_600SemiBold" }]}>
+        <Text style={[styles.avatarLabel, { color: Colors.primary, fontFamily: "Inter_600SemiBold" }]}>
           Change Profile Photo
         </Text>
       </TouchableOpacity>
@@ -140,7 +140,7 @@ export default function EditProfileScreen() {
         disabled={saving}
       >
         <LinearGradient
-          colors={[Colors.primary, Colors.primaryDark]}
+          colors={[Colors.primary, Colors.primaryLight]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.gradientSave}

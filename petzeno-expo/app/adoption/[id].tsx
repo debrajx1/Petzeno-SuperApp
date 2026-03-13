@@ -15,6 +15,19 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useCommunity } from "@/context/CommunityContext";
 import Colors from "@/constants/colors";
+import { Image } from "react-native";
+
+function getSpeciesIcon(species: string) {
+  const icons: Record<string, any> = {
+    dog: require("@/assets/images/dog.png"),
+    cat: require("@/assets/images/cat.png"),
+    bird: require("@/assets/images/bird.png"),
+    rabbit: require("@/assets/images/rabbit.png"),
+    fish: require("@/assets/images/fish.png"),
+    other: require("@/assets/images/other.png"),
+  };
+  return icons[species.toLowerCase()] || icons.other;
+}
 
 export default function AdoptionDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -74,25 +87,30 @@ export default function AdoptionDetailScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         {/* Hero */}
         <View style={[styles.hero, { backgroundColor: Colors.primaryLight }]}>
-          <Text style={styles.petEmoji}>{pet.image}</Text>
-          <Text style={[styles.petName, { color: Colors.primaryDark, fontFamily: "Inter_700Bold" }]}>
+          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <View style={styles.petImageContainer}>
+             <Image source={getSpeciesIcon(pet.species)} style={{ width: 120, height: 120 }} resizeMode="contain" />
+          </View>
+          <Text style={[styles.petName, { color: Colors.secondary, fontFamily: "Inter_700Bold" }]}>
             {pet.name}
           </Text>
-          <Text style={[styles.petBreed, { color: Colors.primary, fontFamily: "Inter_400Regular" }]}>
+          <Text style={[styles.petBreed, { color: Colors.secondary, opacity: 0.9, fontFamily: "Inter_400Regular" }]}>
             {pet.breed}
           </Text>
           <View style={styles.heroBadges}>
-            <View style={[styles.badge, { backgroundColor: Colors.primary }]}>
+            <View style={[styles.badge, { backgroundColor: "rgba(255,255,255,0.25)" }]}>
               <Ionicons name={pet.gender === "male" ? "male" : "female"} size={12} color="#fff" />
-              <Text style={[styles.badgeText, { fontFamily: "Inter_600SemiBold" }]}>
+              <Text style={[styles.badgeText, { color: "#fff", fontFamily: "Inter_600SemiBold" }]}>
                 {pet.gender === "male" ? "Male" : "Female"}
               </Text>
             </View>
-            <View style={[styles.badge, { backgroundColor: Colors.primary }]}>
-              <Text style={[styles.badgeText, { fontFamily: "Inter_600SemiBold" }]}>{pet.age}</Text>
+            <View style={[styles.badge, { backgroundColor: "rgba(255,255,255,0.25)" }]}>
+              <Text style={[styles.badgeText, { color: "#fff", fontFamily: "Inter_600SemiBold" }]}>{pet.age}</Text>
             </View>
             <View style={[styles.badge, { backgroundColor: pet.status === "available" ? "#34C759" : "#FF9500" }]}>
-              <Text style={[styles.badgeText, { fontFamily: "Inter_600SemiBold" }]}>
+              <Text style={[styles.badgeText, { color: "#fff", fontFamily: "Inter_600SemiBold" }]}>
                 {pet.status === "available" ? "Available" : "Pending"}
               </Text>
             </View>
@@ -193,57 +211,83 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
   hero: {
     alignItems: "center",
-    paddingVertical: 28,
+    paddingTop: 60,
+    paddingBottom: 32,
     gap: 6,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    overflow: 'hidden',
   },
-  petEmoji: { fontSize: 96 },
-  petName: { fontSize: 28, marginTop: 4 },
-  petBreed: { fontSize: 16 },
-  heroBadges: { flexDirection: "row", gap: 8, marginTop: 8 },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+  },
+  petImageContainer: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    borderWidth: 4,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  petName: { fontSize: 32, marginTop: 4 },
+  petBreed: { fontSize: 18 },
+  heroBadges: { flexDirection: "row", gap: 8, marginTop: 12 },
   badge: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    borderRadius: 12,
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 14,
   },
-  badgeText: { color: "#fff", fontSize: 12 },
-  content: { padding: 16, gap: 12 },
+  badgeText: { fontSize: 14 },
+  content: { padding: 16, gap: 16 },
   card: {
-    borderRadius: 16,
-    padding: 16,
-    gap: 10,
+    borderRadius: 20,
+    padding: 20,
+    gap: 12,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    elevation: 2,
   },
-  cardTitle: { fontSize: 16 },
-  description: { fontSize: 14, lineHeight: 20 },
-  traitsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  cardTitle: { fontSize: 18 },
+  description: { fontSize: 15, lineHeight: 24 },
+  traitsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
   trait: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 10,
-    width: "47%",
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    width: "48%",
   },
-  traitLabel: { fontSize: 12 },
-  shelterRow: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
+  traitLabel: { fontSize: 13 },
+  shelterRow: { flexDirection: "row", alignItems: "center", gap: 16 },
   shelterIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     alignItems: "center",
     justifyContent: "center",
   },
-  shelterName: { fontSize: 15 },
-  shelterLocation: { fontSize: 12, marginTop: 2 },
-  shelterPhone: { fontSize: 13, marginTop: 2 },
+  shelterName: { fontSize: 16 },
+  shelterLocation: { fontSize: 13, marginTop: 2 },
+  shelterPhone: { fontSize: 14, marginTop: 4 },
   bottomBar: {
     position: "absolute",
     bottom: 0,
@@ -252,24 +296,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 16,
-    paddingBottom: Platform.OS === "web" ? 34 : 30,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    paddingBottom: Platform.OS === "web" ? 34 : 34,
     borderTopWidth: 1,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.1,
     shadowRadius: 12,
-    elevation: 10,
+    elevation: 15,
   },
   feeLabel: { fontSize: 12, marginBottom: 2 },
-  feeValue: { fontSize: 22 },
+  feeValue: { fontSize: 24 },
   adoptBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: 14,
+    gap: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 16,
+    borderRadius: 16,
   },
   adoptBtnText: { color: "#fff", fontSize: 16 },
 });

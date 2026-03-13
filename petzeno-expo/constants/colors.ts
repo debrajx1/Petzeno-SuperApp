@@ -1,11 +1,16 @@
-const primary = "#42cfb1ff"; // Match the exact button green from mockup
-const primaryLight = "#6cceb6ff"; 
-const primaryLight1 = "#4eb399ff"; // More solid light green for background
-const primaryDark = "#42cfb1ff"; // Darker green for text headings
-const secondary = "#fbf9f8ff";
-const emergency = "#FF3B30";
-const black = "#000000";
-const deepgreen = "#00684eff";
+// PetZeno Brand Color System — Premium Indigo & Mint Theme
+// Tech-forward, modern, and clean visual language
+
+const primary = "#6366F1";       // Vibrant Indigo — Core buttons / Active states
+const primaryLight = "#818CF8";  // Soft Indigo — Accents / Hover
+const primaryLight1 = "#EEF2FF"; // Cloud White/Indigo — Gradient start
+const primaryDark = "#4F46E5";   // Deep Indigo — Pressed states
+const secondary = "#F8FAFC";     // Slate White — Section backgrounds / Cards
+const emergency = "#EF4444";     // Modern Red — SOS / Urgent
+const healthy = "#10B981";       // Mint/Emerald — Positive status
+const warning = "#F59E0B";       // Amber — Attention status
+const info = "#3B82F6";          // Royal Blue — Informational
+const black = "#0F172A";         // Slate Black — Text / Deep dark mode
 
 export default {
   primary,
@@ -14,45 +19,47 @@ export default {
   primaryDark,
   secondary,
   emergency,
-  deepgreen,
+  healthy,
+  warning,
+  info,
   black,
 
   light: {
-    text: "#1C1C1E",
-    textSecondary: "#636366",
-    textTertiary: "#004437ff",
-    background: "#F5F6FA",
+    text: "#1E293B",              // Slate Dark
+    textSecondary: "#64748B",     // Slate Muted
+    textTertiary: "#94A3B8",      // Slate Light
+    background: "#F8FAFC",        // Clean Slate White
     surface: "#FFFFFF",
-    surfaceSecondary: "#F2F2F7", 
-    border: "#E5E5EA",
+    surfaceSecondary: "#F1F5F9",  // Light Slate gray
+    border: "#E2E8F0",            // Subtle Slate border
     tint: primary,
-    tabIconDefault: "#AEAEB2",
+    tabIconDefault: "#94A3B8",
     tabIconSelected: primary,
     card: "#FFFFFF",
-    shadow: "rgba(0,0,0,0.08)",
+    shadow: "rgba(99,102,241,0.08)", // Indigo-tinted shadow
   },
 
   dark: {
-    text: "#FFFFFF",
-    textSecondary: "#AEAEB2",
-    textTertiary: "#003d2bff",
-    background: "#000000",
-    surface: "#1C1C1E",
-    surfaceSecondary: "#2C2C2E",
-    border: "#38383A",
-    tint: "#bf2e2eff",
-    tabIconDefault: "#636366",
-    tabIconSelected: "#2EBF98",
-    card: "#1C1C1E",
-    shadow: "rgba(0,0,0,0.3)",
+    text: "#F8FAFC",
+    textSecondary: "#94A3B8",
+    textTertiary: "#64748B",
+    background: "#0F172A",        // Deep Slate Black
+    surface: "#1E293B",           // Slate Dark surface
+    surfaceSecondary: "#334155",  // Slate Muted surface
+    border: "#334155",            // Dark Slate border
+    tint: "#818CF8",
+    tabIconDefault: "#475569",
+    tabIconSelected: "#818CF8",
+    card: "#1E293B",
+    shadow: "rgba(0,0,0,0.4)",
   },
 
   petColors: {
-    dog: "#FF9F43",
-    cat: "#EE5A24",
-    bird: "#0652DD",
-    rabbit: "#FDA7DF",
-    fish: "#12CBC4",
-    other: "#9980FA",
+    dog: "#F59E0B",    // Amber
+    cat: "#6366F1",    // Indigo
+    bird: "#0EA5E9",   // Sky
+    rabbit: "#EC4899", // Pink
+    fish: "#06B6D4",   // Cyan
+    other: "#8B5CF6",  // Violet
   },
 };

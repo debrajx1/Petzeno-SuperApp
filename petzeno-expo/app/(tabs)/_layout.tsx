@@ -34,9 +34,9 @@ function NativeTabLayout() {
         <Label>Store</Label>
         {cartCount > 0 && <Badge>{cartCount.toString()}</Badge>}
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="community">
+      <NativeTabs.Trigger name="Social">
         <Icon sf={{ default: "person.3", selected: "person.3.fill" }} />
-        <Label>Community</Label>
+        <Label>Social</Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="chat">
         <Icon sf={{ default: "bubble.left.and.bubble.right", selected: "bubble.left.and.bubble.right.fill" }} />

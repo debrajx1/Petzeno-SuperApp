@@ -254,7 +254,7 @@ export default function EmergencyScreen() {
 
         {/* Emergency Clinics */}
         <Text
-          style={[styles.sectionTitle, { color: Colors.deepgreen, fontFamily: "Inter_700Bold" }]}
+          style={[styles.sectionTitle, { color: Colors.deepOrange, fontFamily: "Inter_700Bold" }]}
         >
           Nearby Emergency Vets
         </Text>

@@ -12,6 +12,19 @@ import {
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { Image } from "react-native";
+
+function getSpeciesIcon(species: string) {
+  const icons: Record<string, any> = {
+    dog: require("@/assets/images/dog.png"),
+    cat: require("@/assets/images/cat.png"),
+    bird: require("@/assets/images/bird.png"),
+    rabbit: require("@/assets/images/rabbit.png"),
+    fish: require("@/assets/images/fish.png"),
+    other: require("@/assets/images/other.png"),
+  };
+  return icons[species.toLowerCase()] || icons.other;
+}
 import { useCommunity } from "@/context/CommunityContext";
 import Colors from "@/constants/colors";
 
@@ -53,11 +66,27 @@ export default function LostFoundScreen() {
         style={[styles.reportBtn, { backgroundColor: Colors.emergency }]}
         onPress={() => router.push("/lost-found/report")}
       >
-        <Ionicons name="add-circle" size={20} color="#fff" />
-        <Text style={[styles.reportBtnText, { fontFamily: "Inter_600SemiBold" }]}>
-          Report Lost or Found Pet
+        <Ionicons name="megaphone" size={20} color="#fff" />
+        <Text style={[styles.reportBtnText, { fontFamily: "Inter_700Bold" }]}>
+          Post New Report
         </Text>
       </TouchableOpacity>
+
+      {/* Map Placeholder Section */}
+      <View style={styles.mapSection}>
+        <View style={[styles.mapPlaceholder, { backgroundColor: colors.surfaceSecondary, borderColor: colors.border }]}>
+          <Ionicons name="map-outline" size={32} color={colors.textTertiary} />
+          <Text style={[styles.mapText, { color: colors.textSecondary }]}>Lost pets near you</Text>
+          <View style={styles.mapDot} />
+        </View>
+      </View>
+
+      <View style={styles.sectionHeader}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Reports</Text>
+        <TouchableOpacity>
+          <Text style={{ color: Colors.primary, fontSize: 13 }}>See All</Text>
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={filtered}
@@ -74,46 +103,47 @@ export default function LostFoundScreen() {
         )}
         renderItem={({ item: pet }) => (
           <View style={[styles.reportCard, { backgroundColor: colors.surface }]}>
-            <View style={[styles.typeBadge, {
-              backgroundColor: pet.type === "lost" ? "#FF3B3015" : "#34C75915",
-            }]}>
-              <Ionicons
-                name={pet.type === "lost" ? "alert-circle" : "checkmark-circle"}
-                size={14}
-                color={pet.type === "lost" ? Colors.emergency : "#34C759"}
-              />
-              <Text style={[styles.typeText, {
-                color: pet.type === "lost" ? Colors.emergency : "#34C759",
-                fontFamily: "Inter_700Bold",
+            <View style={styles.cardHeader}>
+              <View style={[styles.typeBadge, {
+                backgroundColor: pet.type === "lost" ? "#FF3B3015" : "#34C75915",
               }]}>
-                {pet.type === "lost" ? "LOST" : "FOUND"}
-              </Text>
+                <Ionicons
+                  name={pet.type === "lost" ? "alert-circle" : "checkmark-circle"}
+                  size={14}
+                  color={pet.type === "lost" ? Colors.emergency : "#34C759"}
+                />
+                <Text style={[styles.typeText, {
+                  color: pet.type === "lost" ? Colors.emergency : "#34C759",
+                  fontFamily: "Inter_700Bold",
+                }]}>
+                  {pet.type === "lost" ? "LOST" : "FOUND"}
+                </Text>
+              </View>
+              <Text style={[styles.dateText, { color: colors.textTertiary }]}>{pet.date}</Text>
             </View>
 
             <View style={styles.cardContent}>
               <View style={[styles.petImageBox, { backgroundColor: colors.surfaceSecondary }]}>
-                <Text style={styles.petEmoji}>{pet.image}</Text>
+                <Image source={getSpeciesIcon(pet.species)} style={{ width: 50, height: 50 }} resizeMode="contain" />
               </View>
               <View style={styles.petInfo}>
                 <Text style={[styles.petName, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
-                  {pet.petName || "Unknown Pet"}
+                  {pet.petName || `Unknown ${pet.species}`}
                 </Text>
                 <Text style={[styles.petBreed, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
-                  {pet.breed} {pet.species}
+                   {pet.breed}
                 </Text>
                 <View style={styles.locationRow}>
-                  <Ionicons name="location-outline" size={13} color={colors.textTertiary} />
+                  <Ionicons name="location" size={12} color={Colors.emergency} />
                   <Text style={[styles.location, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]} numberOfLines={1}>
                     {pet.location}
                   </Text>
                 </View>
-                <Text style={[styles.description, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]} numberOfLines={2}>
-                  {pet.description}
-                </Text>
+                
                 {pet.reward && (
-                  <View style={[styles.rewardBadge, { backgroundColor: "#FFB80015" }]}>
-                    <Ionicons name="gift" size={12} color="#FFB800" />
-                    <Text style={[styles.rewardText, { color: "#FFB800", fontFamily: "Inter_600SemiBold" }]}>
+                  <View style={[styles.rewardBadge, { backgroundColor: "#FFB80020" }]}>
+                    <Ionicons name="gift" size={12} color="#D48806" />
+                    <Text style={[styles.rewardText, { color: "#D48806", fontFamily: "Inter_700Bold" }]}>
                       ₹{pet.reward} Reward
                     </Text>
                   </View>
@@ -123,22 +153,20 @@ export default function LostFoundScreen() {
 
             <View style={styles.cardActions}>
               <TouchableOpacity
-                style={[styles.contactBtn, { backgroundColor: Colors.primaryLight }]}
+                style={[styles.contactBtn, { backgroundColor: Colors.primary }]}
                 onPress={() => Linking.openURL(`tel:${pet.contactPhone}`)}
               >
-                <Ionicons name="call" size={16} color={Colors.primary} />
-                <Text style={[styles.contactText, { color: Colors.primary, fontFamily: "Inter_600SemiBold" }]}>
-                  {pet.contactPhone}
+                <Ionicons name="call" size={16} color="#fff" />
+                <Text style={[styles.contactText, { color: "#fff", fontFamily: "Inter_700Bold" }]}>
+                  Contact Finder
                 </Text>
               </TouchableOpacity>
               {pet.status === "active" && (
                 <TouchableOpacity
-                  style={[styles.resolvedBtn, { backgroundColor: "#34C75915" }]}
+                  style={[styles.resolvedBtn, { borderColor: colors.border, borderWidth: 1 }]}
                   onPress={() => updateLostFoundStatus(pet.id, "resolved")}
                 >
-                  <Text style={[styles.resolvedText, { color: "#34C759", fontFamily: "Inter_600SemiBold" }]}>
-                    Mark Resolved
-                  </Text>
+                  <Ionicons name="checkmark-done" size={16} color="#34C759" />
                 </TouchableOpacity>
               )}
             </View>
@@ -151,81 +179,127 @@ export default function LostFoundScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  filterRow: { flexDirection: "row", gap: 8, padding: 16, paddingBottom: 8 },
+  filterRow: { flexDirection: "row", gap: 10, padding: 16, paddingBottom: 12 },
   filterBtn: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.1)",
   },
-  filterText: { fontSize: 13 },
+  filterText: { fontSize: 13, textAlign: 'center' },
   reportBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
-    marginHorizontal: 16,
-    marginBottom: 12,
-    paddingVertical: 13,
-    borderRadius: 14,
-  },
-  reportBtnText: { color: "#fff", fontSize: 15 },
-  listContent: { paddingHorizontal: 16, gap: 12 },
-  emptyState: { alignItems: "center", paddingTop: 60, gap: 10 },
-  emptyText: { fontSize: 14 },
-  reportCard: {
-    borderRadius: 16,
-    padding: 14,
     gap: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 1,
+    marginHorizontal: 16,
+    marginBottom: 20,
+    paddingVertical: 15,
+    borderRadius: 16,
+    shadowColor: Colors.emergency,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
+  reportBtnText: { color: "#fff", fontSize: 16 },
+  mapSection: {
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  mapPlaceholder: {
+    height: 120,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  mapText: { fontSize: 14, fontFamily: "Inter_500Medium" },
+  mapDot: {
+    position: 'absolute',
+    top: 40,
+    right: 60,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: Colors.emergency,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 18,
+    marginBottom: 12,
+  },
+  sectionTitle: { fontSize: 18, fontFamily: "Inter_700Bold" },
+  listContent: { paddingHorizontal: 16, gap: 16, paddingBottom: 40 },
+  reportCard: {
+    borderRadius: 20,
+    padding: 16,
+    gap: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  dateText: { fontSize: 11, fontFamily: "Inter_400Regular" },
   typeBadge: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-    alignSelf: "flex-start",
+    gap: 6,
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
+    paddingVertical: 5,
+    borderRadius: 10,
   },
-  typeText: { fontSize: 12 },
-  cardContent: { flexDirection: "row", gap: 12 },
-  petImageBox: { width: 75, height: 75, borderRadius: 12, alignItems: "center", justifyContent: "center" },
-  petEmoji: { fontSize: 38 },
-  petInfo: { flex: 1, gap: 3 },
-  petName: { fontSize: 15 },
-  petBreed: { fontSize: 12 },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  location: { fontSize: 12, flex: 1 },
-  description: { fontSize: 12, lineHeight: 16 },
+  typeText: { fontSize: 11 },
+  cardContent: { flexDirection: "row", gap: 16 },
+  petImageBox: { width: 90, height: 90, borderRadius: 16, alignItems: "center", justifyContent: "center" },
+  petInfo: { flex: 1, gap: 4 },
+  petName: { fontSize: 17 },
+  petBreed: { fontSize: 13 },
+  locationRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 },
+  location: { fontSize: 13, flex: 1 },
   rewardBadge: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
     alignSelf: "flex-start",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+    marginTop: 4,
   },
-  rewardText: { fontSize: 11 },
-  cardActions: { flexDirection: "row", gap: 8 },
+  rewardText: { fontSize: 12 },
+  cardActions: { flexDirection: "row", gap: 10, marginTop: 4 },
   contactBtn: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    paddingVertical: 9,
-    borderRadius: 10,
+    gap: 8,
+    paddingVertical: 12,
+    borderRadius: 12,
   },
-  contactText: { fontSize: 13 },
+  contactText: { fontSize: 14 },
   resolvedBtn: {
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-    borderRadius: 10,
+    width: 48,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 12,
   },
-  resolvedText: { fontSize: 13 },
+  emptyState: { alignItems: "center", paddingTop: 60, gap: 10 },
+  emptyText: { fontSize: 14 },
 });

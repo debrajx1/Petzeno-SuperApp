@@ -53,7 +53,15 @@ function RootLayoutNav() {
       />
       <Stack.Screen name="profile/privacy" options={{ title: "Privacy & Security", headerShown: false }} />
       <Stack.Screen name="profile/support" options={{ title: "Help & Support", headerShown: false }} />
+      <Stack.Screen name="ai/symptom-scanner" options={{ title: "AI Symptom Scanner" }} />
+      <Stack.Screen name="ai/vaccination-predictor" options={{ title: "Smart Vax Predictor" }} />
+      <Stack.Screen name="ai/lost-pet-finder" options={{ title: "AI Lost Pet Finder" }} />
+      <Stack.Screen name="ai/vet-reputation" options={{ title: "Vet Reputation System" }} />
+      <Stack.Screen name="ai/behavior-tracker" options={{ title: "Behavior Tracker" }} />
+      <Stack.Screen name="ai/adoption-match" options={{ title: "AI Adoption Match" }} />
+      <Stack.Screen name="ai/pet-insurance" options={{ title: "Pet Insurance" }} />
     </Stack>
+
   );
 }
 
