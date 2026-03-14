@@ -87,8 +87,8 @@ const ring = StyleSheet.create({
 const QUICK_ACTIONS = [
   { id: "add-pet", label: "Add Pet", icon: "paw", colors: ["#667eea", "#764ba2"], route: "/pet/add" },
   { id: "book-vet", label: "Book Vet", icon: "calendar", colors: ["#4facfe", "#00f2fe"], route: "/appointment/book" },
-  { id: "adopt", label: "Adopt", icon: "heart", colors: ["#fa709a", "#fee140"], route: "/adoption/index" },
-  { id: "lost", label: "Lost & Found", icon: "search", colors: ["#a18cd1", "#fbc2eb"], route: "/lost-found/index" },
+  { id: "adopt", label: "Adopt", icon: "heart", colors: ["#fa709a", "#fee140"], route: "/adoption" },
+  { id: "lost", label: "Lost & Found", icon: "search", colors: ["#a18cd1", "#fbc2eb"], route: "/lost-found" },
   { id: "ai-symptom", label: "AI Symptom", icon: "scan", colors: ["#f093fb", "#f5576c"], route: "/ai/symptom-scanner" },
   { id: "vax-predict", label: "Vax Predictor", icon: "analytics", colors: ["#667eea", "#764ba2"], route: "/ai/vaccination-predictor" },
   { id: "ai-lost", label: "AI Pet Finder", icon: "locate", colors: ["#a18cd1", "#fbc2eb"], route: "/ai/lost-pet-finder" },
@@ -96,11 +96,11 @@ const QUICK_ACTIONS = [
   { id: "behavior", label: "Behavior", icon: "bar-chart", colors: ["#43e97b", "#38f9d7"], route: "/ai/behavior-tracker" },
   { id: "ai-adopt", label: "AI Adoption", icon: "heart-circle", colors: ["#fa709a", "#fee140"], route: "/ai/adoption-match" },
   { id: "insurance", label: "Insurance", icon: "shield-checkmark", colors: ["#667eea", "#764ba2"], route: "/ai/pet-insurance" },
-  { id: "diet", label: "Diet Plan", icon: "nutrition", colors: ["#43e97b", "#38f9d7"], route: "/(tabs)/chat" },
-  { id: "passport", label: "Pet Passport", icon: "id-card", colors: ["#ffecd2", "#fcb69f"], route: "/(tabs)/pets" },
-  { id: "tele-vet", label: "Tele-Vet", icon: "videocam", colors: ["#a1c4fd", "#c2e9fb"], route: "/appointment/book" },
-  { id: "playdate", label: "Playdate", icon: "people", colors: ["#fccb90", "#d57eeb"], route: "/(tabs)/community" },
-  { id: "health-map", label: "Health Map", icon: "map", colors: ["#89f7fe", "#66a6ff"], route: "/(tabs)/map" },
+  { id: "diet", label: "Diet Plan", icon: "nutrition", colors: ["#43e97b", "#38f9d7"], route: "/ai/diet-planner" },
+  { id: "passport", label: "Pet Passport", icon: "id-card", colors: ["#ffecd2", "#fcb69f"], route: "/pet/passport" },
+  { id: "tele-vet", label: "Tele-Vet", icon: "videocam", colors: ["#a1c4fd", "#c2e9fb"], route: "/tele-vet" },
+  { id: "playdate", label: "Playdate", icon: "people", colors: ["#fccb90", "#d57eeb"], route: "/playdate" },
+  { id: "pet-training", label: "Pet Training", icon: "ribbon", colors: ["#89f7fe", "#66a6ff"], route: "/ai/pet-training" },
 ];
 
 
@@ -546,7 +546,7 @@ export default function HomeScreen() {
       {/* ── Floating SOS — Circular chatbot-style FAB ──── */}
       <TouchableOpacity
         style={styles.sosFab}
-        onPress={() => router.push("/emergency/index" as any)}
+        onPress={() => router.push("/emergency" as any)}
         activeOpacity={0.8}
       >
         <LinearGradient colors={[Colors.emergency, "#DC2626"]} style={styles.sosFabCircle}>
@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
   aiArrow: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" },
 
   // SOS floating circle (chatbot-style)
-  sosFab: { position: "absolute", bottom: Platform.OS === "ios" ? 100 : 90, right: 20, alignItems: "center", shadowColor: Colors.emergency, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 8 },
+  sosFab: { position: "absolute", bottom: Platform.OS === "ios" ? 140 : 105, right: 20, alignItems: "center", shadowColor: Colors.emergency, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 8 },
   sosFabCircle: { width: 60, height: 60, borderRadius: 30, alignItems: "center", justifyContent: "center" },
   sosBadge: { position: "absolute", top: -4, right: -4, backgroundColor: Colors.emergency, borderRadius: 10, paddingHorizontal: 6, paddingVertical: 2, borderWidth: 2, borderColor: "#fff" },
   sosBadgeText: { color: "#fff", fontSize: 9, fontFamily: "Inter_800ExtraBold" },

@@ -62,8 +62,11 @@ const RootLayoutNav = () => {
       <Stack.Screen name="ai/lost-pet-finder" options={{ title: "AI Lost Pet Finder" }} />
       <Stack.Screen name="ai/vet-reputation" options={{ title: "Vet Reputation System" }} />
       <Stack.Screen name="ai/behavior-tracker" options={{ title: "Behavior Tracker" }} />
-      <Stack.Screen name="ai/adoption-match" options={{ title: "AI Adoption Match" }} />
       <Stack.Screen name="ai/pet-insurance" options={{ title: "Pet Insurance" }} />
+      <Stack.Screen name="ai/diet-planner" options={{ title: "AI Diet Planner", headerShown: false }} />
+      <Stack.Screen name="pet/passport" options={{ title: "Pet Passport", headerShown: false }} />
+      <Stack.Screen name="tele-vet" options={{ title: "Tele-Vet", headerShown: false }} />
+      <Stack.Screen name="playdate" options={{ title: "Playdate", headerShown: false }} />
     </Stack>
 
   );

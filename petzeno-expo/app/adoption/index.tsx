@@ -63,6 +63,29 @@ export default function AdoptionScreen() {
       colors={[Colors.primaryLight1, colors.background]} 
       style={styles.container}
     >
+      {/* AI Matchmaker Banner */}
+      <View style={styles.matchmakerWrapper}>
+        <LinearGradient
+          colors={["#4facfe", "#00f2fe"]}
+          style={styles.matchmakerBanner}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <View style={styles.matchmakerBlob1} />
+          <View style={styles.matchmakerBlob2} />
+          
+          <View style={styles.matchmakerContent}>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.matchmakerTitle}>AI Matchmaker ✨</Text>
+              <Text style={styles.matchmakerDesc}>Take a quick quiz to find your perfect furry soulmate based on your lifestyle.</Text>
+            </View>
+            <TouchableOpacity style={styles.matchmakerBtn}>
+              <Text style={styles.matchmakerBtnText}>Start Quiz</Text>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </View>
+
       {/* Header with Search */}
       <View style={styles.header}>
         <View style={styles.searchBarContainer}>
@@ -198,6 +221,29 @@ export default function AdoptionScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  matchmakerWrapper: {
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === "ios" ? 10 : 20,
+    marginBottom: 10,
+  },
+  matchmakerBanner: {
+    borderRadius: 20,
+    padding: 20,
+    overflow: "hidden",
+    shadowColor: "#00f2fe",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
+    position: "relative",
+  },
+  matchmakerBlob1: { position: "absolute", width: 120, height: 120, borderRadius: 60, backgroundColor: "rgba(255,255,255,0.15)", top: -30, right: -20 },
+  matchmakerBlob2: { position: "absolute", width: 100, height: 100, borderRadius: 50, backgroundColor: "rgba(255,255,255,0.1)", bottom: -40, left: 20 },
+  matchmakerContent: { flexDirection: "row", alignItems: "center", gap: 16, zIndex: 2 },
+  matchmakerTitle: { color: "#fff", fontSize: 18, fontFamily: "Inter_700Bold", marginBottom: 4 },
+  matchmakerDesc: { color: "rgba(255,255,255,0.9)", fontSize: 12, lineHeight: 18, fontFamily: "Inter_400Regular" },
+  matchmakerBtn: { backgroundColor: "#fff", paddingHorizontal: 16, paddingVertical: 10, borderRadius: 16 },
+  matchmakerBtnText: { color: "#00f2fe", fontFamily: "Inter_700Bold", fontSize: 13 },
   header: {
     paddingHorizontal: 16,
     paddingTop: 12,

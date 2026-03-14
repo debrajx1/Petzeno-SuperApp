@@ -30,65 +30,38 @@ function getSpeciesIcon(species: string) {
   return icons[species.toLowerCase()] || icons.other;
 }
 
-export default function AdoptionDetailScreen() {
+export default function LostFoundDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const colors = isDark ? Colors.dark : Colors.light;
-  const { adoptionPets } = useCommunity();
+  const { lostFoundPets } = useCommunity();
 
-  const pet = adoptionPets.find((p) => p.id === id);
+  const pet = lostFoundPets.find((p) => p.id === id);
 
   if (!pet) {
     return (
       <View style={[styles.center, { backgroundColor: colors.background }]}>
-        <Text style={{ color: colors.text }}>Pet not found</Text>
+        <Text style={{ color: colors.text }}>Report not found</Text>
       </View>
     );
   }
 
-  const handleAdopt = async () => {
-    try {
-      const applicationData = {
-        listingId: pet.id,
-        shelterId: '65f1234567890abcdef99999', // Mock Shelter ObjectId
-        userId: 'dev_user_123',
-        userName: 'Rahul',
-        userEmail: 'rahul@example.com',
-        userPhone: '9876543210',
-        petName: pet.name,
-        message: `I would like to adopt ${pet.name}. Please let me know the process.`
-      };
-
-      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/adoptions/apply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(applicationData)
-      });
-
-      if (!response.ok) throw new Error('Application failed');
-
-      if (Platform.OS !== "web") {
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }
-
-      Alert.alert(
-        "Application Sent! ❤️",
-        `Your application for ${pet.name} has been sent to ${pet.shelterName}. They will review it and contact you soon.`,
-        [{ text: "OK", onPress: () => router.back() }]
-      );
-    } catch (err) {
-      console.error('Adoption error:', err);
-      Alert.alert("Error", "Could not send application. Please try again.");
+  const handleContact = async () => {
+    if (Platform.OS !== "web") {
+      await Haptics.selectionAsync();
     }
+    Linking.openURL(`tel:${pet.contactPhone}`);
   };
+
+  const isLost = pet.type === "lost";
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         {/* Hero */}
         <LinearGradient
-          colors={[Colors.primary, Colors.primaryLight]}
+          colors={isLost ? [Colors.emergency, "#FF6B6B"] : ["#34C759", "#2ECC71"]}
           style={styles.hero}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -110,26 +83,26 @@ export default function AdoptionDetailScreen() {
               />
             </View>
             <Text style={[styles.petName, { color: "#fff", fontFamily: "Inter_800ExtraBold" }]}>
-              {pet.name}
+              {pet.petName || "Unknown Pet"}
             </Text>
             <Text style={[styles.petBreed, { color: "rgba(255,255,255,0.9)", fontFamily: "Inter_500Medium" }]}>
               {pet.breed}
             </Text>
             <View style={styles.heroBadges}>
               <View style={[styles.badge, { backgroundColor: "rgba(255,255,255,0.2)" }]}>
-                <Ionicons name={pet.gender === "male" ? "male" : "female"} size={14} color="#fff" />
+                <Ionicons name={isLost ? "alert-circle" : "checkmark-circle"} size={14} color="#fff" />
                 <Text style={[styles.badgeText, { color: "#fff", fontFamily: "Inter_600SemiBold" }]}>
-                  {pet.gender === "male" ? "Male" : "Female"}
+                  {isLost ? "Lost Pet" : "Found Pet"}
                 </Text>
               </View>
-              <View style={[styles.badge, { backgroundColor: "rgba(255,255,255,0.2)" }]}>
-                <Text style={[styles.badgeText, { color: "#fff", fontFamily: "Inter_600SemiBold" }]}>{pet.age}</Text>
-              </View>
-              <View style={[styles.badge, { backgroundColor: pet.status === "available" ? "#34C759" : "#FF9500" }]}>
-                <Text style={[styles.badgeText, { color: "#fff", fontFamily: "Inter_600SemiBold" }]}>
-                  {pet.status === "available" ? "Available" : "Pending"}
-                </Text>
-              </View>
+              {pet.reward && (
+                <View style={[styles.badge, { backgroundColor: "#FFB020" }]}>
+                  <Ionicons name="gift" size={14} color="#fff" />
+                  <Text style={[styles.badgeText, { color: "#fff", fontFamily: "Inter_700Bold" }]}>
+                    ₹{pet.reward} Reward
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
         </LinearGradient>
@@ -138,60 +111,64 @@ export default function AdoptionDetailScreen() {
           {/* About */}
           <View style={[styles.card, { backgroundColor: colors.surface }]}>
             <Text style={[styles.cardTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
-              About {pet.name}
+              Description
             </Text>
             <Text style={[styles.description, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
               {pet.description}
             </Text>
           </View>
 
-          {/* Traits */}
+          {/* Quick Info */}
           <View style={[styles.card, { backgroundColor: colors.surface }]}>
             <Text style={[styles.cardTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
-              Pet Traits
+              Report Details
             </Text>
-            <View style={styles.traitsGrid}>
-              {[
-                { label: "Vaccinated", value: pet.vaccinated, icon: "medical" },
-                { label: "Neutered", value: pet.neutered, icon: "shield-checkmark" },
-                { label: "Good with Kids", value: pet.goodWithKids, icon: "people" },
-                { label: "Good with Pets", value: pet.goodWithPets, icon: "paw" },
-              ].map((trait) => (
-                <View key={trait.label} style={[styles.trait, { backgroundColor: trait.value ? Colors.primaryLight : colors.surfaceSecondary }]}>
-                  <Ionicons
-                    name={trait.value ? "checkmark-circle" : "close-circle"}
-                    size={20}
-                    color={trait.value ? Colors.primary : colors.textTertiary}
-                  />
-                  <Text style={[styles.traitLabel, {
-                    color: trait.value ? Colors.primary : colors.textTertiary,
-                    fontFamily: "Inter_500Medium",
-                  }]}>
-                    {trait.label}
+            <View style={styles.detailsList}>
+              <View style={styles.detailRow}>
+                <View style={[styles.detailIcon, { backgroundColor: colors.surfaceSecondary }]}>
+                  <Ionicons name="location" size={20} color={isLost ? Colors.emergency : "#34C759"} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
+                    {isLost ? "Last Seen Location" : "Found Location"}
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
+                    {pet.location}
                   </Text>
                 </View>
-              ))}
+              </View>
+
+              <View style={styles.detailRow}>
+                <View style={[styles.detailIcon, { backgroundColor: colors.surfaceSecondary }]}>
+                  <Ionicons name="calendar" size={20} color={isLost ? Colors.emergency : "#34C759"} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
+                    Date Reported
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
+                    {pet.date}
+                  </Text>
+                </View>
+              </View>
             </View>
           </View>
 
-          {/* Shelter Info */}
+          {/* Contact Info */}
           <View style={[styles.card, { backgroundColor: colors.surface }]}>
             <Text style={[styles.cardTitle, { color: colors.text, fontFamily: "Inter_700Bold" }]}>
-              Shelter Information
+              Contact Information
             </Text>
             <View style={styles.shelterRow}>
-              <View style={[styles.shelterIcon, { backgroundColor: Colors.primaryLight }]}>
-                <Ionicons name="home" size={20} color={Colors.primary} />
+              <View style={[styles.shelterIcon, { backgroundColor: isLost ? "#FF3B3015" : "#34C75915" }]}>
+                <Ionicons name="person" size={20} color={isLost ? Colors.emergency : "#34C759"} />
               </View>
               <View>
                 <Text style={[styles.shelterName, { color: colors.text, fontFamily: "Inter_600SemiBold" }]}>
-                  {pet.shelterName}
+                  {pet.contactName}
                 </Text>
-                <Text style={[styles.shelterLocation, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
-                  {pet.location}
-                </Text>
-                <Text style={[styles.shelterPhone, { color: Colors.primary, fontFamily: "Inter_500Medium" }]}>
-                  {pet.shelterContact}
+                <Text style={[styles.shelterPhone, { color: isLost ? Colors.emergency : "#34C759", fontFamily: "Inter_500Medium" }]}>
+                  {pet.contactPhone}
                 </Text>
               </View>
             </View>
@@ -201,21 +178,13 @@ export default function AdoptionDetailScreen() {
 
       {/* Bottom Actions */}
       <View style={[styles.bottomBar, { backgroundColor: colors.surface, borderTopColor: colors.border }]}>
-        <View>
-          <Text style={[styles.feeLabel, { color: colors.textSecondary, fontFamily: "Inter_400Regular" }]}>
-            Adoption Fee
-          </Text>
-          <Text style={[styles.feeValue, { color: Colors.primary, fontFamily: "Inter_700Bold" }]}>
-            {pet.adoptionFee === 0 ? "Free" : `₹${pet.adoptionFee}`}
-          </Text>
-        </View>
         <TouchableOpacity
-          style={[styles.adoptBtn, { backgroundColor: Colors.primary }]}
-          onPress={handleAdopt}
+          style={[styles.adoptBtn, { backgroundColor: isLost ? Colors.emergency : "#34C759", flex: 1 }]}
+          onPress={handleContact}
         >
-          <Ionicons name="heart" size={20} color="#fff" />
+          <Ionicons name="call" size={20} color="#fff" />
           <Text style={[styles.adoptBtnText, { fontFamily: "Inter_700Bold" }]}>
-            Adopt {pet.name}
+            Contact Finder
           </Text>
         </TouchableOpacity>
       </View>
@@ -311,17 +280,17 @@ const styles = StyleSheet.create({
   },
   cardTitle: { fontSize: 18 },
   description: { fontSize: 15, lineHeight: 24 },
-  traitsGrid: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
-  trait: {
-    flexDirection: "row",
+  detailsList: { gap: 16 },
+  detailRow: { flexDirection: "row", alignItems: "center", gap: 14 },
+  detailIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 12,
-    width: "48%",
+    justifyContent: "center",
   },
-  traitLabel: { fontSize: 13 },
+  detailLabel: { fontSize: 12, marginBottom: 2 },
+  detailValue: { fontSize: 15 },
   shelterRow: { flexDirection: "row", alignItems: "center", gap: 16 },
   shelterIcon: {
     width: 50,
@@ -331,7 +300,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   shelterName: { fontSize: 16 },
-  shelterLocation: { fontSize: 13, marginTop: 2 },
   shelterPhone: { fontSize: 14, marginTop: 4 },
   bottomBar: {
     position: "absolute",
@@ -340,7 +308,7 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
     paddingBottom: Platform.OS === "web" ? 34 : 34,
@@ -351,11 +319,10 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 15,
   },
-  feeLabel: { fontSize: 12, marginBottom: 2 },
-  feeValue: { fontSize: 24 },
   adoptBtn: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     gap: 10,
     paddingHorizontal: 30,
     paddingVertical: 16,

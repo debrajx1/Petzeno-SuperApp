@@ -238,6 +238,22 @@ const DEMO_LOST_FOUND: LostFoundPet[] = [
     image: "🐱",
     userId: "user_002",
   },
+  {
+    id: "lf_003",
+    type: "lost",
+    petName: "Sharku",
+    species: "dog",
+    breed: "Husky",
+    description: "Lost our beautiful Husky, Sharku, near Koramangala. He has very distinct blue eyes and a thick grey/white coat. Very friendly but easily distracted.",
+    location: "Koramangala, Bangalore",
+    date: "2026-03-12",
+    contactName: "Ajay S",
+    contactPhone: "+91 99887 11223",
+    reward: 10000,
+    status: "active",
+    image: "🐕",
+    userId: "user_003",
+  },
 ];
 
 function generateId(prefix: string): string {

@@ -72,6 +72,10 @@ export default function ProductDetailScreen() {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Product Image */}
         <View style={[styles.imageContainer, { backgroundColor: colors.surfaceSecondary }]}>
+          {/* Decorative Geometric Shapes */}
+          <View style={[styles.geoCircle, { backgroundColor: Colors.primary + "15" }]} />
+          <View style={[styles.geoSquare, { backgroundColor: Colors.primaryLight + "20" }]} />
+          
           <Text style={styles.productEmoji}>{product.image}</Text>
           {product.originalPrice && (
             <View style={styles.discountBadge}>
@@ -206,11 +210,32 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
   imageContainer: {
-    height: 250,
+    height: 300,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
+    position: "relative",
   },
-  productEmoji: { fontSize: 100 },
+  geoCircle: {
+    position: "absolute",
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    top: -40,
+    right: -20,
+    zIndex: 0,
+  },
+  geoSquare: {
+    position: "absolute",
+    width: 160,
+    height: 160,
+    borderRadius: 20,
+    transform: [{ rotate: "25deg" }],
+    bottom: -30,
+    left: -40,
+    zIndex: 0,
+  },
+  productEmoji: { fontSize: 130, zIndex: 1 },
   discountBadge: {
     position: "absolute",
     top: 16,
@@ -219,6 +244,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
+    zIndex: 2,
   },
   discountText: { color: "#fff", fontSize: 13 },
   productContent: { padding: 16, gap: 10, paddingBottom: 100 },

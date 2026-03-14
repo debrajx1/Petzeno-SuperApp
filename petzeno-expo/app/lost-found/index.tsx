@@ -13,6 +13,7 @@ import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Image } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 function getSpeciesIcon(species: string) {
   const icons: Record<string, any> = {
@@ -39,9 +40,22 @@ export default function LostFoundScreen() {
 
   return (
     <LinearGradient 
-      colors={[Colors.primaryLight1, Colors.secondary]} 
+      colors={[Colors.primaryLight1, colors.background]} 
       style={styles.container}
     >
+      {/* Dynamic Header Banner */}
+      <View style={[styles.alertBanner, { backgroundColor: filter === "lost" ? "#FFEBEB" : filter === "found" ? "#E8F5E9" : Colors.primaryLight }]}>
+        <Ionicons name={filter === "lost" ? "warning" : filter === "found" ? "checkmark-circle" : "information-circle"} size={24} color={filter === "lost" ? Colors.emergency : filter === "found" ? "#34C759" : Colors.primary} />
+        <View style={{ flex: 1, marginLeft: 12 }}>
+          <Text style={[styles.alertTitle, { color: filter === "lost" ? Colors.emergency : filter === "found" ? "#34C759" : Colors.primaryDark }]}>
+            {filter === "lost" ? "Lost Pets Alert Context" : filter === "found" ? "Found Pets" : "Community Reports"}
+          </Text>
+          <Text style={[styles.alertDesc, { color: colors.textSecondary }]}>
+            {filter === "lost" ? "Help reunite these pets with their owners." : filter === "found" ? "These pets have been found. Do you recognize them?" : "Latest lost and found activity in your area."}
+          </Text>
+        </View>
+      </View>
+
       {/* Filters */}
       <View style={styles.filterRow}>
         {(["all", "lost", "found"] as const).map((f) => (
@@ -72,12 +86,35 @@ export default function LostFoundScreen() {
         </Text>
       </TouchableOpacity>
 
-      {/* Map Placeholder Section */}
+      {/* Map Section */}
       <View style={styles.mapSection}>
-        <View style={[styles.mapPlaceholder, { backgroundColor: colors.surfaceSecondary, borderColor: colors.border }]}>
-          <Ionicons name="map-outline" size={32} color={colors.textTertiary} />
-          <Text style={[styles.mapText, { color: colors.textSecondary }]}>Lost pets near you</Text>
-          <View style={styles.mapDot} />
+        <View style={styles.mapContainer}>
+          <MapView
+            provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+            style={styles.map}
+            initialRegion={{
+              latitude: 28.6139,
+              longitude: 77.2090,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+          >
+            {lostFoundPets.filter(p => p.status === "active").map(pet => (
+              <Marker
+                key={pet.id}
+                coordinate={{
+                  latitude: 28.6139 + (Math.random() - 0.5) * 0.05, // Mock coordinates
+                  longitude: 77.2090 + (Math.random() - 0.5) * 0.05,
+                }}
+                title={pet.petName || `Unknown ${pet.species}`}
+                description={pet.type === "lost" ? "LOST" : "FOUND"}
+                pinColor={pet.type === "lost" ? Colors.emergency : "#34C759"}
+              />
+            ))}
+          </MapView>
+          <View style={styles.mapOverlay}>
+            <Text style={styles.mapOverlayText}>Live Radar</Text>
+          </View>
         </View>
       </View>
 
@@ -102,7 +139,10 @@ export default function LostFoundScreen() {
           </View>
         )}
         renderItem={({ item: pet }) => (
-          <View style={[styles.reportCard, { backgroundColor: colors.surface }]}>
+          <TouchableOpacity 
+            style={[styles.reportCard, { backgroundColor: colors.surface }]}
+            onPress={() => router.push({ pathname: "/lost-found/[id]", params: { id: pet.id } })}
+          >
             <View style={styles.cardHeader}>
               <View style={[styles.typeBadge, {
                 backgroundColor: pet.type === "lost" ? "#FF3B3015" : "#34C75915",
@@ -170,7 +210,7 @@ export default function LostFoundScreen() {
                 </TouchableOpacity>
               )}
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </LinearGradient>
@@ -179,6 +219,17 @@ export default function LostFoundScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  alertBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 16,
+    marginHorizontal: 16,
+    marginTop: Platform.OS === "ios" ? 10 : 20,
+    marginBottom: 10,
+    borderRadius: 16,
+  },
+  alertTitle: { fontSize: 16, fontFamily: "Inter_700Bold", marginBottom: 2 },
+  alertDesc: { fontSize: 13, fontFamily: "Inter_400Regular" },
   filterRow: { flexDirection: "row", gap: 10, padding: 16, paddingBottom: 12 },
   filterBtn: {
     flex: 1,
@@ -209,27 +260,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 24,
   },
-  mapPlaceholder: {
-    height: 120,
+  mapContainer: {
+    height: 180,
     borderRadius: 20,
-    borderWidth: 1.5,
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 4,
+    position: "relative",
   },
-  mapText: { fontSize: 14, fontFamily: "Inter_500Medium" },
-  mapDot: {
+  map: { width: '100%', height: '100%' },
+  mapOverlay: {
     position: 'absolute',
-    top: 40,
-    right: 60,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: Colors.emergency,
-    borderWidth: 2,
-    borderColor: '#fff',
+    top: 12,
+    left: 12,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    backdropFilter: 'blur(5px)',
   },
+  mapOverlayText: { color: '#fff', fontSize: 12, fontFamily: 'Inter_600SemiBold', letterSpacing: 0.5 },
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",

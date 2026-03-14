@@ -23,16 +23,41 @@ router.post('/', async (req, res) => {
         return res.status(500).json({ error: 'Gemini API not configured on server.' });
     }
 
-    // Convert frontend messages to Gemini format
-    const formattedHistory = messages.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    }));
+    // Convert frontend messages to Gemini format.
+    // Gemini REQUIRES strictly alternating roles: user, model, user, model...
+    // We must rebuild the history carefully.
+    const validMessages = messages.filter(msg => msg.text && msg.text.trim().length > 0);
+    
+    const formattedHistory = [];
+    for (const msg of validMessages) {
+      const role = msg.sender === 'user' ? 'user' : 'model';
+      
+      if (formattedHistory.length === 0) {
+        if (role === 'model') continue; // First message MUST be from user
+        formattedHistory.push({ role, parts: [{ text: msg.text }] });
+      } else {
+        const lastMsg = formattedHistory[formattedHistory.length - 1];
+        if (lastMsg.role === role) {
+          // Collapse consecutive messages from the same role
+          lastMsg.parts[0].text += '\n\n' + msg.text;
+        } else {
+          formattedHistory.push({ role, parts: [{ text: msg.text }] });
+        }
+      }
+    }
+
+    if (formattedHistory.length === 0 || formattedHistory[formattedHistory.length - 1].role !== 'user') {
+      return res.status(400).json({ error: 'History must end with a user message' });
+    }
 
     // The last message is the current prompt, we pop it off
     const currentPrompt = formattedHistory.pop();
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-2.5-flash",
+      systemInstruction: "You are the Petzeno AI Health Assistant. You give helpful advice to pet owners about symptoms, diet, and care. Keep answers concise, friendly, and always remind them to consult a real vet for serious issues."
+    });
+    
     const chat = model.startChat({
         history: formattedHistory,
     });

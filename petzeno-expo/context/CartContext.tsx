@@ -352,8 +352,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchOrders(); // Initial fetch
-    const interval = setInterval(fetchOrders, 20000);
-    return () => clearInterval(interval);
+    // Stop polling to reduce backend load as requested by user
+    // const interval = setInterval(fetchOrders, 20000);
+    return () => {
+      // clearInterval(interval);
+    };
   }, []);
 
   const cartTotal = cartItems.reduce(
