@@ -20,55 +20,61 @@ router.post('/', async (req, res) => {
     }
 
     if (!genAI) {
-        return res.status(500).json({ error: 'Gemini API not configured on server.' });
+      return res.status(500).json({ error: 'Gemini API not configured on server.' });
     }
 
-    // Convert frontend messages to Gemini format.
-    // Gemini REQUIRES strictly alternating roles: user, model, user, model...
-    // We must rebuild the history carefully.
-    const validMessages = messages.filter(msg => msg.text && msg.text.trim().length > 0);
-    
+    // 1. Clean and Filter messages (Ensure alternating roles)
     const formattedHistory = [];
-    for (const msg of validMessages) {
+    messages.filter(msg => msg.text?.trim()).forEach((msg) => {
       const role = msg.sender === 'user' ? 'user' : 'model';
-      
       if (formattedHistory.length === 0) {
-        if (role === 'model') continue; // First message MUST be from user
-        formattedHistory.push({ role, parts: [{ text: msg.text }] });
+        if (role === 'user') formattedHistory.push({ role, parts: [{ text: msg.text }] });
       } else {
-        const lastMsg = formattedHistory[formattedHistory.length - 1];
-        if (lastMsg.role === role) {
-          // Collapse consecutive messages from the same role
-          lastMsg.parts[0].text += '\n\n' + msg.text;
+        const last = formattedHistory[formattedHistory.length - 1];
+        if (last.role === role) {
+          last.parts[0].text += "\n\n" + msg.text;
         } else {
           formattedHistory.push({ role, parts: [{ text: msg.text }] });
         }
       }
+    });
+
+    if (formattedHistory.length === 0) {
+      return res.status(400).json({ error: 'No valid user messages found.' });
     }
 
-    if (formattedHistory.length === 0 || formattedHistory[formattedHistory.length - 1].role !== 'user') {
-      return res.status(400).json({ error: 'History must end with a user message' });
+    const lastMessage = formattedHistory.pop();
+    if (lastMessage.role !== 'user') {
+      return res.status(400).json({ error: 'Last message must be from user.' });
     }
 
-    // The last message is the current prompt, we pop it off
-    const currentPrompt = formattedHistory.pop();
-
+    // 2. Configure Model
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
-      systemInstruction: "You are the Petzeno AI Health Assistant. You give helpful advice to pet owners about symptoms, diet, and care. Keep answers concise, friendly, and always remind them to consult a real vet for serious issues."
-    });
-    
-    const chat = model.startChat({
-        history: formattedHistory,
+      model: "gemini-1.5-flash",
+      systemInstruction: "You are the Petzeno AI Health Assistant. You give helpful advice to pet owners about symptoms, diet, and care. Keep answers concise, premium, and friendly. Always remind them to consult a real vet for serious issues."
     });
 
-    const result = await chat.sendMessage(currentPrompt.parts[0].text);
+    // 3. Start Chat & Send Message
+    const chat = model.startChat({
+      history: formattedHistory,
+      generationConfig: { temperature: 0.7, maxOutputTokens: 800 },
+      safetySettings: [
+        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_ONLY_HIGH" },
+      ]
+    });
+
+    const result = await chat.sendMessage(lastMessage.parts[0].text);
     const responseText = result.response.text();
 
     res.json({ text: responseText, role: 'assistant' });
   } catch (error) {
-    console.error('Error generating AI response:', error);
-    res.status(500).json({ error: 'Failed to generate response' });
+    console.error('--- Gemini Error ---');
+    console.error('Status:', error.status);
+    console.error('Message:', error.message);
+    res.status(500).json({ 
+      error: 'AI failed to respond.', 
+      details: error.message 
+    });
   }
 });
 

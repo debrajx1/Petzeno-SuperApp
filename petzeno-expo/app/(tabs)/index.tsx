@@ -543,6 +543,20 @@ export default function HomeScreen() {
 
       </ScrollView>
 
+      {/* ── Floating Food Share ──── */}
+      <TouchableOpacity
+        style={styles.foodShareFab}
+        onPress={() => router.push("/food-share" as any)}
+        activeOpacity={0.8}
+      >
+        <LinearGradient colors={[Colors.primary, Colors.primaryDark]} style={styles.foodShareFabCircle}>
+          <Ionicons name="restaurant" size={28} color="#fff" />
+        </LinearGradient>
+        <View style={styles.foodShareBadge}>
+          <Text style={styles.foodShareBadgeText}>Donate</Text>
+        </View>
+      </TouchableOpacity>
+
       {/* ── Floating SOS — Circular chatbot-style FAB ──── */}
       <TouchableOpacity
         style={styles.sosFab}
@@ -675,6 +689,12 @@ const styles = StyleSheet.create({
   aiBannerTitle: { fontSize: 15, fontFamily: "Inter_700Bold" },
   aiBannerSub: { fontSize: 12, marginTop: 3 },
   aiArrow: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" },
+
+  // Food Share floating circle
+  foodShareFab: { position: "absolute", bottom: Platform.OS === "ios" ? 215 : 180, right: 20, alignItems: "center", shadowColor: Colors.primary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 8 },
+  foodShareFabCircle: { width: 60, height: 60, borderRadius: 30, alignItems: "center", justifyContent: "center" },
+  foodShareBadge: { position: "absolute", top: -4, right: -4, backgroundColor: Colors.primary, borderRadius: 10, paddingHorizontal: 6, paddingVertical: 2, borderWidth: 2, borderColor: "#fff" },
+  foodShareBadgeText: { color: "#fff", fontSize: 9, fontFamily: "Inter_800ExtraBold" },
 
   // SOS floating circle (chatbot-style)
   sosFab: { position: "absolute", bottom: Platform.OS === "ios" ? 140 : 105, right: 20, alignItems: "center", shadowColor: Colors.emergency, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 10, elevation: 8 },

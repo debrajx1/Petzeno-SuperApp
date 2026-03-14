@@ -60,15 +60,29 @@ export type LostFoundPet = {
   userId: string;
 };
 
+export type FoodSharePost = {
+  id: string;
+  organizer: string;
+  location: string;
+  foodType: string;
+  quantity: string;
+  pickupTime: string;
+  contact: string;
+  timestamp: string;
+  status: "Available" | "Rescue in Progress" | "Completed";
+};
+
 type CommunityContextType = {
   posts: Post[];
   adoptionPets: AdoptionPet[];
   lostFoundPets: LostFoundPet[];
+  foodSharePosts: FoodSharePost[];
   addPost: (post: Omit<Post, "id" | "timestamp" | "likes" | "comments">) => void;
   toggleLike: (postId: string, userId: string) => void;
   addComment: (postId: string, comment: Omit<Comment, "id" | "timestamp">) => void;
   addLostFound: (pet: Omit<LostFoundPet, "id">) => void;
   updateLostFoundStatus: (id: string, status: "active" | "resolved") => void;
+  addFoodShare: (post: Omit<FoodSharePost, "id" | "timestamp" | "status">) => void;
 };
 
 const CommunityContext = createContext<CommunityContextType | undefined>(undefined);
@@ -266,6 +280,30 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [adoptionPets, setAdoptionPets] = useState<AdoptionPet[]>([]);
   const [lostFoundPets, setLostFoundPets] = useState<LostFoundPet[]>([]);
+  const [foodSharePosts, setFoodSharePosts] = useState<FoodSharePost[]>([
+    {
+      id: "food_1",
+      organizer: "Rajesh Kumar",
+      location: "MG Road, Bangalore",
+      foodType: "Rice, Dal & Sabzi",
+      quantity: "For 40-50 people",
+      pickupTime: "Before 10:30 PM",
+      contact: "+91 99880 11223",
+      timestamp: new Date(Date.now() - 1200000).toISOString(),
+      status: "Available",
+    },
+    {
+      id: "food_2",
+      organizer: "Global Tech Park Event",
+      location: "Whitefield, Bangalore",
+      foodType: "Continental Mix (Pastas, Breads)",
+      quantity: "For 100 people",
+      pickupTime: "Before 12:00 AM",
+      contact: "+91 88776 65544",
+      timestamp: new Date(Date.now() - 3600000).toISOString(),
+      status: "Rescue in Progress",
+    },
+  ]);
   const apiUrl = getApiUrl();
 
   useEffect(() => {
@@ -392,17 +430,29 @@ export function CommunityProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const addFoodShare = (post: Omit<FoodSharePost, "id" | "timestamp" | "status">) => {
+    const newPost: FoodSharePost = {
+      ...post,
+      id: generateId("food"),
+      timestamp: new Date().toISOString(),
+      status: "Available",
+    };
+    setFoodSharePosts((prev) => [newPost, ...prev]);
+  };
+
   return (
     <CommunityContext.Provider
       value={{
         posts,
         adoptionPets,
         lostFoundPets,
+        foodSharePosts,
         addPost,
         toggleLike,
         addComment,
         addLostFound,
         updateLostFoundStatus,
+        addFoodShare,
       }}
     >
       {children}
