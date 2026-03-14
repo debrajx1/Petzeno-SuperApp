@@ -67,6 +67,8 @@ const RootLayoutNav = () => {
       <Stack.Screen name="pet/passport" options={{ title: "Pet Passport", headerShown: false }} />
       <Stack.Screen name="tele-vet" options={{ title: "Tele-Vet", headerShown: false }} />
       <Stack.Screen name="playdate" options={{ title: "Playdate", headerShown: false }} />
+      <Stack.Screen name="food-share/index" options={{ title: "Food Share", headerShown: false }} />
+      <Stack.Screen name="food-share/create" options={{ title: "New Donation", headerShown: false }} />
     </Stack>
 
   );
