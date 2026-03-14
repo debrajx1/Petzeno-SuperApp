@@ -1,15 +1,26 @@
 import { fetch } from "expo/fetch";
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
+import Constants from "expo-constants";
 
 /**
  * Gets the base URL for the Express API server (e.g., "http://localhost:3000")
  * @returns {string} The API base URL
  */
 export function getApiUrl(): string {
-  // Connect to our new Custom Node.js/Express Backend on Port 5000
-  // For Android Emulators, 10.0.2.2 translates to localhost
-  const host = process.env.EXPO_PUBLIC_API_URL || "http://10.0.2.2:5000";
-  return host;
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+  
+  // If running in Expo development (especially --lan), get the LAN IP address dynamically
+  const debuggerHost = Constants.expoConfig?.hostUri;
+  if (debuggerHost) {
+    const ipAddress = debuggerHost.split(':')[0];
+    return `http://${ipAddress}:5000`; // Connect to backend on same machine's IP, port 5000
+  }
+
+  // Fallback for physical devices over LAN if expoConfig is missing, 
+  // or for Android Emulators (10.0.2.2). We're hardcoding the LAN IP here to guarantee access.
+  return "http://10.222.197.150:5000";
 }
 
 async function throwIfResNotOk(res: Response) {

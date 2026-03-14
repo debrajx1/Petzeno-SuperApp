@@ -158,6 +158,10 @@ export default function EmergencyScreen() {
       colors={[Colors.primaryLight1, "#FFFFFF"]}
       style={styles.container}
     >
+      {/* Blobs */}
+      <View style={[blob.b1, { backgroundColor: Colors.primary + "06" }]} />
+      <View style={[blob.b2, { backgroundColor: Colors.primaryLight + "15" }]} />
+
       {/* Header */}
       <View
         style={[
@@ -168,7 +172,7 @@ export default function EmergencyScreen() {
         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color={Colors.black} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: Colors.secondary, fontFamily: "Inter_700Bold" }]}>
+        <Text style={[styles.headerTitle, { color: Colors.primaryDark, fontFamily: "Inter_700Bold" }]}>
           Emergency SOS
         </Text>
         <View style={{ width: 44 }} />
@@ -179,10 +183,10 @@ export default function EmergencyScreen() {
         <Ionicons
           name="location"
           size={14}
-          color={locationGranted ? "#f6f1f1ff" : "#ff0800ff"}
+          color={locationGranted ? "#4F46E5" : "#e54646ff"}
         />
         <Text
-          style={[styles.locationText, { color: Colors.secondary, fontFamily: "Inter_400Regular" }]}
+          style={[styles.locationText, { color: Colors.primaryDark, fontFamily: "Inter_400Regular" }]}
           numberOfLines={1}
         >
           {locationText}
@@ -254,7 +258,7 @@ export default function EmergencyScreen() {
 
         {/* Emergency Clinics */}
         <Text
-          style={[styles.sectionTitle, { color: Colors.deepOrange, fontFamily: "Inter_700Bold" }]}
+          style={[styles.sectionTitle, { color: Colors.black, fontFamily: "Inter_700Bold" }]}
         >
           Nearby Emergency Vets
         </Text>
@@ -507,4 +511,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tipText: { fontSize: 12, lineHeight: 17 },
+});
+
+const blob = StyleSheet.create({
+  b1: { position: "absolute", width: 300, height: 300, borderRadius: 150, top: -80, right: -80 },
+  b2: { position: "absolute", width: 250, height: 250, borderRadius: 125, bottom: 50, left: -80 },
 });

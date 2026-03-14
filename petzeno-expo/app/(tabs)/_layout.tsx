@@ -58,6 +58,7 @@ function ClassicTabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarHideOnKeyboard: true, // Fix for Android keyboard overlap
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
         headerShown: false,

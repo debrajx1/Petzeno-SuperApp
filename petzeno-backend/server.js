@@ -44,6 +44,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 // Always listen so the API still works (routes have MOCK_DB fallbacks or will just return empty arrays instead of crashing)
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT} (LAN accessible)`);
 });

@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator, Keyboard } from 'react-native';
 import { Send, Bot, User, Sparkles } from 'lucide-react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import { getApiUrl } from '@/lib/query-client';
@@ -19,7 +19,24 @@ export default function AIHealthChatScreen() {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const scrollViewRef = useRef<any>(null);
+
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => setKeyboardVisible(true)
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => setKeyboardVisible(false)
+    );
+
+    return () => {
+      keyboardWillHideListener.remove();
+      keyboardWillShowListener.remove();
+    };
+  }, []);
 
   const handleSend = async () => {
     if (!inputText.trim()) return;
@@ -75,14 +92,15 @@ export default function AIHealthChatScreen() {
       <KeyboardAvoidingView 
         style={styles.container} 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
         <View style={styles.header}>
-        <View style={styles.headerTitleGroup}>
-          <Sparkles size={20} color="#FFD56B" />
-          <Text style={styles.headerTitle}>AI Health Assistant</Text>
+          <View style={styles.headerTitleGroup}>
+            <Sparkles size={20} color="#FFD56B" />
+            <Text style={styles.headerTitle}>AI Health Assistant</Text>
+          </View>
+          <Text style={styles.headerSub}>Powered by Gemini</Text>
         </View>
-        <Text style={styles.headerSub}>Powered by Gemini</Text>
-      </View>
 
       <ScrollView 
         style={styles.chatArea} 
@@ -136,22 +154,26 @@ export default function AIHealthChatScreen() {
         )}
       </ScrollView>
 
-      <View style={styles.inputArea}>
-        <TextInput 
-          style={styles.input}
-          placeholder="Ask a health question..."
-          placeholderTextColor="#A0AEC0"
-          value={inputText}
-          onChangeText={setInputText}
-          multiline
-        />
-        <TouchableOpacity 
-          style={[styles.sendBtn, !inputText.trim() && styles.sendBtnDisabled]} 
-          onPress={handleSend}
-          disabled={!inputText.trim()}
-        >
-          <Send size={20} color="#FFFFFF" style={styles.sendIcon} />
-        </TouchableOpacity>
+        <View style={[
+          styles.inputArea,
+          // When keyboard is visible, remove the extra bottom padding so it hugs the keyboard
+          isKeyboardVisible && { paddingBottom: Platform.OS === 'ios' ? 16 : 16 }
+        ]}>
+          <TextInput 
+            style={styles.input}
+            placeholder="Ask a health question..."
+            placeholderTextColor="#A0AEC0"
+            value={inputText}
+            onChangeText={setInputText}
+            multiline
+          />
+          <TouchableOpacity 
+            style={[styles.sendBtn, !inputText.trim() && styles.sendBtnDisabled]} 
+            onPress={handleSend}
+            disabled={!inputText.trim()}
+          >
+            <Send size={20} color="#FFFFFF" style={styles.sendIcon} />
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -212,7 +234,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    paddingBottom: Platform.OS === 'ios' ? 32 : 16,
+    paddingBottom: Platform.OS === 'ios' ? 120 : 100,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E2E8F0',

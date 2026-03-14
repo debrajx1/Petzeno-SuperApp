@@ -301,8 +301,11 @@ export function PetProvider({ children }: { children: ReactNode }) {
   // Poll for status updates
   useEffect(() => {
     if (loaded) {
-      const interval = setInterval(fetchAppointments, 15000);
-      return () => clearInterval(interval);
+      // Stop polling to reduce backend load as requested by user
+      // const interval = setInterval(fetchAppointments, 15000);
+      return () => {
+        // clearInterval(interval);
+      };
     }
   }, [loaded]);
 
